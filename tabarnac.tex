@@ -1,0 +1,51 @@
+%!TEX encoding=UTF-8 Unicode
+
+\documentclass{article}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+
+
+\usepackage{hyperref}
+\hypersetup{
+    dvips,
+    backref=true, %permet d'ajouter des liens dans...
+    pagebackref=true,%...les bibliographies
+    hyperindex=true, %ajoute des liens dans les index.
+    colorlinks=true, %colore les liens
+    breaklinks=true, %permet le retour à la ligne dans les liens trop longs
+    urlcolor= blue, %couleur des hyperliens
+    linkcolor= black, %couleur des liens internes
+    bookmarks=true, %créé des signets pour Acrobat
+bookmarksopen=true}
+
+
+\usepackage{graphicx} % \includegraphics
+\usepackage[center]{caption}
+
+\newcommand{\Input}[1]{\input{./tex/#1}}
+
+\author{David Beniamine \and Matthias Diener \and Eduardo Cruz \ldots}
+\title{TABARNAC: Tools for Analysing the Behaviour of Applications Running on
+NUMA ArChitectures}
+
+
+\begin{document}
+
+\graphicspath{ {./img/} }
+\maketitle%affichage du titre
+
+\Input{intro.tex}
+\Input{motivations.tex}
+\Input{stateOfTheArt.tex}
+\Input{design.tex}
+\Input{experiments.tex}
+\Input{conclusions.tex}
+
+\bibliography{biblio.bib}
+\bibliographystyle{plain}
+
+\end{document}
+
