@@ -300,9 +300,11 @@
     bookmarks=true, %créé des signets pour Acrobat
 bookmarksopen=true}
 
+\usepackage{todonotes}
 
 \newcommand{\Input}[1]{\input{./tex/#1}}
-
+\newcommand{\DB}[1]{\todo[inline]{\emph{David:} ``#1''}}
+\newcommand{\MD}[1]{\todo[inline]{\emph{Matthias:} ``#1''}}
 \title{TABARNAC: Tools for Analyzing the Behaviour of Applications Running on
 NUMA ArChitectures}
 
@@ -324,6 +326,7 @@ Email: David.Beniamine@Imag.fr}
 
 
 \begin{document}
+
 
 \maketitle%affichage du titre
 \begin{abstract}
@@ -367,6 +370,7 @@ optimization with and without thread and data mapping.
 % creates the second title. It will be ignored for other modes.
 \IEEEpeerreviewmaketitle
 
+\listoftodos %%TODO: Remove me
 
 \Input{intro.tex}
 \Input{stateOfTheArt.tex}
