@@ -4,6 +4,7 @@
 *.log
 *.out
 *.pdf
+*.tdo
 *.tex.latexmain
 *.fdb_latexmk
 *.synctex.gz
