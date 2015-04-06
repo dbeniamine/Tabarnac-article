@@ -303,7 +303,7 @@ bookmarksopen=true}
 
 \newcommand{\Input}[1]{\input{./tex/#1}}
 
-\title{TABARNAC: Tools for Analysing the Behaviour of Applications Running on
+\title{TABARNAC: Tools for Analyzing the Behaviour of Applications Running on
 NUMA ArChitectures}
 
 % author names and affiliations
@@ -317,8 +317,8 @@ Inria \\
 Email: David.Beniamine@Imag.fr}
 \and
 \and
-\IEEEauthorblockN{Matthias Diener\\ and Eduardo Cruz}
-\IEEEauthorblockA{TODO}
+\IEEEauthorblockN{Matthias Diener\\ and Eduardo Cruz ?}
+ \IEEEauthorblockA{TODO}
 }
 
 
@@ -327,8 +327,23 @@ Email: David.Beniamine@Imag.fr}
 
 \maketitle%affichage du titre
 \begin{abstract}
-%\boldmath
-The abstract goes here.
+
+In High Performance Computing, memory is often a bottleneck thus optimizing
+memory access behavior is necessary. This is even more important with NUMA
+memories as the access time to a data depends of the CPU responsible for the
+access and the location of the data in the memory. Many efforts were made to
+develop adaptive tools improving memory access at the runtime by mapping data
+and threads. Still the improvements provided by these tools highly depends on
+the quality of the memory access pattern of the original application. A code
+written without considering memory performances at all might not benefit from
+them.
+
+In this paper, we present TABARNAC a tool for analyzing memory behaviour,
+using this tool, we explain why some application does not benefit from data
+and thread mapping. Moreover we propose some simple code modifications to
+improve their memory behaviour. Finally we evaluate the impact of these
+optimization with and without thread and data mapping.
+
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
 % This preserves the distinction between vectors and scalars. However,
@@ -354,8 +369,8 @@ The abstract goes here.
 
 
 \Input{intro.tex}
-\Input{motivations.tex}
 \Input{stateOfTheArt.tex}
+\Input{motivations.tex}
 \Input{design.tex}
 \Input{experiments.tex}
 \Input{conclusions.tex}
