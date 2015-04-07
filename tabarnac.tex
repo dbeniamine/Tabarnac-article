@@ -340,13 +340,21 @@ develop adaptive tools improving memory access at the runtime by mapping data
 and threads. Still the improvements provided by these tools highly depends on
 the quality of the memory access pattern of the original application. A code
 written without considering memory performances at all might not benefit from
-them.
+them. Moreover, automatic mappings tools needs a warming time to detect the
+best mapping, during these phase, opportunities for optimization are lost. A
+deep understanding of the memory behaviour can help defining the right mapping
+statically therefore avoiding this warming period.
 
-In this paper, we present TABARNAC a tool for analyzing memory behaviour,
-using this tool, we explain why some application does not benefit from data
+In this paper, we present TABARNAC a tool for analyzing memory behaviour. One
+of the main contribution of TABARNAC is to provide precises plots allowing the
+user to easily reach a deep understanding of the memory access distribution
+and hints on how to modify code / do manual mapping to improve performances.
+Using this tool, we explain why some application does not benefit from data
 and thread mapping. Moreover we propose some simple code modifications to
-improve their memory behaviour. Finally we evaluate the impact of these
-optimization with and without thread and data mapping.
+improve their memory behaviour and we propose a manual data and thread
+mapping.  Finally we evaluate the impact of these optimization with and
+without thread and data mapping comparing our manual mapping to automated
+tools.
 
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
