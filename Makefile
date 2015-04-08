@@ -45,3 +45,6 @@ run :
 
 clean :
 	rm -rf *.tdo *.idx *.nlo *.log *.lof *.lot *.bbl *.blg *.thm *.pdf *.aux *.backup *.bak *.toc *.out *.ilg *.nls *~ .*~ img/*eps-converted-to.pdf
+
+distclean: clean
+	rm -rf $(PDF)
