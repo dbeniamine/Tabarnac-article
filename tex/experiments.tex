@@ -3,14 +3,56 @@
 \label{sec:expe}
 \subsection{Setup}
 \label{sec:expe-setup}
-machines used, becnhmarks, tools, etc.
+machines used, becnhmarks, tools, mechanism used \ldots
 \subsection{Tool overhead}
 \label{sec:expe-overhead}
 give an estimated analysis time one graph
 \subsection{Analysis}
 \label{sec:expe-analysis}
 Matrix + One or two benchmarks, explain graph methodology etc.
-focus on methodology
+\subsubsection{Matrix multiplication}
+
+Our first benchmarks is a matrix multiplication ($C=A*B$), we use it to show he
+impact of both manual mapping and original quality of the code. We compare two
+implementations of the matrix multiplication, in first one, called
+\emph{Naive}, each threads start by computing $C[0][tid]$ and then jumps $N$
+elements after in the matrix, where $N$ is the number of threads. Although
+this implementation is known to be bad, comparing how much it's accelerated by
+the best mechanism to the acceleration of a better version to understand the
+importance of the quality of the original code. \DB{Rewritte later.} The
+second implementation is a bloc matrix multiplication (not recursive).
+
+\begin{figure}[htb]
+    \centering
+    % \includegraphics{<+file+>}
+    \caption{By thread access distribution on data structures A, B and C for
+    the two matrix multiplications.}
+    \label{fig:matrix-behaviour}
+\end{figure}
+
+Figure \ref{fig:matrix-behaviour} show the thread distribution over the
+structures \emph{A}, \emph{B} and \emph{C} for the two implementations of the
+\DB{explain the figures}
+\begin{itemize}
+    \item part of \TABARNAC's output
+    \item Different memory patterns
+    \item All to all share is bad, \TABARNAC~ warns you, still interleave
+        should help
+    \item Bloc mapping: all to all unavoidable => interleave, for the other,
+        mapping by affinity
+\end{itemize}
+
+
+Results:
+\begin{itemize}
+    \item Manual mapping always best (verify that)
+    \item More acceleration with bloc as algorithm is more NUMA proof
+\end{itemize}
+
+\subsubsection{Stream Cluster}
+same methodo as above
 \subsection{Results}
 \label{sec:expe-results}
 Hope they will be good
+
+
