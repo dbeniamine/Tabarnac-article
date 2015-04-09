@@ -2,11 +2,36 @@
 \section{Intro}
 \label{sec:intro}
 
-\begin{itemize}
-    \item NUMA / new archi
-    \item Lot of work on automatic mapping
-    \item Warming phase
-        \itodo{figure from combinedAff}
-    \item Does not always work need for exclusivity etc.
-\end{itemize}
+Using memory is both trivial and extremely complex: any developer is able to
+access it, but to use it efficiently one needs to take into account several
+performance factors such as cache hierarchy, \emph{NUMA} architecture
+\cite{Drepper07What} \ldots
 
+To ease the developer's work, many efforts were made to provide automated
+tools such as \emph{numactl, kmaf, numa balancing \ldots}\DB{more, refs}
+managing memory and thread mapping on the \emph{NUMA} hierarchy. However these
+tools have an overhead as they need to learn the application behaviour.
+Further more they are not able to change the memory access pattern, therefore
+the might not provide any improvements for bad memory use.
+\itodo{figure from combinedAff}
+
+There are several tools such as VTune \cite{Reinders05VTune},
+HPCToolkit\cite{Adhianto10HPCTOOLKIT} \DB{more refs? } designed to help the
+developer understanding and improving its applications performances,
+nevertheless most of them relies on CPU counters and provides only few
+informations on the memory behaviour. Tracing and the memory behaviour is
+complex as (almost) every instruction triggers (at least) one memory access.
+Although several studies have addressed this problem using sampling
+\cite{Lachaize12MemProf} or limiting the amount of informations stored
+\ref{??}, none of them provide a user friendly visualization or automatic hints
+to help the developer improving it's application.
+
+
+In this paper, we present \TABARNAC, a new tool to trace and visualize the
+NUMA behaviour of an application. \TABARNAC~ summarize the trace in easy to
+understand plots and provides some specific hints to improve the NUMA
+behaviour. In section \ref{sec:soa} we discuss related work, then we present
+some motivations in section \ref{sec:motivations}. Sections \ref{sec:design}
+present \TABARNAC~ design. Finally we show some example of performance
+improvement in section \ref{sec:expe} and we give our conclusions in section
+\ref{sec:concl}.
