@@ -16,3 +16,54 @@ Why Not automated tools
     \item Trainning time
     \item Garbage in/ garbage out (matrix modulo / bloc)
 \end{itemize}
+\subsubsection{Matrix multiplication}
+
+\DB{Rewritte}
+
+Our first benchmarks is a matrix multiplication ($C=A*B$), we use it to show he
+impact of both manual mapping and original quality of the code. We compare two
+implementations of the matrix multiplication, in first one, called
+\emph{Naive}, each threads start by computing $C[0][tid]$ and then jumps $N$
+elements after in the matrix, where $N$ is the number of threads. Although
+this implementation is known to be bad, comparing how much it's accelerated by
+the best mechanism to the acceleration of a better version to understand the
+importance of the quality of the original code. \DB{Rewritte later.} The
+second implementation is a bloc matrix multiplication (not recursive).
+
+\begin{figure}[htb]
+    \centering
+    % \includegraphics{<+file+>}
+    \caption{By thread access distribution on data structures A, B and C for
+    the two matrix multiplications.}
+    \label{fig:matrix-behaviour}
+\end{figure}
+
+Figure \ref{fig:matrix-behaviour} show the thread distribution over the
+structures \emph{A}, \emph{B} and \emph{C} for the two implementations of the
+\DB{explain the figures}
+\begin{itemize}
+    \item part of \TABARNAC's output
+    \item Different memory patterns
+    \item All to all share is bad, \TABARNAC~ warns you, still interleave
+        should help
+    \item Bloc mapping: all to all unavoidable => interleave, for the other,
+        mapping by affinity
+\end{itemize}
+
+\begin{figure}[htb]
+    \centering
+    % \includegraphics{<+file+>}
+    \caption{Execution time of the matrix multiplication for size $4096*406$ doubles.}
+    \label{fig:matrix-res}
+\end{figure}
+
+Results:
+\begin{itemize}
+    \item Big improvements for naive: better than every other tools
+    \item Not that much for Bloc: algo designed to fit in cache figure
+        \ref{fig:matrix-res}
+    \item Cncl: Tabarnac will help you modify code to do something like naive
+        -> bloc if possible or at least to improve your NUMA mapping as for
+        naive.
+\end{itemize}
+

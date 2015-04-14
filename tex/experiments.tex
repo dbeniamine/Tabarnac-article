@@ -9,46 +9,63 @@ machines used, becnhmarks, tools, mechanism used \ldots
 give an estimated analysis time one graph
 \subsection{Analysis}
 \label{sec:expe-analysis}
-Matrix + One or two benchmarks, explain graph methodology etc.
-\subsubsection{Matrix multiplication}
-
-Our first benchmarks is a matrix multiplication ($C=A*B$), we use it to show he
-impact of both manual mapping and original quality of the code. We compare two
-implementations of the matrix multiplication, in first one, called
-\emph{Naive}, each threads start by computing $C[0][tid]$ and then jumps $N$
-elements after in the matrix, where $N$ is the number of threads. Although
-this implementation is known to be bad, comparing how much it's accelerated by
-the best mechanism to the acceleration of a better version to understand the
-importance of the quality of the original code. \DB{Rewritte later.} The
-second implementation is a bloc matrix multiplication (not recursive).
+\subsubsection{IS}
+The first benchmark we studied is IS from the  NAS Parallel benchmarks OpenMp
+\cite{Feng04Unstructured}. This applications computes a bucket sort using
+mainly three arrays.
 
 \begin{figure}[htb]
     \centering
     % \includegraphics{<+file+>}
-    \caption{By thread access distribution on data structures A, B and C for
-    the two matrix multiplications.}
-    \label{fig:matrix-behaviour}
+    \caption{Original memory access distribution for IS}
+    \label{fig:is-behaviour-orig}
 \end{figure}
 
-Figure \ref{fig:matrix-behaviour} show the thread distribution over the
-structures \emph{A}, \emph{B} and \emph{C} for the two implementations of the
-\DB{explain the figures}
+Figure \ref{fig:is-behaviour-orig} shows the access distributions for the three
+main structures of IS class W with $4$ threads. We can see that each of these
+structure have a different access pattern: \emph{key\_buff2} access
+distribution shows that every threads works on a different part of the
+structures which allows automated tools to do efficient data/thread mapping on
+it. However \emph{key\_array} is completely shared by every threads, but the
+most interesting access distribution is the one of \emph{key\_buff1}. Indeed
+the access repartition seems to follow a nice Gaussian, which means a few
+pages are more used than all the others. Finding a good numa balance with such
+a distribution is difficult and almost impossible for automated tools.
+
+\begin{lstlisting}[frame=single, caption=IS code responsible for the
+Guassain distribution of access, label=list:is]
+        m = (i > 0)? bucket_ptrs[i-1] : 0;
+        for ( k = m; k < bucket_ptrs[i]; k++ )
+            key_buff_ptr[key_buff_ptr2[k]]++;  
+\end{lstlisting}
+
 \begin{itemize}
-    \item part of \TABARNAC's output
-    \item Different memory patterns
-    \item All to all share is bad, \TABARNAC~ warns you, still interleave
-        should help
-    \item Bloc mapping: all to all unavoidable => interleave, for the other,
-        mapping by affinity
+    \item Identify code responsible of behaviour listing \ref{list:is}\\
+        key\_buff\_ptr ==  key\_buff1 \\
+        key\_buff\_ptr2 == key\_buff2 \\
+        values in key\_buff2 are gaussian distributed
+    \item Cyclic distribution
+    \item Cyclic distrubution knowing the gaussian
+    \item Modification proposed
+    \item New distribution figure \ref{fig:is-behaviour-new}
+    \item Experimental results
 \end{itemize}
 
+\begin{figure}[htb]
+    \centering
+    % \includegraphics{<+file+>}
+    \caption{Memory access distribution for IS after modifications}
+    \label{fig:is-behaviour-new}
+\end{figure}
+% \end{minipage}
 
-Results:
+Cncl:
+
 \begin{itemize}
-    \item Manual mapping always best (verify that)
-    \item More acceleration with naive as bloc is already efficient
-    \item Cncl: Tabarnac will guides you to the best result twice by improving
-        the algo and allocating data
+    \item Deep understanding of the app performance for a low cost
+    \item Quick analyse with class W (few seconds)
+    \item Two line of code improvements
+    \item Better results with automated tools 
 \end{itemize}
 
 \subsubsection{Stream Cluster}
