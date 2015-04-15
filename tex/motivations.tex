@@ -32,9 +32,31 @@ second implementation is a bloc matrix multiplication (not recursive).
 
 \begin{figure}[htb]
     \centering
-    % \includegraphics{<+file+>}
-    \caption{By thread access distribution on data structures A, B and C for
-    the two matrix multiplications.}
+    \subfigure[Structure A (naive)]{
+        % \includegraphics[width=.45\linewidth] {is_w_kba_modif}
+        \rule{4cm}{4cm}
+        \label{fig:matrix-behaviour-A-naive}
+    }
+    \subfigure[Structure B (naive)]{
+        % \includegraphics[width=.45\linewidth] {is_w_kb1_modif}
+        \rule{4cm}{4cm}
+        \label{fig:matrix-behaviour-C-naive}
+    }
+    \\
+    \subfigure[Structure A (bloc)]{
+        % \includegraphics[width=.45\linewidth] {is_w_kba_modif}
+        \rule{4cm}{4cm}
+        \label{fig:matrix-behaviour-A-bloc}
+    }
+    \subfigure[Structure B (bloc)]{
+        % \includegraphics[width=.45\linewidth] {is_w_kb1_modif}
+        \rule{4cm}{4cm}
+        \label{fig:matrix-behaviour-C-bloc}
+    }
+    \caption{By thread access distribution on data structures A and B for the
+    two matrix multiplications (naive and bloc). Each plots shows the number of access
+depending on the page number (inside the structure) for each thread (T0 to
+T3).}
     \label{fig:matrix-behaviour}
 \end{figure}
 
@@ -53,6 +75,7 @@ structures \emph{A}, \emph{B} and \emph{C} for the two implementations of the
 \begin{figure}[htb]
     \centering
     % \includegraphics{<+file+>}
+    \rule{4cm}{4cm}
     \caption{Execution time of the matrix multiplication for size $4096*406$ doubles.}
     \label{fig:matrix-res}
 \end{figure}
