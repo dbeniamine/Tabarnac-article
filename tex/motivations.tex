@@ -33,30 +33,36 @@ second implementation is a bloc matrix multiplication (not recursive).
 \begin{figure}[htb]
     \centering
     \subfigure[Structure A (naive)]{
-        \includegraphics[width=.45\linewidth] {mat_A_modulo}
-        \label{fig:matrix-behaviour-A-naive}
+        \includegraphics[height=.25\textheight] {mat_A_modulo}
+        \label{fig:matrix-A-naive}
     }
     \subfigure[Structure B (naive)]{
-        \includegraphics[width=.45\linewidth] {mat_B_modulo}
-        \label{fig:matrix-behaviour-C-naive}
-    }
-    \\
-    \subfigure[Structure A (bloc)]{
-        \includegraphics[width=.45\linewidth] {mat_A_bloc}
-        \label{fig:matrix-behaviour-A-bloc}
-    }
-    \subfigure[Structure B (bloc)]{
-        \includegraphics[width=.45\linewidth] {mat_A_bloc}
-        \label{fig:matrix-behaviour-C-bloc}
+        \includegraphics[height=.25\textheight] {mat_C_modulo}
+        \label{fig:matrix-C-naive}
     }
     \caption{By thread access distribution on data structures A and B for the
-    two matrix multiplications (naive and bloc). Each plots shows the number of access
+    naive matrix multiplication. Each plots shows the number of access
 depending on the page number (inside the structure) for each thread.}
-    \label{fig:matrix-behaviour}
+    \label{fig:matrix-naive}
+\end{figure}
+\begin{figure}[htb]
+    \centering
+    \subfigure[Structure A (bloc)]{
+        \includegraphics[height=.25\textheight] {mat_A_bloc}
+        \label{fig:matrix-A-bloc}
+    }
+    \subfigure[Structure B (bloc)]{
+        \includegraphics[height=.25\textheight] {mat_C_bloc}
+        \label{fig:matrix-C-bloc}
+    }
+    \caption{By thread access distribution on data structures A and B for the
+    bloc matrix multiplication.}
+    \label{fig:matrix-bloc}
 \end{figure}
 
-Figure \ref{fig:matrix-behaviour} show the thread distribution over the
-structures \emph{A}, \emph{B} and \emph{C} for the two implementations of the
+Figure \ref{fig:matrix-naive} show the thread distribution over the
+structures \emph{A}, \emph{B} and \emph{C} for the naive algorithm and figure
+\ref{fig:matrix-bloc} for the bloc version.
 \DB{explain the figures}
 \begin{itemize}
     \item part of \TABARNAC's output
