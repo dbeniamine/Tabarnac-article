@@ -6,15 +6,34 @@
 \begin{itemize}
     \item numalize: Pin \cite{Luk05Pin}
     \item get struct info lib elf etc.
-    \item Visu R, explain main ideas
+        \begin{itemize}
+            \item Stack (not array in stack)
+            \item Static allocs (.data section)
+        \end{itemize}
+    \item Replace malloc => heap
+    \item Debug flags => malloc names
+    \item First output 3 csv (stack (useless ?) struct (name,addr,size),
+        pages)
+    \item Filter smaller struct than pg\_size
+    \item Visu R markdown, explain main ideas
 \end{itemize}
 \subsection{Visualization}
 
 \begin{itemize}
     \item Easy to follow html page with hints (give an example url ?)
     \item Lstopo graph of the machine
+    \item Filter ``unused structs'' + almost unused structs
     \item Structure size
     \item Access type R/W by struc / global
     \item Access Distrubtion by thread and by struct
     \item First touch
+\end{itemize}
+
+\subsection{Analysis overhead}
+\label{sec:expe-overhead}
+\begin{itemize}
+    \item NPB class B, overhead for each
+    \item Note can run with (relatively) small  examples
+    \item No overhead at runtime
+    \item Run once (or twice) optimize for each run
 \end{itemize}
