@@ -2,7 +2,7 @@
 \section{Expriments}
 \label{sec:expe}
 In this section, we show how to analyse and optimize NUMA memory behaviour using
-\TABARNAC through two benchmarks. Finally we discuss our tool overhead.
+\TABARNAC~ through two benchmarks. Finally we discuss our tool overhead.
 \subsection{Setup}
 \label{sec:expe-setup}
 machines used, becnhmarks, tools, mechanism used \ldots
@@ -36,15 +36,15 @@ mainly three arrays.
     \centering
 
     \subfigure[\texttt{key\_buff2}]{
-        \includegraphics[height=.25\textheight]  {is_w_kb2_orig}
+        \includegraphics[height=.27\textheight]  {is_w_kb2_orig}
         \label{fig:is-behaviour-orig-kb2}
     }
     \subfigure[\texttt{key\_array}]{
-        \includegraphics[height=.25\textheight]  {is_w_kba_orig}
+        \includegraphics[height=.27\textheight]  {is_w_kba_orig}
         \label{fig:is-behaviour-orig-kba}
     }
     \subfigure[\texttt{key\_buff1}]{
-        \includegraphics[height=.25\textheight]  {is_w_kb1_orig}
+        \includegraphics[height=.27\textheight]  {is_w_kb1_orig}
         \label{fig:is-behaviour-orig-kb1}
     }
     \caption{Original memory access distribution for the main structure of
@@ -62,12 +62,12 @@ tools to do efficient data/thread mapping on it. However \texttt{key\_buff2}
 but the most interesting access distribution is the one of \texttt{key\_buff1}
 (fig \ref{fig:is-behaviour-orig-kb1}). Indeed the access repartition seems to
 follow a nice Gaussian, which means a few pages are more used than all the
-others. Finding a good numa balance with such a distribution is difficult and
+others. Finding a good NUMA balance with such a distribution is difficult and
 almost impossible for automated tools.
 
 
 \lstinputlisting[caption=\emph{IS} code responsible for the
-Guassain distribution of access, label=lst:is]{code/is.c}
+Gaussain distribution of access, label=lst:is]{code/is.c}
 
 Using this knowledge, we can look at \emph{IS} code and identify the source of the
 Gaussian pattern, indeed all the access to \texttt{key\_buff1} are linear
@@ -93,16 +93,16 @@ shown in listing \ref{lst:is-modif}.
     \centering
 
     \subfigure[\texttt{key\_buff2}]{
-        \includegraphics[height=.25\textheight] {is_w_kb2_modif}
+        \includegraphics[height=.27\textheight] {is_w_kb2_modif}
         \label{fig:is-behaviour-modif-kb2}
     }
     \subfigure[\texttt{key\_array}]{
-        \includegraphics[height=.25\textheight] {is_w_kba_modif}
+        \includegraphics[height=.27\textheight] {is_w_kba_modif}
         \label{fig:is-behaviour-modif-kba}
     }
 
     \subfigure[\texttt{key\_buff1}]{
-        \includegraphics[height=.25\textheight] {is_w_kb1_modif}
+        \includegraphics[height=.27\textheight] {is_w_kb1_modif}
         \label{fig:is-behaviour-modif-kb1}
     }
     \caption{Memory access distribution for the main structure of
@@ -111,15 +111,24 @@ shown in listing \ref{lst:is-modif}.
 \end{figure}
 
 With this extremely simple code modification we obtain the access distribution
-shown in figure \ref{fig:is-behaviour-modif}. We can see that not only it fixed
-the distribution of \texttt{key\_buff1} but \texttt{key\_buff2} have also a
-better exclusivity now.
-\DB{developp: gaussian is smoother blalbla}
+shown in figure \ref{fig:is-behaviour-modif}. We can see that the Gaussian
+access of \texttt{key\_buff1} is now distributed over the threads. Each page
+of this structure is almost used by only one thread. Moreover
+\texttt{key\_buff2} access distribution have also changed, we can see that
+each thread use mostly one part of the array.
 
-We then compare the execution time of the three distribution: \emph{Dynamic},
-\emph{Cyclic} with a step of $1$ and \emph{Tabarnac}: cyclic with the
-distribution proposed bot with and without numa balancing enabled.
+The main point of our code modification is to improve the affinity between
+thread and memory, therefore we need to pin each thread on a core to keep them
+near to their data. To do so we use \texttt{GOMP\_CPU\_AFFINITY}. \TABARNAC~
+also shows us that the first touch is always done by the thread actually using
+the data for IS, therefore we do not need to map the data on NUMA nodes.
+\DB{need to put a plot ?}
 
+We then compare the execution time of \emph{IS.D} for the three scheduling
+methods \emph{Dynamic}, \emph{Cyclic} with a step of $1$ and \TABARNAC:
+cyclic with the distribution proposed. For each method we compare the
+execution time on the bare operation system \emph{OS}, the execution time with
+interleave policy \emph{interleave} and with thread affinity \emph{affinity}.
 
 \begin{figure}[htpb]
     \centering
@@ -128,14 +137,31 @@ distribution proposed bot with and without numa balancing enabled.
 \label{fig:is-res}
 \end{figure}
 
-Figure\ref{fig:is-res} show the execution time \emph{IS} in class D for each
-configuration. We can see that our optimization provides the best results for
-both configuration.  Moreover \emph{numa balancing} is not efficient for
-\emph{IS}. This behaviour seems to come from the fact that the first touch is
-almost always done by the thread actually using the data, therefore the gain
-provided by \emph{numa balancng} is not enough to compensate the runtime
-overhead.
-\DB{Rewritte explain cyclic improvements, discuss interleave}
+Figure\ref{fig:is-res} show the speedup of \emph{IS} in class D compared to
+the default version (\emph{dynamic}) for each scheduling method, and for each
+optimization technique. The first thing to notice is that with the
+\emph{dynamic} scheduling, both \emph{interleave} and \emph{affinity} slows
+the application down. Indeed simple optimization policy are hardly efficient
+for non NUMA conscious code.
+
+The cyclic policy, proposed in the original code already provides $13\%$
+speedup, while in the developers clearly explain that it should be slower than
+dynamic. We can see that if interleave is not suitable for this method, adding
+some affinity provide one more percent of speedup. Indeed with the cyclic
+distribution, if all threads are still using all the structure
+\texttt{key\_buff1}, each thread have a more regular pattern than with the
+dynamic distribution resulting on a better memory bandwith.
+
+The \TABARNAC~ version provides already $17\%$ speedup with the
+\emph{OS} version. This version only improves data locality without providing
+any sort of mapping, still memory and caches are designed to be more efficient
+for such accesses. For this scheduling method, the \emph{interleave} policy is
+irrelevant as each thread works on contiguous chunks of each structures.
+Finally, adding some affinity to keep thread as close as possible to their
+data allows us to get more than $20\%$ speedup.
+
+\DB{small cncl: 1line opti + 1 line aff => $20\% $ speedup}
+
 \subsubsection{Stream Cluster}
 same methodo as above
 

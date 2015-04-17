@@ -33,11 +33,11 @@ second implementation is a bloc matrix multiplication (not recursive).
 \begin{figure}[htb]
     \centering
     \subfigure[Structure A (naive)]{
-        \includegraphics[height=.25\textheight] {mat_A_modulo}
+        \includegraphics[height=.27\textheight] {mat_A_modulo}
         \label{fig:matrix-A-naive}
     }
     \subfigure[Structure B (naive)]{
-        \includegraphics[height=.25\textheight] {mat_C_modulo}
+        \includegraphics[height=.27\textheight] {mat_C_modulo}
         \label{fig:matrix-C-naive}
     }
     \caption{By thread access distribution on data structures A and B for the
@@ -48,11 +48,11 @@ depending on the page number (inside the structure) for each thread.}
 \begin{figure}[htb]
     \centering
     \subfigure[Structure A (bloc)]{
-        \includegraphics[height=.25\textheight] {mat_A_bloc}
+        \includegraphics[height=.27\textheight] {mat_A_bloc}
         \label{fig:matrix-A-bloc}
     }
     \subfigure[Structure B (bloc)]{
-        \includegraphics[height=.25\textheight] {mat_C_bloc}
+        \includegraphics[height=.27\textheight] {mat_C_bloc}
         \label{fig:matrix-C-bloc}
     }
     \caption{By thread access distribution on data structures A and B for the
@@ -86,7 +86,7 @@ Results:
     \item Big improvements for naive: better than every other tools
     \item Not that much for Bloc: algo designed to fit in cache figure
         \ref{fig:matrix-res}
-    \item Cncl: Tabarnac will help you modify code to do something like naive
+    \item Cncl: \TABARNAC~ will help you modify code to do something like naive
         -> bloc if possible or at least to improve your NUMA mapping as for
         naive.
 \end{itemize}
