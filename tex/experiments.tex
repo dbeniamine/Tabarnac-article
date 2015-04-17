@@ -124,8 +124,7 @@ distribution proposed bot with and without numa balancing enabled.
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=.9\linewidth]{is_exectime.pdf}
-    \caption{Execution time of \emph{IS} in class D under the different
-configurations.}
+    \caption{Speedup for \emph{IS} in class D compared to the default}
 \label{fig:is-res}
 \end{figure}
 
@@ -136,8 +135,7 @@ both configuration.  Moreover \emph{numa balancing} is not efficient for
 almost always done by the thread actually using the data, therefore the gain
 provided by \emph{numa balancng} is not enough to compensate the runtime
 overhead.
-\DB{Evaluate the parallel time / seq time to discuss the gain}
-
+\DB{Rewritte explain cyclic improvements, discuss interleave}
 \subsubsection{Stream Cluster}
 same methodo as above
 
