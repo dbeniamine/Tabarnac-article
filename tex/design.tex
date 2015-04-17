@@ -16,20 +16,66 @@
     \item First output 3 csv (stack (useless ?) struct (name,addr,size),
         pages)
     \item Filter smaller struct than pg\_size
+    \item Dependencies:
+        \begin{itemize}
+            \item libelfg0: static alloc
+            \item hwloc for topology vizualisation
+            \item R for plots, install missing library automatically
+        \end{itemize}
+    \item Three execution modes:
+        \begin{itemize}
+            \item default; run and plot
+            \item -r: run only (only dependency)
+            \item -p: plot only (to customize plots)
+        \end{itemize}
     \item Visu R markdown, explain main ideas
 \end{itemize}
 \subsection{Visualization}
 \label{sec:design-visu}
 
-\begin{itemize}
-    \item Easy to follow html page with hints (give an example url ?)
-    \item Lstopo graph of the machine
-    \item Filter ``unused structs'' + almost unused structs
-    \item Structure size
-    \item Access type R/W by struc / global
-    \item Access Distrubtion by thread and by struct
-    \item First touch
-\end{itemize}
+Providing an easy to read visualization of memory trace is a challenge. To
+avoid the user the pain to deal with huge traces, we have opted for an
+assisted visualization. Once the analyze phase is done, \TABARNAC~ will
+generate a html page providing a summary of the trace through several plots.
+This html page is generated using R markdown, which allows us to interleave
+plots with explanations. Before each plot we explain how to read it, what
+usual issues it can help to understand and we give hints on how to fix them.
+
+The visualization starts with a small introduction reminding the main
+principles while developing for NUMA machines, then it shows the analysis
+machine's topology using hwloc\cite{Broquedis10hwloc}.
+
+Then the visualization focuses on data structures usage. Some structures might
+be ignored for two reason: either no access have been detected during the
+analysis, which happens for external libraries structures, or less than one
+access over ten thousands happens on them. This is done to make the output
+more readable however it is possible to ask \TABARNAC~ not to ignore
+structures in the second case.
+
+The first series of plots aims at giving informations concerning the relative
+importance of data structures. It shows the sizes of each data structure and the
+number reed and writes done by each thread on each structure. The global
+read/write patter is also displayed. These plots gives a general idea of the
+structures use by threads, it allows also to identify master/slave patterns.
+Moreover knowing the read/write behaviour is very useful as it determines the
+possible optimization. For instance structures written only at initialization
+(or very rarely) can be (relatively) easily duplicated in a way that each NUMA
+node works on a local copy.
+\DB{Maybe to much details here ?}
+
+The second series of plots is probably the most important one, it show for
+each thread and each structure the distribution of accesses inside the
+structure. It gives an easy way to understand data sharing between threads and
+structures usage. The plots presented in sections \ref{sec:motiv-mat} and
+\ref{sec:exp-analysis} comes from this section. They can be used either to
+find identify inefficient memory usage or to determine the best NUMA mapping
+policy.
+
+Finally \TABARNAC provides a plot showing for each page of each structure
+which thread was responsible for the first touch. This information is quite
+relevant as the default policy for Linux is to map a page as close as possible
+to the first thread accessing it. One thread responsible of all the first
+touch of a structure is often synonym of poor performances.
 
 \subsection{Analysis overhead}
 \label{sec:expe-overhead}
