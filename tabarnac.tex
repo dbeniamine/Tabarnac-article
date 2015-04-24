@@ -1,6 +1,6 @@
 %!TEX encoding=UTF-8 Unicode
 
-\documentclass[conference]{sty/IEEEtran}
+\documentclass[10pt,conference]{sty/IEEEtran}
 % Add the compsoc option for Computer Society conferences.
 %
 % If IEEEtran.cls has not been installed into the LaTeX system files,
@@ -84,7 +84,7 @@
 % graphicx was written by David Carlisle and Sebastian Rahtz. It is
 % required if you want graphics, photos, etc. graphicx.sty is already
 % installed on most LaTeX systems. The latest version and documentation can
-% be obtained at: 
+% be obtained at:
 % http://www.ctan.org/tex-archive/macros/latex/required/graphics/
 % Another good source of documentation is "Using Imported Graphics in
 % LaTeX2e" by Keith Reckdahl which can be found as epslatex.ps or
@@ -208,7 +208,7 @@
 % IEEEtran.cls handling of captions and this will result in nonIEEE style
 % figure/table captions. To prevent this problem, be sure and preload
 % caption.sty with its "caption=false" package option. This is will preserve
-% IEEEtran.cls handing of captions. Version 1.3 (2005/06/28) and later 
+% IEEEtran.cls handing of captions. Version 1.3 (2005/06/28) and later
 % (recommended due to many improvements over 1.2) of subfig.sty supports
 % the caption=false option directly:
 %\usepackage[font=footnotesize]{subfig}
@@ -306,7 +306,7 @@ bookmarksopen=true}
     captionpos=b,%
     breaklines=true
     stepnumber=2,%
-    numbers=left,%  
+    numbers=left,%
     tabsize=2,%
     escapechar=|,%
 %    frame=tb,%
@@ -319,8 +319,12 @@ bookmarksopen=true}
 \newcommand{\itodo}[1]{\todo[inline]{#1}}
 \newcommand{\DB}[1]{\itodo{\emph{David:} ``#1''}}
 \newcommand{\MD}[1]{\itodo{\emph{Matthias:} ``#1''}}
-\title{TABARNAC: Tools for Analyzing the Behaviour of Applications Running on
+
+
+\title{TABARNAC: Tools for Analyzing the Behavior of Applications Running on
 NUMA ArChitectures}
+% my suggestion:
+\title{TABARNAC: Identifying and Solving Memory Access Issues on NUMA Architectures}
 
 % author names and affiliations
 % use a multiple column layout for up to three different
@@ -355,16 +359,16 @@ the quality of the memory access pattern of the original application. A code
 written without considering memory performances at all might not benefit from
 them. Moreover, automatic mappings tools needs a warming time to detect the
 best mapping, during these phase, opportunities for optimization are lost. A
-deep understanding of the memory behaviour can help defining the right mapping
+deep understanding of the memory behavior can help defining the right mapping
 statically therefore avoiding this warming period.
 
-In this paper, we present TABARNAC a tool for analyzing memory behaviour. One
+In this paper, we present TABARNAC a tool for analyzing memory behavior. One
 of the main contribution of TABARNAC is to provide precises plots allowing the
 user to easily reach a deep understanding of the memory access distribution
 and hints on how to modify code / do manual mapping to improve performances.
 Using this tool, we explain why some application does not benefit from data
 and thread mapping. Moreover we propose some simple code modifications to
-improve their memory behaviour and we propose a manual data and thread
+improve their memory behavior and we propose a manual data and thread
 mapping.  Finally we evaluate the impact of these optimization with and
 without thread and data mapping comparing our manual mapping to automated
 tools.
