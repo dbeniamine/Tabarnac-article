@@ -69,13 +69,13 @@ almost impossible for automated tools.
 
 
 \lstinputlisting[caption=\emph{IS} code responsible for the
-Gaussain distribution of access, label=lst:is]{code/is.c}
+Gaussian distribution of memory accesses \itodo{remove comment at top?}, label=lst:is]{code/is.c}
 
 Using this knowledge, we can look at \emph{IS} code and identify the source of the
 Gaussian pattern, indeed all the access to \texttt{key\_buff1} are linear
 excepts the one shown in listing \ref{lst:is}\footnote{
-    The code have been slightly modified to make it more readable. In the
-    original version the arrays \texttt{key\_buff1} (resp \texttt{key\_buff2})
+    The code has been slightly modified to make it more readable. In the
+    original version, the arrays \texttt{key\_buff1} (resp \texttt{key\_buff2})
     are accessed via a generic pointer called \texttt{key\_buff\_ptr} (resp
     \texttt{key\_buff\_ptr2}). More over some comments have been removed as
     they are not necessary here.
