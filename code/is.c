@@ -1,7 +1,7 @@
-/*  Now, buckets are sorted.  We only need to sort keys inside
-    each bucket, which can be done in parallel.  Because the distribution
-    of the number of keys in the buckets is Gaussian, the use of
-    a dynamic schedule should improve load balance, thus, performance     */
+/* Because the distribution of the number 
+   of keys in the buckets is Gaussian,
+   the use of a dynamic schedule should
+   improve load balance, thus, performance */
 #ifdef SCHED_CYCLIC
 |\label{lst:is-cyclic}|#pragma omp for schedule(static,1)
 #else
