@@ -3,7 +3,7 @@
 *.blg
 *.log
 *.out
-*.pdf
+tabarnac.pdf
 *.tdo
 *.tex.latexmain
 *.fdb_latexmk
