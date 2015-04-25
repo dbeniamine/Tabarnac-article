@@ -3,8 +3,11 @@
 
 \section{Expriments}
 \label{sec:expe}
-In this section, we show how to analyse and optimize NUMA memory behaviour using
-\TABARNAC~ through two benchmarks. Finally we discuss our tool overhead.
+
+In this section, we analyze several benchmarks using \TABARNAC, we discuss
+their memory access distribution. Using this analysis we propose some
+optimizations and we evaluate them by comparing it to automatic data mapping
+tools.
 
 \subsection{Setup}
 \label{sec:expe-setup}
@@ -23,7 +26,7 @@ In this section, we show how to analyse and optimize NUMA memory behaviour using
             \hline
         \end{tabular}
     \caption{Turing hardware}
-    \label{tab:machines}
+    \label{tab:turing}
 \end{table}
 
 All the experiment were run on a NUMA machine composed of $4$ Intel Xeon X7550
@@ -78,7 +81,7 @@ pattern than \texttt{C}.
 \end{figure}
 
 For the naive matrix multiplication, as we can see in
-\ref{figure:matrix-naive}, all the pages of both structures are used by every
+\ref{fig:matrix-naive}, all the pages of both structures are used by every
 thread. Therefore, when we execute this code on a NUMA machine, wherever we
 map the page, all the nodes but one will trigger remote memory accesses. We
 can improve there are several ways to improve this behaviour: an easy solution
@@ -103,13 +106,13 @@ the algorithm to improve the locality, which mean using the bloc algorithm.
     \label{fig:matrix-bloc}
 \end{figure}
 
-As we can see in figure \ref{matrix-bloc}, the bloc algorithm improve the page
+As we can see in figure \ref{fig:matrix-bloc}, the bloc algorithm improve the page
 locality compared to the naive one. In our algorithm, structures \texttt{B}
 and \texttt{C} are not divided the same way, resulting in two different
 patterns. For structure \texttt{B} (fig \ref{fig:matrix-B-bloc}), the pages
 are interleave, threads $T0$ and $T1$ works on the same pages while threads
-$T2$ and $T3$ works on another set of pages. Structures \texttt{B} (and
-\texttt{A}, fig \ref{fig:matrix-A-bloc}) are cut in two parts, the first half
+$T2$ and $T3$ works on another set of pages. Structures \texttt{C} (and
+\texttt{A}, fig \ref{fig:matrix-C-bloc}) are cut in two parts, the first half
 is shared by thread $T0$ and $T2$ while the two others works on the second
 half. This behaviour provides strong page exclusivity and is therefore more
 suitable for NUMA machines. We can easily put each subpart of \texttt{C} (and
@@ -118,30 +121,30 @@ suitable for NUMA machines. We can easily put each subpart of \texttt{C} (and
 
 To test the efficiency of the proposed modification, we compare the execution
 time of our modified code (Tabarnac) to the  original code, run without any
-improvements (base) and the same code run with full interleave using
-\texttt{numactl} (Interleave) and executed with numa balancing enable in the
+improvements (base) and the same code executed with numa balancing enable in the
 kernel (Numa Balancing).
 \DB{ugly, rewritte needed}
 
-\DB{Todo: use speedup, add interleave}
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=.9\linewidth]{mat_time}
+    \includegraphics[width=.8\linewidth]{mat_time}
     \caption{Execution time of the matrix multiplication for size $4096*406$ doubles.}
     \label{fig:matrix-res}
 \end{figure}
 
-Figure \ref{fig:matrix-res} show the experimental results:
+Figure \ref{fig:matrix-res} show the experimental results, we can see that for
+the naive algorithm, Numa Balancing is already efficient and results in $40\%$
+speedup. Still using the interleave policy avoid the runtime overhead, and
+allow us to obtain almost $50\%$ speedup. For the bloc version, all runtimes
+provides the same execution time as this algorithm is designed to fit in the
+cache.
 
-\begin{itemize}
-    \item Big improvements for naive: better than every other tools
-    \item Not that much for Bloc: algo designed to fit in cache figure
-        \ref{fig:matrix-res}
-    \item Cncl: \TABARNAC~ will help you modify code to do something like naive
-        -> bloc if possible or at least to improve your NUMA mapping as for
-        naive.
-\end{itemize}
-
+Although this example is more a school case than a real experiment it shows
+how \TABARNAC~ can help improving an application by highlighting inefficient
+memory behaviours. This knowledge can be used two different ways, and always
+results on significant improvement: either you can do some algorithmic
+modification (here going from the naive to the bloc version), or at least you
+can choose the best NUMA page mapping policy.
 
 \subsubsection{IS}
 \label{sec:exp-is}
@@ -242,7 +245,6 @@ thread and memory, therefore we need to pin each thread on a core to keep them
 near to their data. To do so we use \texttt{GOMP\_CPU\_AFFINITY}. \TABARNAC~
 also shows us that the first touch is always done by the thread actually using
 the data for IS, therefore we do not need to map the data on NUMA nodes.
-\DB{need to put a plot ?}
 
 We then compare the execution time of \emph{IS.D} for the three scheduling
 methods \emph{Dynamic}, \emph{Cyclic} with a step of $1$ and \TABARNAC:
