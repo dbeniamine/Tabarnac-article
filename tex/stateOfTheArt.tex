@@ -3,16 +3,60 @@
 
 \section{Related Work}
 \label{sec:soa}
+
+This section presents an overview of related work in the area of data mapping mechanisms and memory access profiling.
+
+\subsection{Data Mapping Mechanisms}
+\label{sec:soa-mapping}
+
+Data mapping mechanisms can be roughly classified into two categories, mechanisms that have information about the memory access before the application starts executing, and mechanisms without prior information that need to determine the memory access behavior during execution of the parallel application.
+Mechanisms that have prior information have the advantage of potentially higher improvements compared to mechanisms without prior information, as the collection of information during runtime has a potentially high overhead.
+Furthermore, opportunities for improvements are lost while information about the memory access pattern is collected.
+On the other hand, if the memory access behavior is analyzed during application execution, no prior analysis is required.
+Figure~\ref{fig:timeline} shows a comparison of the operation of these two types of applications with a parallel application consisting of four threads.
+
 \begin{figure}[!b]
-    \includegraphics[width=\linewidth]{img/timeline}
+    % \includegraphics[width=\linewidth]{img/timeline}
+    \input{img/timeline}
+    \caption{Comparison of data mapping mechanisms with and without prior information about the memory access behavior of a parallel application consisting of four threads.}
+    \label{fig:timeline}
 \end{figure}
 
-\MD{classify mechanisms}
+\subsubsection{Mechanisms Without Prior Information}
 
-\subsection{Mapping}
-\label{sec:soa-mapping}
-\DB{If you can try writing something here, I'll do the next subsection}
-\subsection{Profiling}
+% kernel old
+Most mechanisms that have no prior information about the memory access behavior operate on the operating system.
+Traditionally, operating systems have used the \emph{first-touch}~\cite{Marchetti1995}, \emph{next-touch}~\cite{Lof2005} and \emph{interleave}~\cite{Kleen2004} policies to map memory pages to NUMA nodes.
+The first-touch policy~\cite{Marchetti1995}, which is the default policy in most current operating systems (such as Linux), allocates a page on the NUMA node that performs the first memory access to it.
+The page is never migrated between nodes.
+First-touch requires that the programmer takes care of which thread accesses data first.
+In some circumstances, this policy can lead to reduced performance, for example when a single thread initializes a large part of the memory and places most pages on a single node.
+In next-touch~\cite{Lof2005}, each page is periodically migrated to the NUMA node that performs the next access to a page.
+This policy can lead to excessive page migrations if the memory access behavior is changing fast.
+The interleave policy (which is available in Linux via the \texttt{numactl} tool~\cite{Kleen2004} for example) distributes memory pages equally among all NUMA nodes, but does not take any locality of memory accesses into account.
+
+Newer developments in operating systems focus on refining the data mapping during execution of parallel applications, using online profiling of memory accesses to guide migrations decisions.
+Recent versions of the Linux kernel (starting with version 3.8) contain the NUMA Balancing technique~\cite{Corbet}, which uses page faults during execution to determine if a page should be migrated to a different NUMA node. To increase the accuracy of this mechanism, additional page faults are inserted during execution.
+A similar proposal is the AutoNUMA approach~\cite{Corbet2012}.
+Neither mechanism keeps an access history, eliminating the need to store the access behavior, but also making them susceptible to excessive migrations.
+Other proposals keep such an access history.
+Dashti et al.~\cite{Dashti2013} introduced the Carrefour mechanism, which uses instruction-based sampling~(IBS) available in recent AMD architectures~\cite{AMD2012} to detect the memory access behavior.
+kMAF~\cite{Diener2014} is a similar mechanism that uses page faults to analyze the behavior.
+
+% hardware
+% marathe
+
+\subsubsection{Mechanisms With Prior Information}
+
+Most mechanisms with prior information about memory access behavior perform mapping in user space, on the compiler or runtime library level.
+Piccoli et al.~\cite{Piccoli2014} propose a compiler extension that analyzes the memory access pattern of loops that are executed in parallel and use this information to migrate pages before the loop is entered.
+Nikolopoulos et al.~\cite{Nikolopoulos2000a,Nikolopoulos2000} present an integrated compiler/OS-based data mapping mechanism based on a custom OpenMP compiler and IRIX kernel extensions. The compiler inserts instrumentation code to identify access patterns to shared memory areas, which are used to guide migration decisions.
+ForestGOMP~\cite{Broquedis2010a} requires source code annotations to identify memory access behavior and is limited to the OpenMP library.
+
+Libraries that support NUMA-aware memory allocation include libnuma~\cite{Kleen2004} and MAi~\cite{Ribeiro2009}. With these libraries, data structures can be allocated according to the specification of the programmer, such as on a particular NUMA node, or with an interleave policy. These techniques can achieve large improvements, but place the burden of the mapping on the programmer, who has to determine the best placement by hand. An evolution of MAi, the Minas framework~\cite{Ribeiro2010}, optionally uses a source code preprocessor to determine data mapping policies for arrays. Previous research also uses memory access traces to perform data mapping~\cite{Diener2015,Marathe2010,Bolosky1992}. These can be useful to determine the maximum gains that can be achieved with mapping policies, but are not applicable in general due to their substantial overhead and the fact that the access behavior might change with different input data and different numbers of threads, among others.
+
+
+\subsection{Memory Access Profiling}
 \label{sec:soa-profiling}
 
 \begin{itemize}
@@ -30,6 +74,8 @@
         no patterns \cite{Tao01Visualizing}
 \end{itemize}
 
+
+\subsection{Summary?}
 
 \MD{mechanisms with prior information have highest potential for improvements, but currently:
 - lack of information about memory access behavior
