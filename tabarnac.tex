@@ -289,13 +289,14 @@
 
 \usepackage{hyperref}
 \hypersetup{
-    backref=true, %permet d'ajouter des liens dans...
-    pagebackref=true,%...les bibliographies
-    colorlinks=true, %colore les liens
-    breaklinks=true, %permet le retour à la ligne dans les liens trop longs
-    urlcolor= blue, %couleur des hyperliens
-    linkcolor= black, %couleur des liens internes
-    bookmarks=true, %créé des signets pour Acrobat
+    % backref=true, %permet d'ajouter des liens dans...
+    % % pagebackref=true,%...les bibliographies
+    % colorlinks=true, %colore les liens
+    % breaklinks=true, %permet le retour à la ligne dans les liens trop longs
+    % urlcolor= blue, %couleur des hyperliens
+    % linkcolor= black, %couleur des liens internes
+    hidelinks=true,
+    % bookmarks=true, %créé des signets pour Acrobat
 bookmarksopen=true}
 
 \usepackage{todonotes}
@@ -315,6 +316,7 @@ bookmarksopen=true}
     numbersep=2.5pt,%
 }
 %\captionsetup[lstlisting]{ margin=3pt }
+\usetikzlibrary{decorations.pathreplacing}
 
 \newcommand{\TABARNAC}{\emph{TABARNAC}}
 \newcommand{\Input}[1]{\input{./tex/#1}}
@@ -332,16 +334,19 @@ NUMA ArChitectures}
 % use a multiple column layout for up to three different
 % affiliations
 
-\author{\IEEEauthorblockN{David Beniamine\\ and Guillaume Huard}
-\IEEEauthorblockA{Univ. Grenoble Alpes, LIG, F-38000 Grenoble, France \\
-CNRS, LIG, F-38000 Grenoble, France \\
-Inria \\
-Email: $\{$David.Beniamine,Guillaume.Huard$\}$@Imag.fr}
-\and
-\IEEEauthorblockN{Matthias Diener\\ and Philippe O. A. Navaux}
-\IEEEauthorblockA{Informatics Institute -- UFRGS \\
-Email: $\{$mdiener,navaux$\}$@inf.ufrgs.br}
-}
+
+% DOUBLE-BLIND!
+\author{}
+% \author{\IEEEauthorblockN{David Beniamine\\ and Guillaume Huard}
+% \IEEEauthorblockA{Univ. Grenoble Alpes, LIG, F-38000 Grenoble, France \\
+% CNRS, LIG, F-38000 Grenoble, France \\
+% Inria \\
+% Email: $\{$David.Beniamine,Guillaume.Huard$\}$@Imag.fr}
+% \and
+% \IEEEauthorblockN{Matthias Diener\\ and Philippe O. A. Navaux}
+% \IEEEauthorblockA{Informatics Institute -- UFRGS \\
+% Email: $\{$mdiener,navaux$\}$@inf.ufrgs.br}
+% }
 
 
 
@@ -408,8 +413,7 @@ tools.
 \Input{experiments.tex}
 \Input{conclusions.tex}
 
-\bibliography{biblio.bib}
+\bibliography{biblio,library}
 \bibliographystyle{./sty/IEEEtran}
 
 \end{document}
-
