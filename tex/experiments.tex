@@ -2,7 +2,7 @@
 %!TEX root=../tabarnac.tex
 
 \section{Methodology of the Evaluation}
-\label{sec:expe}
+\label{sec:metho}
 
 This section briefly discusses our evaluation methodology of \TABARNAC.
 We present the hardware architecture and the applications that wil be used in the analysis.
@@ -40,7 +40,8 @@ times. Each point represents the arithmetic mean of all runs.
 
 \subsection{Applications}
 
-We evaluate the following applications with \TABARNAC: a \emph{matrix multiplication}, \emph{IS} and \emph{Ondes3D}.
+We evaluate the following applications with \TABARNAC: a \emph{matrix multiplication}, the \emph{IS} benchmark and \emph{Ondes3D}.
+They were chosen to demonstrate different memory access behaviors and ways to improve them.
 
 The \emph{matrix multiplication} is a well-known algorithm that is used to verify the accuracy of \TABARNAC, as well as to discuss the performance improvements that can be achieved.
 \emph{IS} is a benchmark from the OpenMP implementation of the NAS Parallel Benchmark suite~(NPB)~\cite{Jin1999}. IS sorts a set of integer numbers using a bucket sort algorithm.
@@ -49,7 +50,7 @@ The \emph{matrix multiplication} is a well-known algorithm that is used to verif
 All applications were compiled with \texttt{gcc}, version 4.6.3, with the \texttt{-O2} optimization flag.
 Due to space restrictions, we show the characterization of the applications with 4 threads.
 The performance evaluation is performed with 64 threads, which is the maximum number of threads that our evaluation machine can execute in parallel.
-\itodo{input sizes}
+\itodo{input sizes, memory usage}
 
 \section{Analysis and Performance Results}
 \label{sec:expe-analysis}
@@ -337,6 +338,6 @@ the application down.
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=.7\linewidth]{macro3d_exectime}
-    \caption{Speedup for \emph{macro3d} compared to the original application.}
-\label{fig:is-res}
+    \caption{Speedup for \emph{Ondes3D} compared to the original application.}
+\label{fig:ondes-res}
 \end{figure}

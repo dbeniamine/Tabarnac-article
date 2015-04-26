@@ -4,38 +4,44 @@
 \section{Intro}
 \label{sec:intro}
 
-Using memory is both trivial and extremely complex: any developer is able to
-access it, but to use it efficiently one needs to take into account several
-performance factors such as cache hierarchy, \emph{NUMA} architecture
-\cite{Drepper07What} \ldots
+Using memory on modern parallel shared-memory systems with a \emph{Non-Uniform Memory Access~(NUMA)} behavior is both trivial and extremely complex: an application is able to access the whole memory with the same interface, but to use it efficiently, the developer needs to take several performance factors into account, such as the cache hierarchy and the structure of the NUMA architecture~\cite{Drepper07What}.
+NUMA machines are characterized by multiple memory controllers per system~\cite{Awasthi2010}, dividing the physical main memory into several NUMA nodes.
+Each node can access its local memory directly, but has to transfer data through an interconnection to access memory on remote nodes.
+Current systems usually have one memory controller per socket, but architectures with multiple controllers per socket are becoming more common~\cite{AMD2012}.
+In NUMA systems, decisions about where to place the data that a parallel application uses have a significant impact on the overall performance, with most policies aiming to improve the \emph{locality} of memory accesses~\cite{Diener2015}.
 
-To ease the developer's work, many efforts were made to provide automated
-tools such as \emph{numactl, kMAF, NUMA balancing \ldots}\DB{more, refs}
-managing memory and thread mapping on the \emph{NUMA} hierarchy. However these
-tools have an overhead as they need to learn the application behavior.
-Furthermore they are not able to change the memory access pattern, therefore
-if the memory behavior is not designed for NUMA machines, they might not
-provide any improvements. For instance if all threads are accessing data from a
-page at the same time, wherever the page is mapped, it will trigger remote
-accesses from all NUMA nodes but one. This kind of issue can only be solved by
-modifying the memory access distribution, such optimization requires a deep
-understanding of the memory behavior.
+The optimal mapping of memory pages to NUMA nodes depends on the way an application accesses the memory.
+To improve the mapping without changing the application, several automatic tools were proposed~\cite{Corbet2012,Corbet,Dashti2013,Diener2014,Piccoli2014}.
+However, these tools have a runtime overhead as they need to learn the application behavior during execution and lose opportunities for improvements during the training.
+Furthermore, they are not able to change the memory access pattern.
+Therefore, if the memory behavior is not designed for NUMA machines, their improvements might be limited.
+For instance, if all threads are accessing data from a memory
+page in the same way, remote memory accesses will be triggered from all NUMA nodes but one, independent of where the page is mapped.
+This kind of issue can only be solved by modifying the memory access behavior in the source code of the application, requiring a deep understanding of the behavior.
 
-There are several tools such as VTune \cite{Reinders05VTune},
-HPCToolkit\cite{Adhianto10HPCTOOLKIT} \DB{more refs? } designed to help the
-developer understanding and improving its applications performances,
-nevertheless most of them relies on CPU counters and provides only few
-informations on the memory behavior. Tracing and the memory behavior is
-complex as (almost) every instruction triggers (at least) one memory access.
+To profile applications, several tools, such as Intel's VTune~\cite{Reinders05VTune} and Performance Counter Monitor~(PCM)~\cite{Intel2012b}, the HPCToolkit~\cite{Adhianto10HPCTOOLKIT}, and AMD's CodeAnalyst~\cite{Drongowski2008}, can be used to help the
+developer understand and improve the performance of parallel applications.
+However, these tools rely on hardware performance counters and can therefore provide only indirect and sampled information about the memory access behavior, through cache miss statistics, for example.
+Tracing the memory behavior is complex as many instructions trigger at least one memory access.
 Although several studies have addressed this problem using sampling
 \cite{Lachaize12MemProf} or limiting the amount of informations stored
-\DB{ref ??}, none of them provide a user friendly visualization or automatic hints
-to help the developer improving it's application.
+\DB{ref ??}, none of them provide a user-friendly visualization or automatic suggestions to help the developer improve the memory access behavior of parallel applications.
 
+add to previous paragraph??:
+Memphis (IBS)~\cite{McCurdy2010}
+Visualization only~\cite{Weyers14Visualization}
 
-In this paper, we present \TABARNAC, a Tool to Analyze Behavior of
-Applications Running on NUMA ArChitectures. This tool allows the user to
-trace, visualize and optimize the NUMA behavior of an application.
-\TABARNAC provides an easy to understand but comprehensive visualization of the trace and
-provides some specific hints to improve the NUMA behavior. In Section~\ref{sec:soa}, we discuss related work, then we present some motivations in
-Section~\ref{sec:motivations}. Section~\ref{sec:design} presents the design and implementation of \TABARNAC. Finally we show some example of performance improvement in Section~\ref{sec:expe} and we give our conclusions in Section~\ref{sec:concl}.
+In this paper, we present \emph{TABARNAC}, a \emph{Tool to Analyze the Behavior of
+Applications Running on NUMA ArChitectures}. This tool allows the user to
+trace, visualize and optimize the memory access behavior of parallel applications.
+\TABARNAC presents an easy to understand but comprehensive visualization of the behavior and
+provides specific suggestions to improve the NUMA behavior.
+Since it is based on memory access traces, \TABARNAC has a very high accuracy while maintaining a reasonable overhead that allows analysis of large applications.
+In an evaluation with several parallel applications, we show that relatively small code changes suggested by \TABARNAC can substantially improve application performance.
+
+The rest of this paper is organized as follows.
+In the next section, we discuss related work and compare it to our proposal.
+Section~\ref{sec:design} presents the design and implementation of \TABARNAC.
+Our evaluation methodology is outlined in Section~\ref{sec:metho}.
+We show example analyses and performance improvements with \TABARNAC using several parallel applications in Section~\ref{sec:expe-analysis}.
+Finally, we present our conclusions and discuss ideas for future work in Section~\ref{sec:concl}.
