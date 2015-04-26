@@ -4,13 +4,25 @@
 \section{Conclusions and Future Work}
 \label{sec:concl}
 
-\begin{itemize}
-    \item New analysis tool
-    \item Methodology
-    \item Big improvements
-    \item blabla
-\end{itemize}
 
-\MD{future work:
-- add fortran programs
-}
+In this study, we have provided a new tool to trace and analyze the memory
+behaviour of NUMA application. Although the analysis time is not negligible,
+\DB{Add an approximative overhead}
+it provide precise informations that can be used for several kind of
+optimization. Furthermore while memory traces are usually hard to analyze as
+they contains a lot of informations, \TABARNAC~ produces an easy to follow
+html page interleaving trace visualization, explanation on how to interpret
+them and optimization hints.
+\DB{Maybe focus more on methodology}
+
+Using this tool, we have been able to provide significant improvements and
+well known benchmarks over the result obtained by automated tools.
+\DB{Add some numbers / develop}
+
+Future work will be done on three directions. First we need to improve the
+structure detection to be able to analyse fortran programs as many
+scientific applications are still written in fortran. Second we have to work
+on automatic detection of ``bad'' memory behaviour (such as all to all sharing)
+to make the analysis even easier to read. Finally, we have to analyze ``real
+life'' applications and work with developers to help them improve their
+programs.

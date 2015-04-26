@@ -3,34 +3,52 @@
 
 \section{Design}
 \label{sec:design}
+
+\TABARNAC~ is divided in two parts: the instrumentation tool and the
+visualization.  In this section we discuss the implementation of both parts.
+
 \subsection{Implementation}
 \label{sec:design-impl}
-\begin{itemize}
-    \item numalize: Pin \cite{Luk05Pin}
-    \item get struct info lib elf etc.
-        \begin{itemize}
-            \item Stack (not array in stack)
-            \item Static allocs (.data section)
-        \end{itemize}
-    \item Replace malloc => heap
-    \item Debug flags => malloc names
-    \item First output 3 csv (stack (useless ?) struct (name,addr,size),
-        pages)
-    \item Filter smaller struct than pg\_size
-    \item Dependencies:
-        \begin{itemize}
-            \item libelfg0: static alloc
-            \item hwloc for topology vizualisation
-            \item R for plots, install missing library automatically
-        \end{itemize}
-    \item Three execution modes:
-        \begin{itemize}
-            \item default; run and plot
-            \item -r: run only (only dependency)
-            \item -p: plot only (to customize plots)
-        \end{itemize}
-    \item Visu R markdown, explain main ideas
-\end{itemize}
+
+The instrumentation is done using a custom Pintool \cite{Luk05Pin}.
+
+Before running the application, our tool retrieve static allocation
+informations using the \texttt{libelfg0} library. Dynamic allocations are
+intercepted using a \texttt{malloc} replacement. If the application is
+compiled with the debug flags, retrieve the structure name from the source
+code. If we can't retrieve a structure name, we called it
+\texttt{AnonymousStruc\#ID}, where $ID$ is a unique identifier for the
+execution, starting at $0$ Finally, each time a thread is created, we compute
+its stack bounds, and create a virtual structures named \texttt{Stack\#N} where
+$N$ is the thread id. Only structure bigger than one page are recorded as our
+analysis granularity is the memory page. The data structure informations (name
+size and address) are not used during the instrumentation, they are only
+printed in a file at the end of the analysis to be used by the visualization
+tool.
+
+During the execution it intercept every memory access and store for each
+memory pages two counters per threads: the number of reads and of writes.
+\DB{Matthias maybe you can complete here}
+
+At the end of the analysis phase we generate to file the first
+\texttt{foo.full.pages.csv} contains the list of page and the number of Read
+and Write per threads. And the second \texttt{foo.structs.csv} contains the
+list of structures with their name, size and start address.
+
+We then call a R-markdown script which will first read the two csv files and
+retrieve the page / data structure mapping then generate the final
+visualization presented in section \ref{sec:design-visu}. We use R-markdown
+for the visualization as it allow us to interleave plots withs plain text
+explanation and optimization hints.
+
+\TABARNAC~ have very few dependencies and can be installed easily. If all the R
+library required to generate the visualization are not present, our tool is
+able to install them automatically. By default \TABARNAC~ generate the memory
+trace and the visualization, but the user can also choose to only generate the
+memory trace or the visualization. This is useful for people who cannot
+install R on the machine used to generate the trace. Moreover it allows the
+user to customize the plots generate by the R script.
+
 \subsection{Visualization}
 \label{sec:design-visu}
 
@@ -67,16 +85,19 @@ node works on a local copy.
 The second series of plots is probably the most important one, it show for
 each thread and each structure the distribution of accesses inside the
 structure. It gives an easy way to understand data sharing between threads and
-structures usage. The plots presented in sections \ref{sec:motiv-mat} and
-\ref{sec:exp-analysis} comes from this section. They can be used either to
+structures usage. The plots presented in sections \ref{sec:exp-mat} and
+\ref{sec:exp-is} comes from this section. They can be used either to
 find identify inefficient memory usage or to determine the best NUMA mapping
 policy.
 
-Finally \TABARNAC provides a plot showing for each page of each structure
-which thread was responsible for the first touch. This information is quite
-relevant as the default policy for Linux is to map a page as close as possible
-to the first thread accessing it. One thread responsible of all the first
-touch of a structure is often synonym of poor performances.
+Finally \TABARNAC~ provides a plot showing for each page of each structure
+which thread was responsible for the first touch (such plot is used in section
+\ref{sec:exp-macro3d}). This information is quite relevant as the default
+policy for Linux is to map a page as close as possible to the first thread
+accessing it. If the first touch distribution doest not fit the actual access
+distribution, the default mapping done by \emph{Linux} might not be efficient.
+To improve that one can either distribute correctly the first touch or do some
+manual data mapping to ensure locality of page during the execution.
 
 \subsection{Analysis overhead}
 \label{sec:expe-overhead}
