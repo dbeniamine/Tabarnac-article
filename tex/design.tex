@@ -117,9 +117,9 @@ manual data mapping to ensure better memory access locality during the execution
     \label{fig:ovh}
 \end{figure}
 
-To evaluate the analysis overhead, we ran all the NAS parallel benchmark in
+To evaluate the analysis overhead, we ran all the NAS Parallel Benchmarks in
 class B with 64 threads on our experimental machine (see section
-\ref{sec:exp-metho}) and compared the original execution time with the
+\ref{sec:metho}) and compared the original execution time with the
 execution time under instrumentation. We can see in figure \ref{fig:ovh} that
 the overhead of the instrumentation is between $10$ and $30\%$. Although it is
 no negligible, we have to consider the fact that often we can instrument
@@ -129,3 +129,4 @@ there is no need to run several times the instrumentation. Finally as our
 analysis is designed to be used during the development phase of the
 application and not by an automated tool during the execution, even $30\%$
 overhead is quite reasonable.
+\itodo{should probably be in the results section}
