@@ -318,9 +318,9 @@ bookmarksopen=true}
 %\captionsetup[lstlisting]{ margin=3pt }
 \usetikzlibrary{decorations.pathreplacing,patterns}
 
-\usepackage{multirow}
+\usepackage{multirow,booktabs,xspace}
 
-\newcommand{\TABARNAC}{\emph{TABARNAC}}
+\newcommand{\TABARNAC}{\emph{TABARNAC}\xspace}
 \newcommand{\Input}[1]{\input{./tex/#1}}
 \newcommand{\itodo}[1]{\todo[inline]{#1}}
 \newcommand{\DB}[1]{\itodo{\emph{David:} ``#1''}}
@@ -329,8 +329,9 @@ bookmarksopen=true}
 
 \title{TABARNAC: Tools for Analyzing the Behavior of Applications Running on
 NUMA ArChitectures}
-% my suggestion:
+
 \title{TABARNAC: Identifying and Solving Memory Access Issues on NUMA Architectures}
+% mem. acc. bottlenecks?
 
 % author names and affiliations
 % use a multiple column layout for up to three different
@@ -371,8 +372,8 @@ best mapping, during these phase, opportunities for optimization are lost. A
 deep understanding of the memory behavior can help defining the right mapping
 statically therefore avoiding this warming period.
 
-In this paper, we present TABARNAC a tool for analyzing memory behavior. One
-of the main contribution of TABARNAC is to provide precises plots allowing the
+In this paper, we present \TABARNAC, a tool for analyzing memory behavior. One
+of the main contribution of \TABARNAC is to provide precises plots allowing the
 user to easily reach a deep understanding of the memory access distribution
 and hints on how to modify code / do manual mapping to improve performances.
 Using this tool, we explain why some application does not benefit from data

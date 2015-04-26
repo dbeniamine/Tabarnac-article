@@ -10,23 +10,22 @@ performance factors such as cache hierarchy, \emph{NUMA} architecture
 \cite{Drepper07What} \ldots
 
 To ease the developer's work, many efforts were made to provide automated
-tools such as \emph{numactl, kmaf, numa balancing \ldots}\DB{more, refs}
+tools such as \emph{numactl, kMAF, NUMA balancing \ldots}\DB{more, refs}
 managing memory and thread mapping on the \emph{NUMA} hierarchy. However these
-tools have an overhead as they need to learn the application behaviour.
+tools have an overhead as they need to learn the application behavior.
 Furthermore they are not able to change the memory access pattern, therefore
-if the memory behaviour is not designed for NUMA machines, they might not
+if the memory behavior is not designed for NUMA machines, they might not
 provide any improvements. For instance if all threads are accessing data from a
 page at the same time, wherever the page is mapped, it will trigger remote
 accesses from all NUMA nodes but one. This kind of issue can only be solved by
 modifying the memory access distribution, such optimization requires a deep
-understanding of the memory behaviour.
-\itodo{NUMA figure from combinedAff ??}
+understanding of the memory behavior.
 
 There are several tools such as VTune \cite{Reinders05VTune},
 HPCToolkit\cite{Adhianto10HPCTOOLKIT} \DB{more refs? } designed to help the
 developer understanding and improving its applications performances,
 nevertheless most of them relies on CPU counters and provides only few
-informations on the memory behaviour. Tracing and the memory behaviour is
+informations on the memory behavior. Tracing and the memory behavior is
 complex as (almost) every instruction triggers (at least) one memory access.
 Although several studies have addressed this problem using sampling
 \cite{Lachaize12MemProf} or limiting the amount of informations stored
@@ -34,12 +33,9 @@ Although several studies have addressed this problem using sampling
 to help the developer improving it's application.
 
 
-In this paper, we present \TABARNAC, a Tool to Analysis Behaviour of
+In this paper, we present \TABARNAC, a Tool to Analyze Behavior of
 Applications Running on NUMA ArChitectures. This tool allows the user to
-trace, visualize and optimize the NUMA behaviour of an application.
-\TABARNAC~ provide an easy to understand visualization of the trace and
-provides some specific hints to improve the NUMA behaviour. In section
-\ref{sec:soa} we discuss related work, then we present some motivations in
-section \ref{sec:motivations}. Sections \ref{sec:design} present \TABARNAC~
-design.  Finally we show some example of performance improvement in section
-\ref{sec:expe} and we give our conclusions in section \ref{sec:concl}.
+trace, visualize and optimize the NUMA behavior of an application.
+\TABARNAC provides an easy to understand but comprehensive visualization of the trace and
+provides some specific hints to improve the NUMA behavior. In Section~\ref{sec:soa}, we discuss related work, then we present some motivations in
+Section~\ref{sec:motivations}. Section~\ref{sec:design} presents the design and implementation of \TABARNAC. Finally we show some example of performance improvement in Section~\ref{sec:expe} and we give our conclusions in Section~\ref{sec:concl}.

@@ -4,50 +4,70 @@
 \section{Methodology of the Evaluation}
 \label{sec:expe}
 
-In this section, we analyze several benchmarks using \TABARNAC, we discuss
-their memory access distribution. Using this analysis we propose some
-optimizations and we evaluate them by comparing it to automatic data mapping
-tools.
+This section briefly discusses our evaluation methodology of \TABARNAC.
+We present the hardware architecture and the applications that wil be used in the analysis.
 
 \subsection{Hardware Environment}
 \label{sec:expe-setup}
 
-\begin{table}
+\begin{table}[!b]
     \centering
-        \begin{tabular}{|l|c|c|c|c|c|}
-            \hline
-            \multirow{2}{*}{Global} & Nodes & Threads & Freq (GHz) & Memory (Gib) \\
-            \cline{2-5}
-                & $4$   & $64$ & $2.00$ & $124$ \\
-            \hline
-           \multirow{2}{*}{Per node} & Cores & Threads & L3 Cache (Mib) & Memory (GiB) \\
-            \cline{2-5}
-            & $8$ & $16$ & $18$Mib & $31$  \\
-            \hline
-        \end{tabular}
-    \caption{Turing hardware}
+    \caption{Hardware configuration of our evaluation system.}
     \label{tab:turing}
+    \footnotesize
+        \begin{tabular}{lccccc}
+            \toprule
+            \multirow{2}{1.5cm}{System total} & Nodes & Threads & Freq (GHz) & Memory (Gib) \\
+            \cmidrule(lr){2-5}
+                & $4$   & $64$ & $2.00$ & $128$ \\
+            \midrule
+           \multirow{2}{1.5cm}{\vspace{2mm}Per NUMA node} & Cores & Threads & L3 Cache (Mib) & Memory (GiB) \\
+           \cmidrule(lr){2-5}
+            & $8$ & $16$ & $18$ & $32$  \\
+            \bottomrule
+        \end{tabular}
+
 \end{table}
 
-All the experiment were run on a NUMA machine composed of $4$ Intel Xeon X7550
-processors, the hardware details are summarized in Table~\ref{tab:turing}.
-The machine is running \texttt{Ubuntu 12.04.5 LTS} on a Linux kernel 3.13.0-48.
-\DB{Other thing to mention, numactl version ?}
+All experiments were run on a NUMA machine, which is composed of $4$ Intel Xeon X7550
+processors (Nehalem microarchitecture~\cite{Intel2010}). Each processor has its own memory controller and therefore forms a NUMA node. The hardware details are summarized in Table~\ref{tab:turing}.
+The machine is running \texttt{Ubuntu 12.04.5 LTS} with a Linux kernel, version 3.13.0-48.
+\DB{Other thing to mention, numactl version, gcc 4.6.3}
 
-For the plots representing speedups, each configuration have been run 10 to 30
-times and one point represent the mean of all runs.
+For the plots representing speedups, each configuration was executed between 10 and 30
+times. Each point represents the arithmetic mean of all runs.
+\itodo{stddev}
 
 \subsection{Applications}
 
-\section{Analysis}
+We evaluate the following applications with \TABARNAC: a \emph{matrix multiplication}, \emph{IS} and \emph{Ondes3D}.
+
+The \emph{matrix multiplication} is a well-known algorithm that is used to verify the accuracy of \TABARNAC, as well as to discuss the performance improvements that can be achieved.
+\emph{IS} is a benchmark from the OpenMP implementation of the NAS Parallel Benchmark suite~(NPB)~\cite{Jin1999}. IS sorts a set of integer numbers using a bucket sort algorithm.
+\emph{Ondes3D} is the main numerical kernel of the Ondes3D application~\cite{Dupros2008}. It simulates the propagation of seismic waves using a finite-differences numerical method.
+
+All applications were compiled with \texttt{gcc}, version 4.6.3, with the \texttt{-O2} optimization flag.
+Due to space restrictions, we show the characterization of the applications with 4 threads.
+The performance evaluation is performed with 64 threads, which is the maximum number of threads that our evaluation machine can execute in parallel.
+\itodo{input sizes}
+
+\section{Analysis and Performance Results}
 \label{sec:expe-analysis}
 
-\subsubsection{Matrix multiplication}
+This section presents the results of our analysis with \TABARNAC.
+For each application, we show the memory access behavior, discuss strategies to optimize this behavior and present the performance improvements that can be achieved.
+
+% In this section, we analyze several benchmarks using \TABARNAC, we discuss
+% their memory access distribution. Using this analysis we propose some
+% optimizations and we evaluate them by comparing it to automatic data mapping
+% tools.
+
+\subsection{Matrix Multiplication}
 \label{sec:exp-mat}
 
 The first benchmark presented is based on a naive matrix multiplication
-computing $C=A*B$. Our aim here is not to provide a kernel competing with the
-state of the art, but to show how \TABARNAC~ can help to improve such
+computing $C=A \times B$. Our aim here is not to provide a kernel competing with the
+state of the art, but to show how \TABARNAC can help to improve such
 applications. We compare two implementations of the matrix multiplication, in
 the first one, called \emph{Naive}, each threads start by computing
 $C[0][tid]$ and then jumps $N$ elements after in the matrix, where $N$ is the
@@ -60,7 +80,7 @@ interesting to discuss the improvement we can obtain on this kernel without
 modifying the algorithm. The second implementation uses a non recursive bloc
 decomposition.
 
-The figures presented in this sections are part of \TABARNAC~ visualization.
+The figures presented in this sections are part of the \TABARNAC visualization.
 Each plot show for a particular data structure the number of memory accesses
 per page and per threads. Only structures \texttt{B} and \texttt{C} are
 presented as for both algorithm \texttt{A} have more are less the same access
@@ -122,15 +142,15 @@ suitable for NUMA machines. We can easily put each subpart of \texttt{C} (and
 \texttt{B} can be distributed using interleave policy.
 
 To test the efficiency of the proposed modification, we compare the execution
-time of our modified code (Tabarnac) to the  original code, run without any
+time of our modified code (\TABARNAC) to the original code, running without any
 improvements (base) and the same code executed with NUMA balancing enable in the
-kernel (NUMA Balancing).
+kernel (NUMA Balancing)~\cite{Corbet}.
 \DB{ugly, rewrite needed}
 
 \begin{figure}[htb]
     \centering
     \includegraphics[width=.8\linewidth]{mat_time}
-    \caption{Execution time of the matrix multiplication for size $4096*406$ doubles.}
+    \caption{Execution time of the matrix multiplication for size $4096\times 4096$ doubles.}
     \label{fig:matrix-res}
 \end{figure}
 
@@ -142,18 +162,16 @@ provide the same execution time as this algorithm is designed to fit in the
 cache.
 
 Although this example is more a school case than a real experiment it shows
-how \TABARNAC~ can help improving an application by highlighting inefficient
+how \TABARNAC can help improving an application by highlighting inefficient
 memory access behaviors. This knowledge can be used two different ways, and always
 results on significant improvement: either you can do some algorithmic
 modification (here going from the naive to the bloc version), or at least you
 can choose the best NUMA page mapping policy.
 
-\subsubsection{IS}
+\subsection{IS}
 \label{sec:exp-is}
 
-\emph{IS} is par of the NAS Parallel benchmarks (OpenMp version)
-\cite{Feng04Unstructured}.  It computes an integer sort using a bucket
-algorithm. According the NAS parallel benchmark
+According the NAS parallel benchmark
 website\footnote{\url{http://www.nas.nasa.gov/publications/npb.html}, visited
 2015-04-25} it has a random memory access. Thus it is a good candidate to be
 optimized using \TABARNAC.
@@ -210,23 +228,23 @@ distribution of access among the thread and a strong locality. The idea is to
 split the loop in two half and give one part of each half to each threads in a
 round robin way. We can do that only by modifying line \ref{lst:is-cyclic} as
 shown in listing \ref{lst:is-modif}.
-\begin{lstlisting}[caption=One line optimization for \emph{IS}, label=lst:is-modif]
+\begin{lstlisting}[caption=Optimization for \emph{IS}., label=lst:is-modif]
 #pragma omp for schedule(static,NUM_BUCKETS/(2*omp_get_max_threads()))
 \end{lstlisting}
 
 \begin{figure}[htb]
     \centering
 
-    \subfigure[\texttt{key\_buff2}]{
+    \subfigure[The \texttt{key\_buff2} structure.]{
         \includegraphics[height=.27\textheight] {is_w_kb2_modif}
         \label{fig:is-behaviour-modif-kb2}
     }
-    \subfigure[\texttt{key\_array}]{
+    \subfigure[The \texttt{key\_array} structure.]{
         \includegraphics[height=.27\textheight] {is_w_kba_modif}
         \label{fig:is-behaviour-modif-kba}
     }
 
-    \subfigure[\texttt{key\_buff1}]{
+    \subfigure[The \texttt{key\_buff1} structure.]{
         \includegraphics[height=.27\textheight] {is_w_kb1_modif}
         \label{fig:is-behaviour-modif-kb1}
     }
@@ -244,7 +262,7 @@ each thread uses mostly one part of the array.
 
 The main point of our code modification is to improve the affinity between
 thread and memory, therefore we need to pin each thread on a core to keep them
-near to their data. To do so we use \texttt{GOMP\_CPU\_AFFINITY}. \TABARNAC~
+near to their data. To do so we use \texttt{GOMP\_CPU\_AFFINITY}. \TABARNAC
 also shows us that the first touch is always done by the thread actually using
 the data for IS, therefore we do not need to map the data on NUMA nodes.
 
@@ -254,12 +272,12 @@ cyclic with the distribution proposed. For the two first methods we compare the
 execution time on the bare operation system  (Base), the execution time with
 interleave policy (Interleave) and with NUMA balancing enabled in the kernel
 (NUMA Balancing). Interleave and NUMA Balancing are not relevant with
-\TABARNAC~ modifications.
+\TABARNAC modifications.
 
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=.9\linewidth]{is_exectime}
-    \caption{Speedup for \emph{IS} in class D compared to the default}
+    \caption{Speedup for \emph{IS} in class D compared to the baseline.}
 \label{fig:is-res}
 \end{figure}
 
@@ -275,13 +293,13 @@ speedup, while the developers clearly explain that it should be slower than
 dynamic. We can see that both interleave and NUMA Balancing are not suitable
 for this method.
 
-The \TABARNAC~ version provides more than $20\%$ speedup with very small code
+The \TABARNAC version provides more than $20\%$ speedup with very small code
 modification (two lines of code an \texttt{export} for the thread affinity.
 This example shows how analyzing an application's memory behavior can lead to
 significant execution time improvement where automated tools were only slowing
 the application down.
 
-\subsubsection{macro-3d}
+\subsection{Ondes3D}
 \label{sec:exp-macro3d}
 \DB{Todo mathias}
 
@@ -289,36 +307,36 @@ the application down.
 \begin{figure}[htb]
     \centering
 
-    \subfigure[Access distribution for \texttt{fz}]{
+    \subfigure[Access distribution for \texttt{fz}.]{
         \includegraphics[height=.27\textheight] {macro3d_fz_dist_orig}
         \label{fig:macro3d-behaviour-fz-orig}
     }
-    \subfigure[first touch \texttt{fz}]{
+    \subfigure[First-touch \texttt{fz}.]{
         \includegraphics[height=.27\textheight] {macro3d_fz_ft_orig}
         \label{fig:macro3d-ft-fz-orig}
     }
-    \caption{Original access and first touch distribution for \texttt{fz}}
+    \caption{Original access and first-touch distribution for \texttt{fz}.}
     \label{fig:macro3d-orig}
 \end{figure}
 
 \begin{figure}[htb]
     \centering
 
-    \subfigure[Access distribution for \texttt{fz}]{
+    \subfigure[Access distribution for \texttt{fz}.]{
         \includegraphics[height=.27\textheight] {macro3d_fz_dist_modif}
         \label{fig:macro3d-behaviour-fz-modif}
     }
-    \subfigure[first touch \texttt{fz}]{
+    \subfigure[First-touch \texttt{fz}.]{
         \includegraphics[height=.27\textheight] {macro3d_fz_ft_modif}
         \label{fig:macro3d-ft-fz-modif}
     }
-    \caption{Access and first touch distribution for \texttt{fz} after modifications}
+    \caption{Access and first-touch distribution for \texttt{fz} after modifications.}
     \label{fig:macro3d-modif}
 \end{figure}
 
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=.7\linewidth]{macro3d_exectime}
-    \caption{Speedup for \emph{macro3d} compared to the original application}
+    \caption{Speedup for \emph{macro3d} compared to the original application.}
 \label{fig:is-res}
 \end{figure}

@@ -9,11 +9,12 @@ This section presents an overview of related work in the area of data mapping me
 \subsection{Data Mapping Mechanisms}
 \label{sec:soa-mapping}
 
-Data mapping mechanisms can be roughly classified into two categories, mechanisms that have information about the memory access before the application starts executing, and mechanisms without prior information that need to determine the memory access behavior during execution of the parallel application.
+Form a high-level view, data mapping mechanisms can be classified into two categories, mechanisms that have information about the memory access before the application starts executing, and mechanisms without prior information that need to determine the memory access behavior during execution of the parallel application.
 Mechanisms that have prior information have the advantage of potentially higher improvements compared to mechanisms without prior information, as the collection of information during runtime has a potentially high overhead.
 Furthermore, opportunities for improvements are lost while information about the memory access pattern is collected.
 On the other hand, if the memory access behavior is analyzed during application execution, no prior analysis is required.
 Figure~\ref{fig:timeline} shows a comparison of the operation of these two types of applications with a parallel application consisting of four threads.
+In this example, a mechanism with prior information can perform the mapping as soon as the parallel phase starts (or even earlier), while mechanisms without this information need to learn the behavior for some time and can perform mapping decisions only at a later stage of the execution.
 
 \begin{figure}[!b]
     % \includegraphics[width=\linewidth]{img/timeline}
