@@ -5,23 +5,24 @@
 \label{sec:concl}
 
 
-In this study, we have provided a new tool to trace and analyze the memory
-behaviour of NUMA application. Although the analysis time is not negligible
-($10$ to $30\%$ time slowdown), it provide precise informations that can be
-used for several kind of optimization. Furthermore while memory traces are
-usually hard to analyze as they contains a lot of informations, \TABARNAC~
-produces an easy to follow html page interleaving trace visualization,
-explanation on how to interpret them and optimization hints.
+In this paper, we provided a new tool to trace and analyze the memory
+behavior of parallel applications running on NUMA architectures. Although the analysis time is not negligible ($10$ to $30\%$ time slowdown), it provide precise informations that can be used for several kinds of
+optimizations. Furthermore while memory traces are usually hard to analyze as
+they contains a lot of informations, \TABARNAC produces an easy to follow
+output, showing trace visualizations, explanations on how to interpret
+them, and optimization hints.
 \DB{Maybe focus more on methodology}
 
 Using this tool, we have been able to provide significant improvements and
 well known benchmarks over the result obtained by automated tools.
 \DB{Add some numbers / develop}
+Future work will focus on two directions. First, we will improve the
+structure detection support to be able to analyze Fortran programs, as many
+scientific applications are written in Fortran. Second, we will work
+on automatic detection of ``bad'' memory behavior, such as an all-to-all sharing,
+to make the analysis even more useful.
 
-Future work will be done on three directions. First we need to improve the
-structure detection to be able to analyse fortran programs as many
-scientific applications are still written in fortran. Second we have to work
-on automatic detection of ``bad'' memory behaviour (such as all to all sharing)
-to make the analysis even easier to read. Finally, we have to analyze ``real
-life'' applications and work with developers to help them improve their
-programs.
+% MD: better not mention that, Ondes3D is a real application.
+% Finally, we have to analyze ``real
+% life'' applications and work with developers to help them improve their
+% programs.
