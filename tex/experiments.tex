@@ -48,9 +48,13 @@ The \emph{matrix multiplication} is a well-known algorithm that is used to verif
 \emph{Ondes3D} is the main numerical kernel of the Ondes3D application~\cite{Dupros2008}. It simulates the propagation of seismic waves using a finite-differences numerical method.
 
 All applications were compiled with \texttt{gcc}, version 4.6.3, with the \texttt{-O2} optimization flag.
-Due to space restrictions, we show the characterization of the applications with 4 threads.
-The performance evaluation is performed with 64 threads, which is the maximum number of threads that our evaluation machine can execute in parallel.
-\itodo{input sizes, memory usage}
+Due to space restrictions, we show the characterization of the applications
+with 4 threads.  The performance evaluation is performed with 64 threads,
+which is the maximum number of threads that our evaluation machine can execute
+in parallel.  The \emph{matrix multiplication} performance were evaluated on
+matrix of size $4096*4096$ doubles ($12.8$Mib per matrix). \emph{IS} was run
+in class D resulting on a memory usage of $33.5$Gib, Finally Ondes3D has a memory
+usage of $11.3$Gib.
 
 \section{Analysis and Performance Results}
 \label{sec:expe-analysis}
@@ -301,43 +305,76 @@ significant execution time improvement where automated tools were only slowing
 the application down.
 
 \subsection{Ondes3D}
-\label{sec:exp-macro3d}
-\DB{Todo mathias}
-
+\label{sec:exp-ondes3d}
 
 \begin{figure}[htb]
     \centering
 
     \subfigure[Access distribution for \texttt{fz}.]{
-        \includegraphics[height=.27\textheight] {macro3d_fz_dist_orig}
-        \label{fig:macro3d-behaviour-fz-orig}
+        \includegraphics[height=.27\textheight] {ondes3d_fz_dist_orig}
+        \label{fig:ondes3d-behaviour-fz-orig}
     }
     \subfigure[First-touch \texttt{fz}.]{
-        \includegraphics[height=.27\textheight] {macro3d_fz_ft_orig}
-        \label{fig:macro3d-ft-fz-orig}
+        \includegraphics[height=.27\textheight] {ondes3d_fz_ft_orig}
+        \label{fig:ondes3d-ft-fz-orig}
     }
-    \caption{Original access and first-touch distribution for \texttt{fz}.}
-    \label{fig:macro3d-orig}
+    \caption{Original access and first-touch distribution for structure
+        \texttt{fz} from \emph{Ondes3D}.}
+    \label{fig:ondes3d-orig}
 \end{figure}
+
+The analysis of \emph{Ondes3D} access distributions shows that each
+structures, as we can see for structure \texttt{fz} in figure
+\ref{fig:ondes3d-behaviour-fz-orig}, is well divided between the threads.
+Still we can notice that thread $T0$ seems to access the whole structure. If
+we look at the first touch distribution (fig \ref{fig:ondes3d-ft-fz-orig}), we
+remark that indeed this thread is responsible for all first access. Due to
+this pattern, if we run \emph{Onde3d} without doing any mapping, every page
+will be mapped on node $0$ resulting on many remote access. An easy fix is to
+do the initialization in parallel and to pin each thread on a different core.
 
 \begin{figure}[htb]
     \centering
 
     \subfigure[Access distribution for \texttt{fz}.]{
-        \includegraphics[height=.27\textheight] {macro3d_fz_dist_modif}
-        \label{fig:macro3d-behaviour-fz-modif}
+        \includegraphics[height=.27\textheight] {ondes3d_fz_dist_modif}
+        \label{fig:ondes3d-behaviour-fz-modif}
     }
     \subfigure[First-touch \texttt{fz}.]{
-        \includegraphics[height=.27\textheight] {macro3d_fz_ft_modif}
-        \label{fig:macro3d-ft-fz-modif}
+        \includegraphics[height=.27\textheight] {ondes3d_fz_ft_modif}
+        \label{fig:ondes3d-ft-fz-modif}
     }
-    \caption{Access and first-touch distribution for \texttt{fz} after modifications.}
-    \label{fig:macro3d-modif}
+    \caption{Access and first-touch distribution  for structure
+        \texttt{fz} from \emph{Ondes3D}, after modifications.}
+    \label{fig:ondes3d-modif}
 \end{figure}
+
+Such Modifications results on the access distribution of figure
+\ref{fig:ondes3d-behaviour-fz-modif}, we can see that now $T0$  access only
+its own portion of the structure. Moreover as expected, figure
+\ref{fig:ondes3d-ft-fz-modif} shows that the first touch is now distributed
+over the structures and match the actual access distribution.
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=.7\linewidth]{macro3d_exectime}
+    \includegraphics[width=.7\linewidth]{ondes3d_exectime}
     \caption{Speedup for \emph{Ondes3D} compared to the original application.}
 \label{fig:ondes-res}
 \end{figure}
+
+Finally, we evaluate the modified version by comparing it with the original
+version run on the normal OS, with Numa Balancing activated and with
+interleave policy. Figure \ref{fig:ondes-res} present the results of this
+evaluation, we can see that every method improve the execution time, still
+\emph{Numa Balancing} provides less than $30\%$ speedup while static mapping
+(Interleave or modified code) allows us to get almost $60\%$ speedup. This is
+due to the training time described in section \ref{sec:soa-mapping}. Indeed
+with \emph{Numa Balancing}, every pages are initially mapped by the OS they
+are only moved a while later, after many remote access occurred. This is a
+pathological case where static mapping is to be preferred against automated
+tools.  \emph{Interleave policy} provides almost the same speedup as
+\TABARNAC~ as it distribute the pages over the NUMA nodes at the beginning of
+the execution. Nevertheless the interleave version only maps the data no the
+threads, therefore if the performances might drop if the OS does not map them
+``correctly'' while the modified version propose a thread mapping ensuring
+data locality.
