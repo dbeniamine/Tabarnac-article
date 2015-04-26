@@ -1,7 +1,7 @@
 %!TEX encoding=UTF-8 Unicode
 %!TEX root=../tabarnac.tex
 
-\section{Expriments}
+\section{Experimental Evaluation}
 \label{sec:expe}
 
 In this section, we analyze several benchmarks using \TABARNAC, we discuss
@@ -30,9 +30,9 @@ tools.
 \end{table}
 
 All the experiment were run on a NUMA machine composed of $4$ Intel Xeon X7550
-processors, the hardware details are recapitulated in table \ref{tab:turing}.
-The machine is running \texttt{Ubuntui 12.04.5 LTS} on a Linux kernel 3.13.0-48.
-\DB{Other thing to mention, numctl version ?}
+processors, the hardware details are summarized in Table~\ref{tab:turing}.
+The machine is running \texttt{Ubuntu 12.04.5 LTS} on a Linux kernel 3.13.0-48.
+\DB{Other thing to mention, numactl version ?}
 
 For the plots representing speedups, each configuration have been run 10 to 30
 times and one point represent the mean of all runs.
@@ -84,7 +84,7 @@ For the naive matrix multiplication, as we can see in
 \ref{fig:matrix-naive}, all the pages of both structures are used by every
 thread. Therefore, when we execute this code on a NUMA machine, wherever we
 map the page, all the nodes but one will trigger remote memory accesses. We
-can improve there are several ways to improve this behaviour: an easy solution
+can improve there are several ways to improve this behavior: an easy solution
 is to tell the operating system to interleave pages through the different
 nodes. This will result on a better balance of memory bandwidth between the
 nodes. An other solution is to create local copies of \texttt{A} and
@@ -114,16 +114,16 @@ are interleave, threads $T0$ and $T1$ works on the same pages while threads
 $T2$ and $T3$ works on another set of pages. Structures \texttt{C} (and
 \texttt{A}, fig \ref{fig:matrix-C-bloc}) are cut in two parts, the first half
 is shared by thread $T0$ and $T2$ while the two others works on the second
-half. This behaviour provides strong page exclusivity and is therefore more
+half. This behavior provides strong page exclusivity and is therefore more
 suitable for NUMA machines. We can easily put each subpart of \texttt{C} (and
 \texttt{A}) on a NUMA node and map the thread using it to this node, matrix
 \texttt{B} can be distributed using interleave policy.
 
 To test the efficiency of the proposed modification, we compare the execution
 time of our modified code (Tabarnac) to the  original code, run without any
-improvements (base) and the same code executed with numa balancing enable in the
-kernel (Numa Balancing).
-\DB{ugly, rewritte needed}
+improvements (base) and the same code executed with NUMA balancing enable in the
+kernel (NUMA Balancing).
+\DB{ugly, rewrite needed}
 
 \begin{figure}[htb]
     \centering
@@ -133,15 +133,15 @@ kernel (Numa Balancing).
 \end{figure}
 
 Figure \ref{fig:matrix-res} show the experimental results, we can see that for
-the naive algorithm, Numa Balancing is already efficient and results in $40\%$
+the naive algorithm, NUMA Balancing is already efficient and results in $40\%$
 speedup. Still using the interleave policy avoid the runtime overhead, and
 allow us to obtain almost $50\%$ speedup. For the bloc version, all runtimes
-provides the same execution time as this algorithm is designed to fit in the
+provide the same execution time as this algorithm is designed to fit in the
 cache.
 
 Although this example is more a school case than a real experiment it shows
 how \TABARNAC~ can help improving an application by highlighting inefficient
-memory behaviours. This knowledge can be used two different ways, and always
+memory access behaviors. This knowledge can be used two different ways, and always
 results on significant improvement: either you can do some algorithmic
 modification (here going from the naive to the bloc version), or at least you
 can choose the best NUMA page mapping policy.
@@ -250,8 +250,8 @@ We then compare the execution time of \emph{IS.D} for the three scheduling
 methods \emph{Dynamic}, \emph{Cyclic} with a step of $1$ and \TABARNAC:
 cyclic with the distribution proposed. For the two first methods we compare the
 execution time on the bare operation system  (Base), the execution time with
-interleave policy (Interleave) and with numa balancing enabled in the kernel
-(Numa Balancing). Interleave and Numa Balancing are not relevant with
+interleave policy (Interleave) and with NUMA balancing enabled in the kernel
+(NUMA Balancing). Interleave and NUMA Balancing are not relevant with
 \TABARNAC~ modifications.
 
 \begin{figure}[htpb]
@@ -264,18 +264,18 @@ interleave policy (Interleave) and with numa balancing enabled in the kernel
 Figure\ref{fig:is-res} show the speedup of \emph{IS} in class D compared to
 the default version (\emph{dynamic}) for each scheduling method, and for each
 optimization technique. The first thing to notice is that with the
-\emph{dynamic} scheduling, both Interleave and Numa Balancing slows
+\emph{dynamic} scheduling, both Interleave and NUMA Balancing slows
 the application down. Indeed simple optimization policy are hardly efficient
 for non NUMA conscious code.
 
 The cyclic policy, proposed in the original code already provides up to $13\%$
 speedup, while the developers clearly explain that it should be slower than
-dynamic. We can see that both interleave and Numa Balancing are not suitable 
+dynamic. We can see that both interleave and NUMA Balancing are not suitable
 for this method.
 
 The \TABARNAC~ version provides more than $20\%$ speedup with very small code
 modification (two lines of code an \texttt{export} for the thread affinity.
-This example shows how analyzing an application's memory behaviour can lead to
+This example shows how analyzing an application's memory behavior can lead to
 significant execution time improvement where automated tools were only slowing
 the application down.
 
