@@ -109,9 +109,23 @@ manual data mapping to ensure better memory access locality during the execution
 
 \subsection{Analysis overhead}
 \label{sec:expe-overhead}
-\begin{itemize}
-    \item NPB class B, overhead for each
-    \item Can run with (relatively) small  examples
-    \item No overhead at runtime
-    \item Run once (or twice) optimize for each run
-\end{itemize}
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=.4\textwidth]{tool-ovh.pdf}
+    \caption{Overhead of \TABARNAC~ analysis for the NAS Parallel Benchmarks.}
+    \label{fig:ovh}
+\end{figure}
+
+To evaluate the analysis overhead, we ran all the NAS parallel benchmark in
+class B with 64 threads on our experimental machine (see section
+\ref{sec:exp-metho}) and compared the original execution time with the
+execution time under instrumentation. We can see in figure \ref{fig:ovh} that
+the overhead of the instrumentation is between $10$ and $30\%$. Although it is
+no negligible, we have to consider the fact that often we can instrument
+smaller version of the applications as we focus on the general behavior.
+Moreover as we do not use sampling, our instrumentation is deterministic and
+there is no need to run several times the instrumentation. Finally as our
+analysis is designed to be used during the development phase of the
+application and not by an automated tool during the execution, even $30\%$
+overhead is quite reasonable.
