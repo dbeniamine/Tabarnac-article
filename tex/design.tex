@@ -12,14 +12,15 @@ visualization.  In this section, we discuss the implementation of both parts.
 
 The instrumentation part of \TABARNAC is based on a custom memory tracer for the Pin Dynamic Binary Instrumentation~(DBI) tool~\cite{Luk05Pin}.
 Before running the application, our tool retrieves static memory allocation
-informations using the \texttt{libelfg0} library. Dynamic allocations are
+informations using the library \texttt{libelfg0}. Dynamic allocations are
 intercepted with a \texttt{malloc} replacement. If the application is
 compiled with debug flags (\texttt{-g}), the structure names that are malloc'ed can be extracted from the source
 code. If we can not retrieve a structure name, we call it
 \texttt{AnonymousStruc\#ID}, where $ID$ is a unique identifier for the
 execution, starting at $0$. Finally, each time a thread is created, we compute
-its stack bounds, and create a virtual structures named \texttt{Stack\#N} where
-$N$ is the thread id. Only structures that are bigger than one page are recorded as our
+its stack bounds, and create a virtual structure named \texttt{Stack\#N} where
+$N$ is the thread id. Only structures that are bigger than one page (usually
+$4$Kib) are recorded as our
 analysis granularity is the memory page. The data structure informations (name,
 size and address) are not used during the instrumentation, they are only
 printed in a file at the end of the analysis to be used by the visualization
@@ -27,10 +28,11 @@ tool.
 
 During the execution, our tracer intercepts every memory access of the parallel application.
 For each access, we store the type of access (read or write), the memory page that was accessed, and the thread ID.
-The information is stored on a per-thread basis, as shown in Figure~\ref{fig:code}, making the code completely lock-free as well as minimizing the amount of false sharing.
+The information is stored on a per-thread basis, as shown in
+Listing~\ref{lst:mem}, making the code completely lock-free as well as minimizing the amount of false sharing.
 
-\begin{figure}[!h]
-\begin{lstlisting}
+%\begin{figure}[!h]
+\begin{lstlisting}[caption=Code that is executed on each memory access.,label=lst:mem]
 	void mem_access(uint64_t address, uint32_t threadid, char type)
 	{
 		uint64_t page = address >> page_bits;
@@ -38,9 +40,9 @@ The information is stored on a per-thread basis, as shown in Figure~\ref{fig:cod
 	}
 
 \end{lstlisting}
-\caption{Code that is executed on each memory access.}
-\label{fig:code}
-\end{figure}
+%\caption{Code that is executed on each memory access.}
+%\label{fig:code}
+%\end{figure}
 
 
 At the end of the tracing phase, we generate two \texttt{csv} files.
@@ -117,7 +119,7 @@ manual data mapping to ensure better memory access locality during the execution
     \label{fig:ovh}
 \end{figure}
 
-To evaluate the analysis overhead, we ran all the NAS Parallel Benchmarks in
+To evaluate the instrumentation overhead, we ran all the NAS Parallel Benchmarks in
 class B with 64 threads on our experimental machine (see section
 \ref{sec:metho}) and compared the original execution time with the
 execution time under instrumentation. We can see in figure \ref{fig:ovh} that

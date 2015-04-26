@@ -32,9 +32,8 @@ We present the hardware architecture and the applications that wil be used in th
 All experiments were run on a NUMA machine, which is composed of $4$ Intel Xeon X7550
 processors (Nehalem microarchitecture~\cite{Intel2010}). Each processor has its own memory controller and therefore forms a NUMA node. The hardware details are summarized in Table~\ref{tab:turing}.
 The machine is running \texttt{Ubuntu 12.04.5 LTS} with a Linux kernel, version 3.13.0-48.
-\DB{Other thing to mention, numactl version, gcc 4.6.3}
 
-For the plots representing speedups, each configuration was executed between 10 and 30
+For the plots representing speedups or execution time, each configuration was executed between 10 and 30
 times. Each point represents the arithmetic mean of all runs.
 \itodo{stddev}
 
@@ -76,10 +75,11 @@ state of the art, but to show how \TABARNAC can help to improve such
 applications. We compare two implementations of the matrix multiplication, in
 the first one, called \emph{Naive}, each threads start by computing
 $C[0][tid]$ and then jumps $N$ elements after in the matrix, where $N$ is the
-number of threads. Although this implementation is known to be bad, comparing
-how much it's accelerated by the best mechanism to the acceleration of a
-better version to understand the importance of the quality of the original
-code. Moreover when an application have such a bad memory access pattern, it
+number of threads. Although this implementation is known to be bad, it is a
+good example of non NUMA aware code, and comparing \TABARNAC~ visualization
+for this algorithm to the one obtained with a better version helps understaning
+how to interpret it.
+Moreover when an application have such a bad memory access pattern, it
 is not always possible to change completely the pattern, therefore, it is
 interesting to discuss the improvement we can obtain on this kernel without
 modifying the algorithm. The second implementation uses a non recursive bloc
@@ -88,7 +88,7 @@ decomposition.
 The figures presented in this sections are part of the \TABARNAC visualization.
 Each plot show for a particular data structure the number of memory accesses
 per page and per threads. Only structures \texttt{B} and \texttt{C} are
-presented as for both algorithm \texttt{A} have more are less the same access
+presented as for both algorithm \texttt{A} have more or less the same access
 pattern than \texttt{C}.
 
 \begin{figure}[htb]
@@ -107,11 +107,11 @@ pattern than \texttt{C}.
     \label{fig:matrix-naive}
 \end{figure}
 
-For the naive matrix multiplication, as we can see in
+For the naive matrix multiplication, as we can see in figure
 \ref{fig:matrix-naive}, all the pages of both structures are used by every
 thread. Therefore, when we execute this code on a NUMA machine, wherever we
-map the page, all the nodes but one will trigger remote memory accesses. We
-can improve there are several ways to improve this behavior: an easy solution
+map the page, all the nodes but one will trigger remote memory accesses. There
+are several ways to improve this behavior: an easy solution
 is to tell the operating system to interleave pages through the different
 nodes. This will result on a better balance of memory bandwidth between the
 nodes. An other solution is to create local copies of \texttt{A} and
@@ -136,10 +136,10 @@ the algorithm to improve the locality, which mean using the bloc algorithm.
 As we can see in figure \ref{fig:matrix-bloc}, the bloc algorithm improve the page
 locality compared to the naive one. In our algorithm, structures \texttt{B}
 and \texttt{C} are not divided the same way, resulting in two different
-patterns. For structure \texttt{B} (fig \ref{fig:matrix-B-bloc}), the pages
-are interleave, threads $T0$ and $T1$ works on the same pages while threads
+patterns. For structure \texttt{B} (fig~\ref{fig:matrix-B-bloc}), the pages
+are interleaved, threads $T0$ and $T1$ works on the same pages while threads
 $T2$ and $T3$ works on another set of pages. Structures \texttt{C} (and
-\texttt{A}, fig \ref{fig:matrix-C-bloc}) are cut in two parts, the first half
+\texttt{A}, fig~\ref{fig:matrix-C-bloc}) are cut in two parts, the first half
 is shared by thread $T0$ and $T2$ while the two others works on the second
 half. This behavior provides strong page exclusivity and is therefore more
 suitable for NUMA machines. We can easily put each subpart of \texttt{C} (and
@@ -148,8 +148,8 @@ suitable for NUMA machines. We can easily put each subpart of \texttt{C} (and
 
 To test the efficiency of the proposed modification, we compare the execution
 time of our modified code (\TABARNAC) to the original code, running without any
-improvements (base) and the same code executed with NUMA balancing enable in the
-kernel (NUMA Balancing)~\cite{Corbet}.
+improvements (base) and the same code executed with NUMA balancing enabled
+(NUMA Balancing)~\cite{Corbet}.
 \DB{ugly, rewrite needed}
 
 \begin{figure}[htb]
@@ -159,7 +159,7 @@ kernel (NUMA Balancing)~\cite{Corbet}.
     \label{fig:matrix-res}
 \end{figure}
 
-Figure \ref{fig:matrix-res} show the experimental results, we can see that for
+Figure~\ref{fig:matrix-res} show the experimental results, we can see that for
 the naive algorithm, NUMA Balancing is already efficient and results in $40\%$
 speedup. Still using the interleave policy avoid the runtime overhead, and
 allow us to obtain almost $50\%$ speedup. For the bloc version, all runtimes
@@ -169,31 +169,31 @@ cache.
 Although this example is more a school case than a real experiment it shows
 how \TABARNAC can help improving an application by highlighting inefficient
 memory access behaviors. This knowledge can be used two different ways, and always
-results on significant improvement: either you can do some algorithmic
-modification (here going from the naive to the bloc version), or at least you
-can choose the best NUMA page mapping policy.
+results on significant improvement. either the user can modify the code to
+improve the access distribution (here going from the naive to the bloc version),
+or at least \TABARNAC~ will help choosing the best NUMA page mapping policy.
 
 \subsection{IS}
 \label{sec:exp-is}
 
-According the NAS parallel benchmark
+According to the NAS parallel benchmark
 website\footnote{\url{http://www.nas.nasa.gov/publications/npb.html}, visited
-2015-04-25} it has a random memory access. Thus it is a good candidate to be
+2015-04-25} \emph{IS} has a random memory access. Thus it is a good candidate to be
 optimized using \TABARNAC.
 
 \begin{figure}[htb]
     \centering
 
     \subfigure[\texttt{key\_buff2}]{
-        \includegraphics[height=.27\textheight]  {is_w_kb2_orig}
+        \includegraphics[height=.24\textheight]  {is_w_kb2_orig}
         \label{fig:is-behaviour-orig-kb2}
     }
     \subfigure[\texttt{key\_array}]{
-        \includegraphics[height=.27\textheight]  {is_w_kba_orig}
+        \includegraphics[height=.24\textheight]  {is_w_kba_orig}
         \label{fig:is-behaviour-orig-kba}
     }
     \subfigure[\texttt{key\_buff1}]{
-        \includegraphics[height=.27\textheight]  {is_w_kb1_orig}
+        \includegraphics[height=.24\textheight]  {is_w_kb1_orig}
         \label{fig:is-behaviour-orig-kb1}
     }
     \caption{Original memory access distribution for the main structure of
@@ -201,15 +201,15 @@ optimized using \TABARNAC.
     \label{fig:is-behaviour-orig}
 \end{figure}
 
-Figure \ref{fig:is-behaviour-orig} shows the access distributions for the
+Figure~\ref{fig:is-behaviour-orig} shows the access distributions for the
 three main structures of \emph{IS} class W with $4$ threads. We can see that
 each of these structures have a different access pattern: \texttt{key\_array}
-(fig \ref{fig:is-behaviour-orig-kba}) access distribution shows that every
+(fig~\ref{fig:is-behaviour-orig-kba}) access distribution shows that every
 threads works on a different part of the structures which allows automated
 tools to do efficient data/thread mapping on it. However \texttt{key\_buff2}
-(fig \ref{fig:is-behaviour-orig-kb2}) is completely shared by every threads,
+(fig~\ref{fig:is-behaviour-orig-kb2}) is completely shared by every threads,
 but the most interesting access distribution is the one of \texttt{key\_buff1}
-(fig \ref{fig:is-behaviour-orig-kb1}). Indeed the access repartition seems to
+(fig~\ref{fig:is-behaviour-orig-kb1}). Indeed the access repartition seems to
 follow a nice Gaussian, which means a few pages are more used than all the
 others. With such a distribution, automated tools might generate a lot of page
 migration.
@@ -241,16 +241,16 @@ shown in listing \ref{lst:is-modif}.
     \centering
 
     \subfigure[The \texttt{key\_buff2} structure.]{
-        \includegraphics[height=.27\textheight] {is_w_kb2_modif}
+        \includegraphics[height=.24\textheight] {is_w_kb2_modif}
         \label{fig:is-behaviour-modif-kb2}
     }
     \subfigure[The \texttt{key\_array} structure.]{
-        \includegraphics[height=.27\textheight] {is_w_kba_modif}
+        \includegraphics[height=.24\textheight] {is_w_kba_modif}
         \label{fig:is-behaviour-modif-kba}
     }
 
     \subfigure[The \texttt{key\_buff1} structure.]{
-        \includegraphics[height=.27\textheight] {is_w_kb1_modif}
+        \includegraphics[height=.24\textheight] {is_w_kb1_modif}
         \label{fig:is-behaviour-modif-kb1}
     }
     \caption{Memory access distribution for the main structure of
@@ -279,14 +279,14 @@ interleave policy (Interleave) and with NUMA balancing enabled in the kernel
 (NUMA Balancing). Interleave and NUMA Balancing are not relevant with
 \TABARNAC modifications.
 
-\begin{figure}[htpb]
+\begin{figure}[htb]
     \centering
-    \includegraphics[width=.9\linewidth]{is_exectime}
+    \includegraphics[width=.8\linewidth]{is_exectime}
     \caption{Speedup for \emph{IS} in class D compared to the baseline.}
 \label{fig:is-res}
 \end{figure}
 
-Figure\ref{fig:is-res} show the speedup of \emph{IS} in class D compared to
+Figure~\ref{fig:is-res} shows the speedup of \emph{IS} in class D compared to
 the default version (\emph{dynamic}) for each scheduling method, and for each
 optimization technique. The first thing to notice is that with the
 \emph{dynamic} scheduling, both Interleave and NUMA Balancing slows
@@ -311,11 +311,11 @@ the application down.
     \centering
 
     \subfigure[Access distribution for \texttt{fz}.]{
-        \includegraphics[height=.27\textheight] {ondes3d_fz_dist_orig}
+        \includegraphics[height=.245\textheight] {ondes3d_fz_dist_orig}
         \label{fig:ondes3d-behaviour-fz-orig}
     }
     \subfigure[First-touch \texttt{fz}.]{
-        \includegraphics[height=.27\textheight] {ondes3d_fz_ft_orig}
+        \includegraphics[height=.245\textheight] {ondes3d_fz_ft_orig}
         \label{fig:ondes3d-ft-fz-orig}
     }
     \caption{Original access and first-touch distribution for structure
@@ -327,7 +327,7 @@ The analysis of \emph{Ondes3D} access distributions shows that each
 structures, as we can see for structure \texttt{fz} in figure
 \ref{fig:ondes3d-behaviour-fz-orig}, is well divided between the threads.
 Still we can notice that thread $T0$ seems to access the whole structure. If
-we look at the first touch distribution (fig \ref{fig:ondes3d-ft-fz-orig}), we
+we look at the first touch distribution (fig~\ref{fig:ondes3d-ft-fz-orig}), we
 remark that indeed this thread is responsible for all first access. Due to
 this pattern, if we run \emph{Onde3d} without doing any mapping, every page
 will be mapped on node $0$ resulting on many remote access. An easy fix is to
@@ -337,11 +337,11 @@ do the initialization in parallel and to pin each thread on a different core.
     \centering
 
     \subfigure[Access distribution for \texttt{fz}.]{
-        \includegraphics[height=.27\textheight] {ondes3d_fz_dist_modif}
+        \includegraphics[height=.245\textheight] {ondes3d_fz_dist_modif}
         \label{fig:ondes3d-behaviour-fz-modif}
     }
     \subfigure[First-touch \texttt{fz}.]{
-        \includegraphics[height=.27\textheight] {ondes3d_fz_ft_modif}
+        \includegraphics[height=.245\textheight] {ondes3d_fz_ft_modif}
         \label{fig:ondes3d-ft-fz-modif}
     }
     \caption{Access and first-touch distribution  for structure
@@ -357,14 +357,14 @@ over the structures and match the actual access distribution.
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=.7\linewidth]{ondes3d_exectime}
+    \includegraphics[width=.8\linewidth]{ondes3d_exectime}
     \caption{Speedup for \emph{Ondes3D} compared to the original application.}
 \label{fig:ondes-res}
 \end{figure}
 
 Finally, we evaluate the modified version by comparing it with the original
 version run on the normal OS, with Numa Balancing activated and with
-interleave policy. Figure \ref{fig:ondes-res} present the results of this
+interleave policy. Figure~\ref{fig:ondes-res} present the results of this
 evaluation, we can see that every method improve the execution time, still
 \emph{Numa Balancing} provides less than $30\%$ speedup while static mapping
 (Interleave or modified code) allows us to get almost $60\%$ speedup. This is
