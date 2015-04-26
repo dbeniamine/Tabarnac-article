@@ -24,12 +24,8 @@ developer understand and improve the performance of parallel applications.
 However, these tools rely on hardware performance counters and can therefore provide only indirect and sampled information about the memory access behavior, through cache miss statistics, for example.
 Tracing the memory behavior is complex as many instructions trigger at least one memory access.
 Although several studies have addressed this problem using sampling
-\cite{Lachaize12MemProf} or limiting the amount of informations stored
-\DB{ref ??}, none of them provide a user-friendly visualization or automatic suggestions to help the developer improve the memory access behavior of parallel applications.
-
-add to previous paragraph??:
-Memphis (IBS)~\cite{McCurdy2010}
-Visualization only~\cite{Weyers14Visualization}
+\cite{Lachaize12MemProf,McCurdy2010}, none of them provide a user-friendly
+visualization with by structure informations or automatic suggestions to help the developer improve the memory access behavior of parallel applications.
 
 In this paper, we present \emph{TABARNAC}, a \emph{Tool to Analyze the Behavior of
 Applications Running on NUMA ArChitectures}. This tool allows the user to

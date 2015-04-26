@@ -60,21 +60,43 @@ Libraries that support NUMA-aware memory allocation include libnuma~\cite{Kleen2
 \subsection{Memory Access Profiling}
 \label{sec:soa-profiling}
 
-\begin{itemize}
-    \item MemProf \cite{Lachaize12MemProf}
-        \begin{itemize}
-            \item AMD IBS
-            \item No nice display, user have to go through complex traces
-        \end{itemize}
-    \item ``Manual'' characterization \cite{Majo13(Mis)understanding,Jiang14Understanding}
+Many tools were design to analyse and improve NUMA behavior, still analyzing
+memory access is a challenge due to the number of information to record.
+Several tools \cite{Lachaize12MemProf,McCurdy2010}  address this difficulty by
+using sampling mechanism such as \emph{AMD  Instruction Based
+Sampling}\cite{Drongowski07Instructionbase}. Not only sampling is not accurate
+and can miss important events, but \emph{IBS} is a non portable \emph{AMD}
+technology, therefore such tools cannot always be used. Another approach is to
+use performance counters \cite{Majo13(Mis)understanding,
+Jiang14Understanding,Bosch00Rivet, Weyers14Visualization, Tao01Visualizing},
+which are special register on the processor recording events such as cache
+miss, remote memory access \ldots Theses counters only provides a partial view
+of the execution, they show events happening on the processor related to
+memory, but not what triggered these events.
 
-    \item Based on perfcounter no by structures informations, focus and stall
-        / cache miss rather than patterns \cite{Bosch00Rivet, Weyers14Visualization}
-        => Tells what not why
-    \item Node and by page view remote/local access, no structure informatiosn,
-        no patterns \cite{Tao01Visualizing}
-\end{itemize}
+The second difficulty of memory analysis is to provide the information in a
+readable way to the user. Some of the tools previously mentioned only provides
+a textual output \cite{Lachaize12MemProf,McCurdy2010} even if these tools
+tries to highlight the most relevant informations, it is hard to get a global
+view of the memory behavior from such output. The user might not be lost in a
+huge amount of information and not able to differentiate normal behavior from
+problematic ones. Other tools provides more advanced visualizations for
+instance Tao et al. \cite{Tao01Visualizing} propose a detailed view for each
+page showing the number of remote and local accesses on each nodes. Weyers et
+al. \cite{Weyers14Visualization} show the bandwidth between each pair of nodes
+showing where the remote accesses occurs. Finally Bosch et al.
+\cite{Bosch00Rivet} gives several views of the execution and possibility to
+navigate through them.
 
+Although all these tools allow the user to understand more or less easily and
+precisely what kind of performance issue he is facing, they never gives the
+answer to the question ``why is this happening ?'' which is actually the most
+important question to answer to fix the performance issues.
+
+Previous studies have tried to answer this question for some specific
+benchmarks \cite{Majo13(Mis)understanding,Jiang14Understanding}, still they
+were doing this analysis more or less manually using performance counters and
+does not provide a general tool or methodology usable for other application.
 
 \subsection{Summary?}
 
@@ -93,3 +115,5 @@ Why Not automated tools
     \item Trainning time
     \item Garbage in/ garbage out (matrix modulo / bloc)
 \end{itemize}
+
+New tool: understand why performances are bad
