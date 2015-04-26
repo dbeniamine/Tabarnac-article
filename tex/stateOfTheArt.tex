@@ -4,7 +4,7 @@
 \section{Related Work}
 \label{sec:soa}
 
-This section presents an overview of related work in the area of data mapping mechanisms and memory access profiling.
+This section presents an overview of related work in the area of data mapping mechanisms and memory access profiling of parallel applications based on shared memory.
 
 \subsection{Data Mapping Mechanisms}
 \label{sec:soa-mapping}
@@ -60,60 +60,59 @@ Libraries that support NUMA-aware memory allocation include libnuma~\cite{Kleen2
 \subsection{Memory Access Profiling}
 \label{sec:soa-profiling}
 
-Many tools were design to analyse and improve NUMA behavior, still analyzing
-memory access is a challenge due to the number of information to record.
-Several tools \cite{Lachaize12MemProf,McCurdy2010}  address this difficulty by
+Many tools were designed to analyze and improve NUMA behavior. Nevertheless, analyzing
+memory accesses is a challenge due to the amount of information to store and process.
+Several tools~\cite{Lachaize12MemProf,McCurdy2010}  address this difficulty by
 using sampling mechanism such as \emph{AMD  Instruction Based
-Sampling}\cite{Drongowski07Instructionbase}. Not only sampling is not accurate
-and can miss important events, but \emph{IBS} is a non portable \emph{AMD}
-technology, therefore such tools cannot always be used. Another approach is to
-use performance counters \cite{Majo13(Mis)understanding,
-Jiang14Understanding,Bosch00Rivet, Weyers14Visualization, Tao01Visualizing},
-which are special register on the processor recording events such as cache
-miss, remote memory access \ldots Theses counters only provides a partial view
+Sampling}~\cite{Drongowski07Instructionbase}. Not only can sampling miss important events, leading to inaccurate characterizations, but \emph{IBS} is a non-portable \emph{AMD}
+technology, therefore such tools can be used only in special circumstances. Another approach is to
+use hardware performance counters~\cite{Majo13(Mis)understanding,
+Jiang14Understanding,Bosch00Rivet,Weyers14Visualization,Tao01Visualizing},
+which are special hardware registers that record events such as cache
+misses, remote memory accesses, among others. These counters only provide a partial view
 of the execution, they show events happening on the processor related to
 memory, but not what triggered these events.
 
-The second difficulty of memory analysis is to provide the information in a
-readable way to the user. Some of the tools previously mentioned only provides
-a textual output \cite{Lachaize12MemProf,McCurdy2010} even if these tools
-tries to highlight the most relevant informations, it is hard to get a global
-view of the memory behavior from such output. The user might not be lost in a
+The second difficulty of memory analysis is to present the information in such a
+ way to the user that he is able to improve the behavior. Some of the tools previously mentioned only provide
+a textual output~\cite{Lachaize12MemProf,McCurdy2010}. Even if these tools highlight the most relevant informations, it is hard to get a global
+view of the memory behavior from such output. The user might be lost in a
 huge amount of information and not able to differentiate normal behavior from
-problematic ones. Other tools provides more advanced visualizations for
-instance Tao et al. \cite{Tao01Visualizing} propose a detailed view for each
-page showing the number of remote and local accesses on each nodes. Weyers et
-al. \cite{Weyers14Visualization} show the bandwidth between each pair of nodes
-showing where the remote accesses occurs. Finally Bosch et al.
-\cite{Bosch00Rivet} gives several views of the execution and possibility to
+problematic ones. Other tools provide more advanced visualizations. For
+instance, Tao et al.~\cite{Tao01Visualizing} propose a detailed view for each
+page, showing the number of remote and local accesses on each NUMA node. Weyers et
+al.~\cite{Weyers14Visualization} present the memory bandwidth between each pair of nodes,
+showing where the remote accesses occur. Finally, Bosch et al.~\cite{Bosch00Rivet} give several views of the execution and the possibility to
 navigate through them.
+\MD{weak paragraph...}
 
 Although all these tools allow the user to understand more or less easily and
-precisely what kind of performance issue he is facing, they never gives the
-answer to the question ``why is this happening ?'' which is actually the most
-important question to answer to fix the performance issues.
+precisely what kind of performance issue he is facing, they never give the
+reason \emph{why} a certain behavior is happening or how to improve it, which is actually the most important point that can help to fix performance issues.
+Previous studies aimed to answer this question for some specific
+benchmarks~\cite{Majo13(Mis)understanding,Jiang14Understanding}.
+However, these studies use manual source code analysis and performance counters and do not provide a general tool or methodology usable for other applications.
 
-Previous studies have tried to answer this question for some specific
-benchmarks \cite{Majo13(Mis)understanding,Jiang14Understanding}, still they
-were doing this analysis more or less manually using performance counters and
-does not provide a general tool or methodology usable for other application.
+\subsection{Summary}
 
-\subsection{Summary?}
+Summarizing our discussion of previous work in this area, we can affirm that tools to improve the memory access behavior on NUMA architectures with prior information have the highest potential for improvements.
+The two main challenges for this type of tool is to gather information about the memory access behavior in a fast, accurate and easy-to-use way, and providing information to the developer on how to improve the behavior.
+Our proposed tool, \TABARNAC, attempts to solve these challenges.
 
-\MD{mechanisms with prior information have highest potential for improvements, but currently:
-- lack of information about memory access behavior
-- lack of information about ways to improve behavior
-}
-Importance of Mapping:
-\begin{itemize}
-    \item First touch
-    \item Interleave
-\end{itemize}
+% \MD{mechanisms with prior information have highest potential for improvements, but currently:
+% - lack of information about memory access behavior
+% - lack of information about ways to improve behavior
+% }
+% Importance of Mapping:
+% \begin{itemize}
+%     \item First touch
+%     \item Interleave
+% \end{itemize}
 
-Why Not automated tools
-\begin{itemize}
-    \item Trainning time
-    \item Garbage in/ garbage out (matrix modulo / bloc)
-\end{itemize}
+% Why Not automated tools
+% \begin{itemize}
+%     \item Trainning time
+%     \item Garbage in/ garbage out (matrix modulo / bloc)
+% \end{itemize}
 
-New tool: understand why performances are bad
+% New tool: understand why performances are bad
