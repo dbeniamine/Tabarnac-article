@@ -161,8 +161,8 @@ suitable for NUMA machines. We can easily put each part of \texttt{C} (and
 \texttt{B} can be distributed using an interleave policy.
 
 To evaluate the efficiency of the proposed modifications, we compare the execution
-time of both versions of the code (naive and block) with the mapping suggested by \TABARNAC to the original Linux kernel (base) and to NUMA Balancing.
-For this experiment, the interleave policy is identical to \TABARNAC and is therefore not shown separately.
+time of both versions of the code (naive and block) with the mapping suggested by \TABARNAC to the original Linux kernel (base), Interleave, and to NUMA Balancing.
+
 
 \begin{figure}[!t]
     \centering
@@ -381,10 +381,11 @@ with NUMA Balancing, all pages are initially mapped by the OS to the NUMA node o
 are only moved a while later, after many remote accesses have already occurred. This is a case where static mapping can be substantially better than automated
 tools. \tod{remove?:} The Interleave policy provides almost the same speedup as
 \TABARNAC as it distributes the pages over the NUMA nodes at the beginning of
-the execution. Nevertheless, the interleave version only maps the data no the
-threads, therefore if the performances might drop if the OS does not map them
-``correctly'' while the modified version proposes a thread mapping that ensures better
-data locality.
+the execution.
+% Nevertheless, the interleave version only maps the data no the
+% threads, therefore if the performances might drop if the OS does not map them
+% ``correctly'' while the modified version proposes a thread mapping that ensures better
+% data locality.
 
 \subsection{Analysis Overhead}
 \label{sec:expe-overhead}
