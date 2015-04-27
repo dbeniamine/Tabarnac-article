@@ -414,12 +414,15 @@ can be reasonable.
 
 \subsection{Summary}
 
-\tod{write this}
+Our experiments have highlighted the fact that although automated tools such
+as NUMA Balancing can be efficient, in several cases they result on
+performance lost. Moreover, although simple mappings policy such as Interleave
+can result on substantial improvements, the best policy dependent of the
+application. Therefore it is necessary to understand its memory behavior to
+choose the right policy.
 
-- automatic policies with deficits (slower compared to baseline in many cases)
-
-- \TABARNAC always highest improvements
-
-- simple applications changes/mappings can result in substantial improvements
-
-- correct policy depends on application
+\TABARNAC lead user to performance improvements in two ways: first by
+providing a deep understanding of the memory behavior, it allows the user to
+find the best mapping policy. Furthermore, this knowledge can be used to
+identify and fix inefficient memory behavior. Our experiments shown that both
+situations results on significant performance gains.
