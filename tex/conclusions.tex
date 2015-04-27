@@ -4,12 +4,13 @@
 \section{Conclusions and Future Work}
 \label{sec:concl}
 
-In this paper, we presented \TABARNAC: a new tool to trace, analyze and
+In this paper, we presented \TABARNAC, a new tool to trace, analyze and
 optimize the memory behavior of parallel applications running on NUMA
-machines. \TABARNAC is divided in two parts: the first is a memory tracer
-based on the Pin dynamic binary instrumentation. It records for each pages the
-number of read and write done by each threads. Instrumentation is the most
-accurate and portable way to generate memory trace.
+machines. \TABARNAC is divided into two parts: the first is a memory tracer
+based on the Pin dynamic binary instrumentation. It records the
+number of reads and writes done by all threads for each page.
+The advantage of instrumentation is that it is the most
+accurate and portable way to generate memory traces.
 Despite the overhead caused by the instrumentation, our tool is efficient enough to analyze even huge applications in a reasonable time.
 
 Presenting memory traces in an intuitive way is a challenge, to address it, we
@@ -22,9 +23,9 @@ read it, what kind of issues it can help to identify and how to solve them.
 
 Using \TABARNAC, we analyzed three parallel applications. The first is a
 matrix multiplication and is useful to discuss classical well known memory access issues.
-Then we analyzed \emph{IS} from the NAS Parallel Benchmarks. Finally we study
-\emph{Ondes3D} a real life application that simulates seismic waves. For all
-these applications, \TABARNAC helps us understanding their performance issues.
+Then we analyzed \emph{IS} from the NAS Parallel Benchmarks. Finally, we studied
+\emph{Ondes3D}, a real life application that simulates seismic waves. For all
+these applications, \TABARNAC helped us understanding their performance issues.
 Using this knowledge, we proposed code modification to optimize the behavior, resulting in
 significant speedups compared to the original version (up to $60\%$ speedup),
 and to the results provided by automated tools (more than $10\%$ speedup).
