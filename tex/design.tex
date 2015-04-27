@@ -51,7 +51,7 @@ and writes per threads. The second file contains the
 list of structures with their names, sizes and start addresses.
 We then call an R-markdown script which will first read the two csv files and
 retrieve the page / data structure mapping, then generate the final
-visualization presented in section~\ref{sec:design-visu}. We use R-markdown
+visualization presented in Section~\ref{sec:design-visu}. We use R-markdown
 for the visualization as it allows us to interleave plots with plain text
 explanation and optimization hints.
 
@@ -120,15 +120,14 @@ manual data mapping to ensure better memory access locality during the execution
 \end{figure}
 
 To evaluate the instrumentation overhead, we ran all the NAS Parallel Benchmarks in
-class B with 64 threads on our experimental machine (see section
-\ref{sec:metho}) and compared the original execution time with the
-execution time under instrumentation. We can see in figure \ref{fig:ovh} that
-the overhead of the instrumentation is between $10$ and $30\%$. Although it is
+class B with 64 threads on our experimental machine (see Section~\ref{sec:metho}) and compared the original execution time with the
+execution time under instrumentation. We can see in Figure~\ref{fig:ovh} that
+the instrumentation is $10$ to $30$ times slower than the normal execution. Although it is
 no negligible, we have to consider the fact that often we can instrument
 smaller version of the applications as we focus on the general behavior.
 Moreover as we do not use sampling, our instrumentation is deterministic and
 there is no need to run several times the instrumentation. Finally as our
 analysis is designed to be used during the development phase of the
-application and not by an automated tool during the execution, even $30\%$
-overhead is quite reasonable.
+application and not by an automated tool during the execution, even a factor $30$
+is quite reasonable.
 \itodo{should probably be in the results section}
