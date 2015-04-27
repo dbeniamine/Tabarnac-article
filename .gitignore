@@ -8,3 +8,5 @@ tabarnac.pdf
 *.tex.latexmain
 *.fdb_latexmk
 *.synctex.gz
+*.swp
+*/*.swp
