@@ -93,20 +93,28 @@ pattern than \texttt{C}.
 \begin{figure}[htb]
     \centering
     \subfigure[Structure B (naive version).]{
-        \includegraphics[height=.24\textheight] {mat_B_modulo}
+        \includegraphics[width=.45\linewidth] {mat_B_modulo}
         \label{fig:matrix-B-naive}
     }
     \subfigure[Structure C (naive version).]{
-        \includegraphics[height=.24\textheight] {mat_C_modulo}
+        \includegraphics[width=.45\linewidth] {mat_C_modulo}
         \label{fig:matrix-C-naive}
     }
-    \caption{Per-thread access distribution on data structures A and B for the
-        naive matrix multiplication. Each plots shows the number of access
-    depending on the page number (inside the structure) for each thread.}
-    \label{fig:matrix-naive}
+    \subfigure[Structure B (block version).]{
+        \includegraphics[width=.45\linewidth] {mat_B_bloc}
+        \label{fig:matrix-B-bloc}
+    }
+    \subfigure[Structure C (block version).]{
+        \includegraphics[width=.45\linewidth] {mat_C_bloc}
+        \label{fig:matrix-C-bloc}
+    }
+    \caption{Per-thread access distribution on data structures B and C for the
+    matrix multiplication.}
+    %\label{fig:matrix-naive}
 \end{figure}
 
-For the naive matrix multiplication, as we can see in Figure~\ref{fig:matrix-naive}, all the pages of both structures are used by every
+For the naive matrix multiplication, as we can see in
+Figure~\ref{fig:matrix-B-naive}~and~\ref{fig:matrix-C-naive}, all the pages of both structures are used by every
 thread. Therefore, when we execute this code on a NUMA machine, wherever we
 map the page, all the nodes but one will trigger remote memory accesses. There
 are several ways to improve this behavior: an easy solution
@@ -116,20 +124,20 @@ nodes. An other solution is to create local copies of \texttt{A} and
 \texttt{B} on each node as these matrix are only read. Finally we can modify
 the algorithm to improve the locality, which mean using the block algorithm.
 
-\begin{figure}[htb]
-    \centering
-    \subfigure[Structure B (block version).]{
-        \includegraphics[height=.24\textheight] {mat_B_bloc}
-        \label{fig:matrix-B-bloc}
-    }
-    \subfigure[Structure C (block version).]{
-        \includegraphics[height=.24\textheight] {mat_C_bloc}
-        \label{fig:matrix-C-bloc}
-    }
-    \caption{By thread access distribution on data structures A and B for the
-    block matrix multiplication.}
-    \label{fig:matrix-bloc}
-\end{figure}
+%\begin{figure}[htb]
+%    \centering
+%    \subfigure[Structure B (block version).]{
+%        \includegraphics[height=.24\textheight] {mat_B_bloc}
+%        \label{fig:matrix-B-bloc}
+%    }
+%    \subfigure[Structure C (block version).]{
+%        \includegraphics[height=.24\textheight] {mat_C_bloc}
+%        \label{fig:matrix-C-bloc}
+%    }
+%    \caption{By thread access distribution on data structures A and B for the
+%    block matrix multiplication.}
+%    \label{fig:matrix-bloc}
+%\end{figure}
 
 As we can see in Figure~\ref{fig:matrix-bloc}, the block algorithm improves the page
 locality compared to the naive one. In our algorithm, structures \texttt{B}
