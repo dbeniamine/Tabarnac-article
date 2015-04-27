@@ -10,12 +10,12 @@ visualization.  In this section, we discuss the implementation of both parts.
 \subsection{Instrumentation}
 \label{sec:design-impl}
 
-The instrumentation part of \TABARNAC is based on a custom memory tracer for the Pin Dynamic Binary Instrumentation~(DBI) tool~\cite{Luk05Pin}.
+The instrumentation part of \TABARNAC is based on a custom memory tracer for the Pin dynamic binary instrumentation tool~\cite{Luk05Pin}.
 Before running the application, our tool retrieves static memory allocation
-informations using the library \texttt{libelfg0}. Dynamic allocations are
+information using the \texttt{libelfg0} library. Dynamic allocations are
 intercepted with a \texttt{malloc} replacement. If the application is
-compiled with debug flags (\texttt{-g}), the structure names that are malloc'ed can be extracted from the source
-code. If we can not retrieve a structure name, we call it
+compiled with debug flags (\texttt{-g}), the structure names that are malloced can be extracted from the source
+code. If no structure name is available, we call it
 \texttt{AnonymousStruc\#ID}, where $ID$ is a unique identifier for the
 execution, starting at $0$. Finally, each time a thread is created, we compute
 its stack bounds, and create a virtual structure named \texttt{Stack\#N} where
@@ -26,15 +26,14 @@ size and address) are not used during the instrumentation, they are only
 printed in a file at the end of the analysis to be used by the visualization
 tool.
 
-During the execution, our tracer intercepts every memory access of the parallel application.
+During the execution, every memory access of the parallel application is traced.
 For each access, we store the type of access (read or write), the memory page that was accessed, and the thread ID.
 The information is stored on a per-thread basis, as shown in
 Listing~\ref{lst:mem}, making the code completely lock-free as well as minimizing the amount of false sharing.
 
 %\begin{figure}[!h]
-\begin{lstlisting}[caption=Code that is executed on each memory access.,label=lst:mem]
-	void mem_access(uint64_t address, uint32_t threadid, char type)
-	{
+\begin{lstlisting}[caption={Code executed on each memory access. The \texttt{address}, \texttt{threadid} and \texttt{type} parameters are from Pin.},label=lst:mem]
+	void mem_access(uint64_t address, uint32_t threadid, char type) {
 		uint64_t page = address >> page_bits;
 		acc[threadid][page][type]++;
 	}
@@ -45,11 +44,11 @@ Listing~\ref{lst:mem}, making the code completely lock-free as well as minimizin
 %\end{figure}
 
 
-At the end of the tracing phase, we generate two \texttt{csv} files.
+After tracing finishes, we generate two \texttt{csv} files.
 The first file contains the list of pages and the number of reads
 and writes per threads. The second file contains the
 list of structures with their names, sizes and start addresses.
-We then call an R-markdown script which will first read the two csv files and
+We then call an R-markdown script which will first read the two \texttt{csv} files and
 retrieve the page / data structure mapping, then generate the final
 visualization presented in Section~\ref{sec:design-visu}. We use R-markdown
 for the visualization as it allows us to interleave plots with plain text
