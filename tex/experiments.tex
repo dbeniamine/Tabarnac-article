@@ -114,15 +114,15 @@ pattern as \texttt{C}.
 \end{figure}
 
 For the naive matrix multiplication, as we can see in
-Figure~\ref{fig:matrix-B-naive}~and~\ref{fig:matrix-C-naive}, all the pages of both structures are used by every
+Figures~\ref{fig:matrix-B-naive}~and~\ref{fig:matrix-C-naive}, all the pages of both structures are used by every
 thread. Therefore, when we execute this code on a NUMA machine, wherever we
 map the page, all the nodes but one will trigger remote memory accesses. There
 are several ways to improve this behavior: an easy solution
 is to tell the operating system to interleave pages through the different
-nodes. This will result on a better balance of memory bandwidth between the
-nodes. An other solution is to create local copies of \texttt{A} and
-\texttt{B} on each node as these matrix are only read. Finally we can modify
-the algorithm to improve the locality, which mean using the block algorithm.
+nodes. This will result in a better balance of memory bandwidth between the
+nodes. Another solution is to create local copies of \texttt{A} and
+\texttt{B} on each node as these matrices are only read. Finally, we can modify
+the algorithm to improve the locality, which means using the block algorithm.
 
 %\begin{figure}[htb]
 %    \centering
@@ -144,8 +144,8 @@ locality compared to the naive one. In our algorithm, structures \texttt{B}
 and \texttt{C} are not divided the same way, resulting in two different access patterns. For structure \texttt{B} (Figure~\ref{fig:matrix-B-bloc}), the pages
 are interleaved, threads $T0$ and $T1$ work on the same pages while threads
 $T2$ and $T3$ work on another set of pages. Structures \texttt{C} (and
-\texttt{A}, Figure~\ref{fig:matrix-C-bloc}) are cut in two parts, the first half
-is shared by thread $T0$ and $T2$ while the two others works on the second
+\texttt{A}, Figure~\ref{fig:matrix-C-bloc}) are split into two parts, the first half
+is shared by threads $T0$ and $T2$ while the two others works on the second
 half. This behavior provides strong page locality and is therefore more
 suitable for NUMA machines. We can easily put each part of \texttt{C} (and
 \texttt{A}) on a NUMA node and map the thread using it to this node, while matrix
@@ -203,7 +203,7 @@ The \emph{IS} benchmark in its default version has an unstructured memory access
 \end{figure}
 
 Figure~\ref{fig:is-behaviour-orig} shows the access distributions for the
-three main structures of \emph{IS} class W with $4$ threads. We can see that
+three main structures of \emph{IS} class \emph{W} with $4$ threads. We can see that
 each structure has a different access pattern: \texttt{key\_array}'s
 (Figure~\ref{fig:is-behaviour-orig-kba}) access distribution shows that every
 thread works on a different part of the structure which allows automated
