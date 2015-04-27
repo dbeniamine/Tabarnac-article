@@ -113,7 +113,7 @@ pattern as \texttt{C}.
 \end{figure}
 
 For the naive matrix multiplication, as we can see in
-Figure~\ref{fig:matrix-B-naive}~and~\ref{fig:matrix-C-naive}, all the pages of both structures are used by every
+Figures~\ref{fig:matrix-B-naive}~and~\ref{fig:matrix-C-naive}, all the pages of both structures are used by every
 thread. Therefore, when we execute this code on a NUMA machine, wherever we
 map the page, all the nodes but one will trigger remote memory accesses. There
 are several ways to improve this behavior: an easy solution
@@ -138,7 +138,7 @@ the algorithm to improve the locality, which mean using the block algorithm.
 %    \label{fig:matrix-bloc}
 %\end{figure}
 
-As we can see in Figure~\ref{fig:matrix-bloc}, the block algorithm improves the page
+As we can see in Figures~\ref{fig:matrix-B-bloc}~and~\ref{fig:matrix-C-bloc}, the block algorithm improves the page
 locality compared to the naive one. In our algorithm, structures \texttt{B}
 and \texttt{C} are not divided the same way, resulting in two different access patterns. For structure \texttt{B} (Figure~\ref{fig:matrix-B-bloc}), the pages
 are interleaved, threads $T0$ and $T1$ work on the same pages while threads
