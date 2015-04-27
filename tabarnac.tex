@@ -320,7 +320,7 @@ bookmarksopen=true}
 %\captionsetup[lstlisting]{ margin=3pt }
 \usetikzlibrary{decorations.pathreplacing,patterns}
 
-\usepackage{multirow,booktabs,xspace}
+\usepackage{multirow,booktabs,xspace,soul}
 
 \newcommand{\TABARNAC}{\emph{TABARNAC}\xspace}
 \newcommand{\Input}[1]{\input{./tex/#1}}
@@ -330,6 +330,7 @@ bookmarksopen=true}
 \newcommand{\MD}[1]{\iatodo{Matthias}{#1}}
 \newcommand{\GH}[1]{\iatodo{Guillaume}{#1}}
 
+\newcommand{\tod}[1]{\textbf{\color{red}{\ul{#1}}}}
 
 \title{TABARNAC: Tools for Analyzing the Behavior of Applications Running on
 NUMA ArChitectures}
@@ -360,31 +361,28 @@ Email: $\{$mdiener,navaux$\}$@inf.ufrgs.br}
 \begin{document}
 
 
-\maketitle%affichage du titre
+\maketitle
 \begin{abstract}
 
-In High Performance Computing, memory is often a bottleneck thus optimizing
-memory access behavior is necessary. This is even more important with NUMA
-memories as the access time to a data depends of the CPU responsible for the
-access and the location of the data in the memory. Many efforts were made to
-develop adaptive tools improving memory access at the runtime by mapping data
-and threads. Still the improvements provided by these tools highly depends on
-the quality of the memory access pattern of the original application. A code
-written without considering memory performances at all might not benefit from
-them. Moreover, automatic mappings tools needs a warming time to detect the
-best mapping, during these phase, opportunities for optimization are lost. A
-deep understanding of the memory behavior can help defining the right mapping
-statically therefore avoiding this warming period.
+In modern parallel architectures, memory accesses represent a common bottleneck, making optimizing their behavior necessary to achieve optimal performance. This is even more important with NUMA
+memories, as the access time to data depends on the memory controller that is responsible for the
+access and the location of the data in the main memory. Many efforts were made to
+develop adaptive tools to improve memory accesses at the runtime by optimizing the mapping of data and threads to NUMA nodes. However, the improvements provided by these tools highly depend on
+the memory access pattern of the original application. A code
+written without considering memory performance at all might not benefit from
+them. Moreover, automatic mapping tools need time to detect the
+best mapping. During this training phase, opportunities for optimizations are lost. A
+deeper understanding of the memory behavior can help defining the correct mapping without the need for an analysis during execution.
 
-In this paper, we present \TABARNAC, a tool for analyzing memory behavior. One
-of the main contribution of \TABARNAC is to provide precises plots allowing the
-user to easily reach a deep understanding of the memory access distribution
-and hints on how to modify code / do manual mapping to improve performances.
-Using this tool, we explain why some application does not benefit from data
-and thread mapping. Moreover we propose some simple code modifications to
-improve their memory behavior and we propose a manual data and thread
-mapping.  Finally we evaluate the impact of these optimization with and
-without thread and data mapping comparing our manual mapping to automated
+In this paper, we present \TABARNAC, a tool for analyzing the memory behavior of parallel applications with a focus on NUMA architectures.
+The main contributions of \TABARNAC are to provide a precise analysis of the behavior, allowing the
+user to easily reach a deep understanding of the memory access distribution,
+as well as suggestions for the developer on how to modify the source code or perform a manual mapping to improve performance.
+Using \TABARNAC, we explain why some applications do not benefit from data
+and thread mapping. Moreover, we propose several simple code modifications to
+improve the memory access behavior as well as manual data and thread
+mappings. Finally, we evaluate the impact of these optimizations with and
+without thread and data mapping, comparing our manual mapping to automated
 tools.
 
 \end{abstract}
