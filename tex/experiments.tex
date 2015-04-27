@@ -161,7 +161,8 @@ suitable for NUMA machines. We can easily put each part of \texttt{C} (and
 \texttt{B} can be distributed using an interleave policy.
 
 To evaluate the efficiency of the proposed modifications, we compare the execution
-time of both versions of the code (naive and block) with the mapping suggested by \TABARNAC to the original Linux kernel (base), Interleave, and to NUMA Balancing.
+time of both versions of the code (naive and block) with the mapping suggested by \TABARNAC to the original Linux kernel (base), and to NUMA Balancing.
+For this experiment, the interleave policy is identical to \TABARNAC and is therefore not shown separately
 
 
 \begin{figure}[!t]
