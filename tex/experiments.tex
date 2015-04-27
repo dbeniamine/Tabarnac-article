@@ -90,7 +90,7 @@ The optimized implementation uses a non-recursive block
 decomposition.
 Moreover, when an application has such an unstructured memory access pattern, it
 is not always possible to change the pattern completely. Therefore, it is
-interesting to discuss the improvements we can obtain on this kernel without
+interesting to discuss the improvements that can be obtained in this kernel without
 modifying the algorithm.
 
 
@@ -172,7 +172,7 @@ time of both versions of the code (naive and block) with the mapping suggested b
 \end{figure}
 
 Figure~\ref{fig:matrix-res} shows the experimental results of the matrix multiplication. We can see that for
-the naive algorithm, NUMA Balancing is already quite efficient and results in $40\%$
+the naive algorithm, NUMA Balancing is already quite efficient and results in a $40\%$
 speedup. However, using the \TABARNAC policy avoids the runtime overhead and
 allows us to obtain almost $50\%$ of speedup. For the block version, all runtimes
 provide the same execution time as this algorithm is designed to fit in the
@@ -239,11 +239,11 @@ distribution of work, but the developers also propose a cyclic distribution
 of the threads over the loop. As we know that the values of \texttt{key\_buff2}
 follow a Gaussian distribution, we can design a distribution of the threads
 providing both a good load balancing and locality of data. For the distribution, we split
-the loop into two equal parts and distribute each part among the threads in a round-robin way. This can be done by modifying line \ref{lst:is-sched} of the original code, as shown
+the loop into two equal parts and distribute each part among the threads in a round-robin way. This can be done by modifying the OpenMP pragma (line~\ref{lst:is-sched} in the original code), as shown
 in Listing~\ref{lst:is-modif}.
 
 \begin{lstlisting}[float=!ht,caption=Optimization for \emph{IS}., label=lst:is-modif]
-#pragma omp for schedule(static,NUM_BUCKETS/(2*omp_get_max_threads()))
+#pragma omp for schedule(static,NUM_BUCKETS/(2*omp_get_num_threads()))
 \end{lstlisting}
 
 \begin{figure}[!p]
@@ -378,7 +378,7 @@ due to the training time described in section \ref{sec:soa-mapping}. Indeed,
 with NUMA Balancing, all pages are initially mapped by the OS to the NUMA node of thread $T0$, they
 are only moved later on, after many remote accesses have already occurred. This is a case where static mapping can be substantially better than automated
 tools. The Interleave policy provides a similar speedup as
-\TABARNAC as it distributes the pages over the NUMA nodes at the beginning of
+\TABARNAC since it distributes the pages over the NUMA nodes at the beginning of
 the execution.
 % Nevertheless, the interleave version only maps the data no the
 % threads, therefore the performances might drop if the OS does not map them
