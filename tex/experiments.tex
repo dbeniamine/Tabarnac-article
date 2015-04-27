@@ -67,7 +67,7 @@ For each application, we show the memory access behavior, discuss strategies to 
 \subsection{Matrix Multiplication}
 \label{sec:exp-mat}
 
-The first benchmark presented is based on a naive matrix multiplication
+The first benchmark presented is based on a naive matrix multiplication,
 computing $C=A \times B$. Our aim here is not to provide a kernel competing with the
 state of the art, but to show how \TABARNAC can help to improve such
 applications. We compare two implementations of the matrix multiplication, in
@@ -77,11 +77,12 @@ number of threads. Although this implementation is known to be inefficient, it i
 good example of NUMA-unaware code, and comparing the \TABARNAC visualization
 for this algorithm to the one obtained with a better version helps understanding
 how to interpret it.
-Moreover, when an application has such an unstructured memory access pattern, it
-is not always possible to change the pattern completely, therefore, it is
-interesting to discuss the improvement we can obtain on this kernel without
-modifying the algorithm. The second implementation uses a non recursive block
+The optimized implementation uses a non-recursive block
 decomposition.
+Moreover, when an application has such an unstructured memory access pattern, it
+is not always possible to change the pattern completely. Therefore, it is
+interesting to discuss the improvements we can obtain on this kernel without
+modifying the algorithm.
 
 % The figures presented in this sections are part of the \TABARNAC visualization.
 Each plot shows the number of memory accesses for a particular data structure
