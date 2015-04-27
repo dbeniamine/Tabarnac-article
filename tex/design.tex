@@ -63,44 +63,89 @@ for the visualization.
 \subsection{Visualization}
 \label{sec:design-visu}
 
-Providing an easy to read visualization of a memory trace is a challenge. We opted for an
-assisted visualization. Once the analyze phase is done, \TABARNAC will
-generate an HTML page, providing a summary of the trace through several plots.
-This HTML page is generated using R markdown as well.
-Before each plot, we explain how to read it, what
-usual issues it can help to understand and we give hints on how to fix the issues.
+Providing an easy to read visualization of a memory trace is a challenge. We
+opted for an assisted visualization. Once the analyze phase is done, \TABARNAC
+will generate an HTML page, providing a summary of the trace through several
+plots.  This HTML page is generated using R markdown as well.  Before each
+plot, we explain how to read it, what usual issues it can help to understand
+and we give hints on how to fix the issues.
 
 The visualization starts with a small introduction, reminding the main
 principles while developing for NUMA machines, then it shows the analysis
 machine's topology using Hwloc~\cite{Broquedis10hwloc}.
 
-In the next part, the visualization focuses on data structures usage. Some structures might
-be ignored for two reason: either no accesses have been detected during the
-analysis, which happens for structures used by external libraries, or less than 0.01\% of the total accesses happens on them. This is done to make the output
-more readable. However, it is possible to ask \TABARNAC not to ignore
-structures in the second case.
+In the next part, the visualization focuses on data structures usage. Some
+structures might be ignored for two reason: either no accesses have been
+detected during the analysis, which happens for structures used by external
+libraries, or less than 0.01\% of the total accesses happens on them. This is
+done to make the output more readable. However, it is possible to ask
+\TABARNAC not to ignore structures in the second case.
+
+\begin{figure}[htb]
+    \centering
+    \subfigure[Size of structures in pages.]{
+        \includegraphics[width=.45\linewidth]{example_sz}
+        \label{fig:example_sz}
+    }
+    \subfigure[First touch distribution inside one structure.
+%   Each point shows which thread is responsible of the first access on one page.
+    ]{
+        \includegraphics[width=.45\linewidth]{example_ft}
+        \label{fig:example_ft}
+    }
+    \label{fig:example_plot1}
+    \caption{Global view of memory behavior.}
+\end{figure}
 
 The first series of plots aims to give information concerning the relative
-importance of data structures. It shows the size of each data structure and the
-number reads and writes done by each thread on each structure. The global
-read/write pattern is also displayed. These plots gives a general idea of the
-structures used by threads, it allows also to identify master/slave patterns.
-Moreover, knowing the read/write behavior is very useful as it determines the
-possible optimization. For instance, structures written only at initialization
-(or very rarely) can be (relatively) easily duplicated in a way that each NUMA
-node works on a local copy.
-\DB{Maybe to much details here ?}
+importance of data structures. It consists of three plots showing first the
+size of  each data structures, as in Figure~\ref{fig:example_sz}, then the
+number of read and write per threads (Figure~\ref{fig:example_rw}) and
+finally the total number of read and write per structures. These plots gives a
+general idea of the structures used by threads, it allows also to identify
+master/slave patterns.  Moreover, knowing the read/write behavior is very
+useful as it determines the possible optimization. For instance, structures
+written only at initialization (or very rarely) can be (relatively) easily
+duplicated in a way that each NUMA node works on a local copy.
 
-The second series of plots is the most important one, it shows for
-each thread and each structure the distribution of accesses inside the
-structure. It gives an easy way to understand data sharing between threads and
-structures usage. The plots presented in Sections~\ref{sec:exp-mat}~and~\ref{sec:exp-is} come from this series. They can be used to identify inefficient memory usage or to determine the best NUMA mapping
-policy.
+\begin{figure}[htb]
+    \centering
+    \subfigure[Number of Read and Write per threads and per structure.]{
+        \includegraphics[width=.45\linewidth]{example_rw}
+        \label{fig:example_rw}
+    }
+    \subfigure[Access distribution per thread inside one structure.
+%    Each point represents the number of access to one page done by one thread.
+    ]{
+        \includegraphics[width=.45\linewidth]{example_dist}
+        \label{fig:example_dist}
+    }
+    \caption{Per thread view of memory behavior.}
+    \label{fig:example_plot2}
+\end{figure}
+
+The second series of plots is the most important one, it shows for each thread
+and each structure the distribution of accesses inside the structure. As we
+can see in Figure~\ref{fig:example_dist}, each point represent the number of
+accesses done by one thread to one page. It gives an easy way to understand data
+sharing between threads and structures usage. They can be used to identify
+inefficient memory usage or to determine the best NUMA mapping policy.
+
+%\begin{figure}[htb]
+%    \centering
+%    \includegraphics[height=.2\textheight]{example_ft}
+%    \caption{Example of first touch distribution Each point show which thread
+%    is responsible of the first access on one page.}
+%    \label{fig:example_ft}
+%\end{figure}
+
 
 Finally, \TABARNAC provides a plot that shows for each page of each structure
-which thread was responsible for the first touch (this information is used in Section~\ref{sec:exp-ondes3d}, for example). This information is quite relevant as the default
-policy for Linux is to map a page as close as possible to the first thread
-accessing it. If the first touch distribution doest not fit the actual access
-distribution, the default mapping done by \emph{Linux} might not be efficient.
-To improve this issue, the developer can either distribute correctly the first touch or do some
-manual data mapping to ensure better memory access locality during the execution.
+which thread was responsible for the first touch
+(Figure~\ref{fig:example_ft}). This information is quite relevant as the
+default policy for Linux is to map a page as close as possible to the first
+thread accessing it. If the first touch distribution doest not fit the actual
+access distribution, the default mapping done by \emph{Linux} might not be
+efficient.  To improve this issue, the developer can either distribute
+correctly the first touch or do some manual data mapping to ensure better
+memory access locality during the execution.

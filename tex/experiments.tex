@@ -92,20 +92,28 @@ pattern as \texttt{C}.
 \begin{figure}[htb]
     \centering
     \subfigure[Structure B (naive version).]{
-        \includegraphics[height=.27\textheight] {mat_B_modulo}
+        \includegraphics[width=.45\linewidth] {mat_B_modulo}
         \label{fig:matrix-B-naive}
     }
     \subfigure[Structure C (naive version).]{
-        \includegraphics[height=.27\textheight] {mat_C_modulo}
+        \includegraphics[width=.45\linewidth] {mat_C_modulo}
         \label{fig:matrix-C-naive}
     }
-    \caption{Per-thread access distribution on data structures A and B for the
-        naive matrix multiplication. Each plots shows the number of access
-    depending on the page number (inside the structure) for each thread.}
-    \label{fig:matrix-naive}
+    \subfigure[Structure B (block version).]{
+        \includegraphics[width=.45\linewidth] {mat_B_bloc}
+        \label{fig:matrix-B-bloc}
+    }
+    \subfigure[Structure C (block version).]{
+        \includegraphics[width=.45\linewidth] {mat_C_bloc}
+        \label{fig:matrix-C-bloc}
+    }
+    \caption{Per-thread access distribution on data structures B and C for the
+    matrix multiplication.}
+    %\label{fig:matrix-naive}
 \end{figure}
 
-For the naive matrix multiplication, as we can see in Figure~\ref{fig:matrix-naive}, all the pages of both structures are used by every
+For the naive matrix multiplication, as we can see in
+Figure~\ref{fig:matrix-B-naive}~and~\ref{fig:matrix-C-naive}, all the pages of both structures are used by every
 thread. Therefore, when we execute this code on a NUMA machine, wherever we
 map the page, all the nodes but one will trigger remote memory accesses. There
 are several ways to improve this behavior: an easy solution
@@ -115,20 +123,20 @@ nodes. An other solution is to create local copies of \texttt{A} and
 \texttt{B} on each node as these matrix are only read. Finally we can modify
 the algorithm to improve the locality, which mean using the block algorithm.
 
-\begin{figure}[htb]
-    \centering
-    \subfigure[Structure B (block version).]{
-        \includegraphics[height=.27\textheight] {mat_B_bloc}
-        \label{fig:matrix-B-bloc}
-    }
-    \subfigure[Structure C (block version).]{
-        \includegraphics[height=.27\textheight] {mat_C_bloc}
-        \label{fig:matrix-C-bloc}
-    }
-    \caption{By thread access distribution on data structures A and B for the
-    block matrix multiplication.}
-    \label{fig:matrix-bloc}
-\end{figure}
+%\begin{figure}[htb]
+%    \centering
+%    \subfigure[Structure B (block version).]{
+%        \includegraphics[height=.24\textheight] {mat_B_bloc}
+%        \label{fig:matrix-B-bloc}
+%    }
+%    \subfigure[Structure C (block version).]{
+%        \includegraphics[height=.24\textheight] {mat_C_bloc}
+%        \label{fig:matrix-C-bloc}
+%    }
+%    \caption{By thread access distribution on data structures A and B for the
+%    block matrix multiplication.}
+%    \label{fig:matrix-bloc}
+%\end{figure}
 
 As we can see in Figure~\ref{fig:matrix-bloc}, the block algorithm improves the page
 locality compared to the naive one. In our algorithm, structures \texttt{B}
@@ -149,7 +157,7 @@ improvements (base) and the same code executed with NUMA balancing enabled
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=.8\linewidth]{mat_time}
+    \includegraphics[width=.7\linewidth]{mat_time}
     \caption{Execution time of the matrix multiplication for size $4096\times 4096$ doubles.}
     \label{fig:matrix-res}
 \end{figure}
@@ -216,13 +224,17 @@ excepts the one shown in Listing~\ref{lst:is}\footnote{
     are accessed via a generic pointer called \texttt{key\_buff\_ptr} (resp
     \texttt{key\_buff\_ptr2}).
 }  line \ref{lst:is-gaus}-\ref{lst:is-gaus-end} which depends on the values of
-\texttt{key\_buff2}. The comments above the OpenMP loop explain that the
-cyclic distribution may result in an unbalanced work distribution. Nevertheless, we can easily design a cyclic
-distribution that is aware of the Gaussian pattern, which provides both a good
-distribution of accesses among the thread and a strong locality. The idea is to
-split the loop in two halves and give one part of each half to each thread in a
-round robin way. We can do that by only modifying line \ref{lst:is-cyclic} as
-shown in Listing~\ref{lst:is-modif}.
+\texttt{key\_buff2}.
+
+By default OpenMP threads are scheduled dynamically to avoid unbalanced
+distribution of work, but the developers also propose a cyclic distribution
+of the threads over the loop. As we know that the value of \texttt{key\_buff2}
+follows a Gaussian distribution, we can design a distribution of the thread
+providing both a good load balancing and locality of data. To do  so, we split
+the loop on two parts and distribute each part over the thread in a round
+robin way. This can be done only by modifying line \ref{lst:is-sched} as shown
+in Listing~\ref{lst:is-modif}.
+
 \begin{lstlisting}[float=htb,caption=Optimization for \emph{IS}., label=lst:is-modif]
 #pragma omp for schedule(static,NUM_BUCKETS/(2*omp_get_max_threads()))
 \end{lstlisting}
@@ -300,11 +312,11 @@ the application down.
     \centering
 
     \subfigure[Access distribution for \texttt{fz}.]{
-        \includegraphics[height=.245\textheight] {ondes3d_fz_dist_orig}
+        \includegraphics[height=.24\textheight] {ondes3d_fz_dist_orig}
         \label{fig:ondes3d-behaviour-fz-orig}
     }
     \subfigure[First-touch \texttt{fz}.]{
-        \includegraphics[height=.245\textheight] {ondes3d_fz_ft_orig}
+        \includegraphics[height=.24\textheight] {ondes3d_fz_ft_orig}
         \label{fig:ondes3d-ft-fz-orig}
     }
     \caption{Original access and first-touch distribution for structure
@@ -324,11 +336,11 @@ perform the initialization in parallel and to pin each thread on a different cor
     \centering
 
     \subfigure[Access distribution for \texttt{fz}.]{
-        \includegraphics[height=.245\textheight] {ondes3d_fz_dist_modif}
+        \includegraphics[height=.24\textheight] {ondes3d_fz_dist_modif}
         \label{fig:ondes3d-behaviour-fz-modif}
     }
     \subfigure[First-touch \texttt{fz}.]{
-        \includegraphics[height=.245\textheight] {ondes3d_fz_ft_modif}
+        \includegraphics[height=.24\textheight] {ondes3d_fz_ft_modif}
         \label{fig:ondes3d-ft-fz-modif}
     }
     \caption{Access and first-touch distribution  for structure
@@ -342,7 +354,7 @@ over the structures and matches the actual access distribution, as expected.
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=.8\linewidth]{ondes3d_exectime}
+    \includegraphics[width=.7\linewidth]{ondes3d_exectime}
     \caption{Speedup for \emph{Ondes3D} compared to the original application.}
 \label{fig:ondes-res}
 \end{figure}
@@ -372,7 +384,7 @@ the original execution time with the execution time under instrumentation.
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=.8\linewidth]{tool-ovh.pdf}
+    \includegraphics[width=.7\linewidth]{tool-ovh.pdf}
     \caption{Overhead of \TABARNAC~ analysis for the NAS Parallel Benchmarks.}
     \label{fig:ovh}
 \end{figure}
