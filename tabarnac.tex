@@ -320,7 +320,7 @@ bookmarksopen=true}
 %\captionsetup[lstlisting]{ margin=3pt }
 \usetikzlibrary{decorations.pathreplacing,patterns}
 
-\usepackage{multirow,booktabs,xspace}
+\usepackage{multirow,booktabs,xspace,soul}
 
 \newcommand{\TABARNAC}{\emph{TABARNAC}\xspace}
 \newcommand{\Input}[1]{\input{./tex/#1}}
@@ -330,6 +330,7 @@ bookmarksopen=true}
 \newcommand{\MD}[1]{\iatodo{Matthias}{#1}}
 \newcommand{\GH}[1]{\iatodo{Guillaume}{#1}}
 
+\newcommand{\tod}[1]{\textbf{\color{red}{\ul{#1}}}}
 
 \title{TABARNAC: Tools for Analyzing the Behavior of Applications Running on
 NUMA ArChitectures}

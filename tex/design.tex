@@ -5,7 +5,7 @@
 \label{sec:design}
 
 \TABARNAC is divided into two parts: the instrumentation tool and the
-visualization.  In this section, we discuss the implementation of both parts.
+visualization. In this section, we discuss the implementation of both parts.
 
 \subsection{Instrumentation}
 \label{sec:design-impl}
@@ -15,7 +15,7 @@ Before running the application, our tool retrieves static memory allocation
 information using the \texttt{libelfg0} library. Dynamic allocations are
 intercepted with a \texttt{malloc} replacement. If the application is
 compiled with debug flags (\texttt{-g}), the structure names that are malloced can be extracted from the source
-code. If no structure name is available, we call it
+code. \tod{necessary?: }If no structure name is available, we call it
 \texttt{AnonymousStruc\#ID}, where $ID$ is a unique identifier for the
 execution, starting at $0$. Finally, each time a thread is created, we compute
 its stack bounds, and create a virtual structure named \texttt{Stack\#N} where
@@ -48,9 +48,9 @@ After tracing finishes, we generate two \texttt{csv} files.
 The first file contains the list of pages and the number of reads
 and writes per threads. The second file contains the
 list of structures with their names, sizes and start addresses.
-We then call an R-markdown script which will first read the two \texttt{csv} files and
-retrieve the page / data structure mapping, then generate the final
-visualization presented in Section~\ref{sec:design-visu}. We use R-markdown
+We then call an R-markdown script which reads the two \texttt{csv} files,
+retrieves the page / data structure mapping and generates the final
+visualization presented in the next subsection. \tod{necessary?:} We use R-markdown
 for the visualization as it allows us to interleave plots with plain text
 explanation and optimization hints.
 
