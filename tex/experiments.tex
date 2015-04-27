@@ -236,10 +236,10 @@ except the ones shown in Listing~\ref{lst:is}\footnote{
 \texttt{key\_buff2}.
 By default, OpenMP threads are scheduled dynamically to avoid unbalanced
 distribution of work, but the developers also propose a cyclic distribution
-of the threads over the loop. As we know that the value of \texttt{key\_buff2}
-follows a Gaussian distribution, we can design a distribution of the threads
-providing both a good load balancing and locality of data. To do so, we split
-the loop into two parts and distribute each part over the threads in a round-robin way. This can be done by modifying line \ref{lst:is-sched} of the original code, as shown
+of the threads over the loop. As we know that the values of \texttt{key\_buff2}
+follow a Gaussian distribution, we can design a distribution of the threads
+providing both a good load balancing and locality of data. For the distribution, we split
+the loop into two equal parts and distribute each part among the threads in a round-robin way. This can be done by modifying line \ref{lst:is-sched} of the original code, as shown
 in Listing~\ref{lst:is-modif}.
 
 \begin{lstlisting}[float=!ht,caption=Optimization for \emph{IS}., label=lst:is-modif]
@@ -275,23 +275,21 @@ in Listing~\ref{lst:is-modif}.
 
 With this simple code modification, we obtain the access distribution
 shown in Figure~\ref{fig:is-behaviour-modif}. We can see that the Gaussian
-access pattern of \texttt{key\_buff1} is now distributed between the threads. Each page
+access pattern of \texttt{key\_buff1} is now better balanced between the threads. Each page
 of this structure is mostly used by only one thread. Moreover,
 \texttt{key\_buff2}'s access distribution has also changed. We can see that
 each thread uses mostly one part of the array.
 The main point of our code modification is to improve the affinity between
 thread and memory, therefore we need to pin each thread on a core to keep them
-near to their data. To perform the mapping, we use the \texttt{GOMP\_CPU\_AFFINITY} environment variable. \TABARNAC
+close to the data they access. To perform the mapping, we use the \texttt{GOMP\_CPU\_AFFINITY} environment variable. \TABARNAC
 also shows us that the first touch is always done by the thread actually using
 the data for IS, therefore we do not need to map the data to the NUMA nodes.
 
-We then compare the execution time of \emph{IS} (class \emph{D}) for the three scheduling
+We compare the execution time of \emph{IS} (class \emph{D}) for the three scheduling
 methods, \emph{Dynamic}, \emph{Cyclic} with a step of $1$ and \TABARNAC:
 cyclic with the proposed distribution. For the two first methods, we compare the
-execution time on the bare operation system (Base), the execution time with an
-interleave policy (Interleave) and with NUMA balancing enabled in the kernel
-(NUMA Balancing). Interleave and NUMA Balancing are not relevant with
-\TABARNAC modifications and are therefore not shown.
+execution time on the base operating system, the interleave policy and with NUMA balancing enabled. Interleave and NUMA Balancing are not relevant with the
+\TABARNAC modifications and are therefore not included.
 
 \begin{figure}[!p]
     \centering
@@ -337,7 +335,7 @@ the application down.
 
 The analysis of \emph{Ondes3D} access distributions shows that each
 structure is well divided between the threads, as we can see for structure \texttt{fz} in Figure~\ref{fig:ondes3d-behaviour-fz-orig}.
-However, we note that thread $T0$ seems to access the whole structure. By looking at the first touch distribution (Figure~\ref{fig:ondes3d-ft-fz-orig}), we
+However, we notice that thread $T0$ seems to access the whole structure. By looking at the first touch distribution (Figure~\ref{fig:ondes3d-ft-fz-orig}), we
 notice that indeed this thread is responsible for all first accesses to this structure. Due to
 this pattern, if we run \emph{Ondes3D} without any mapping, every page
 will be mapped to the NUMA node that executes $T0$, resulting in many remote accesses for the other threads. An easy fix is to
@@ -373,17 +371,17 @@ over the structures and matches the actual access distribution, as expected.
 We evaluate the modified version by comparing it with the original
 version, running on the normal OS, with NUMA Balancing activated and with an
 interleave policy. Figure~\ref{fig:ondes-res} present the results of this
-evaluation. We can see that every method improves the execution time, but
-NUMA Balancing provides less than $30\%$ speedup, while the static mapping
+evaluation. We can see that all methods improve the execution time, but
+NUMA Balancing provides less than $30\%$ speedup, while the static mappings
 (Interleave or the modified code) allows us to get almost $60\%$ of speedup. This is
 due to the training time described in section \ref{sec:soa-mapping}. Indeed,
 with NUMA Balancing, all pages are initially mapped by the OS to the NUMA node of thread $T0$, they
-are only moved a while later, after many remote accesses have already occurred. This is a case where static mapping can be substantially better than automated
-tools. \tod{remove?:} The Interleave policy provides almost the same speedup as
+are only moved later on, after many remote accesses have already occurred. This is a case where static mapping can be substantially better than automated
+tools. The Interleave policy provides a similar speedup as
 \TABARNAC as it distributes the pages over the NUMA nodes at the beginning of
 the execution.
 % Nevertheless, the interleave version only maps the data no the
-% threads, therefore if the performances might drop if the OS does not map them
+% threads, therefore the performances might drop if the OS does not map them
 % ``correctly'' while the modified version proposes a thread mapping that ensures better
 % data locality.
 
@@ -391,8 +389,8 @@ the execution.
 \label{sec:expe-overhead}
 
 Our last experiment aims at evaluating the instrumentation cost. To evaluate the analysis overhead of \TABARNAC, we
-executed all the NAS Parallel Benchmarks in class B with 64 threads and compared
-the original execution time with the execution time under instrumentation.
+executed all the NAS Parallel Benchmarks in class \emph{B} with 64 threads and compared
+the original execution time with the execution time with instrumentation enabled.
 
 \begin{figure}[!t]
     \centering
@@ -403,13 +401,12 @@ the original execution time with the execution time under instrumentation.
 
 
 We can see in Figure~\ref{fig:ovh} that
-the instrumentation is $10$ to $30$ times slower than the normal execution. Although it is
+the instrumentation application is $10$ to $30$ times slower than the normal execution. Although it is
 not negligible, we have to consider the fact that often we can instrument
 smaller versions of the applications, as we focus on the general behavior.
 Moreover, as we do not use sampling, our instrumentation is deterministic and
-there is no need to run the instrumentation several times. Finally, as our
-analysis is designed to be used during the development phase of the
-application and not by an automated tool during the execution, even a factor of $30$
+there is no need to run it several times. Finally, as our
+analysis is designed to be used during the development phase and not by an automated tool during the execution, even a factor of $30$
 can be reasonable.
 
 \subsection{Summary}
