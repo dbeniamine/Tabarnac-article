@@ -84,13 +84,9 @@ is not always possible to change the pattern completely. Therefore, it is
 interesting to discuss the improvements we can obtain on this kernel without
 modifying the algorithm.
 
-% The figures presented in this sections are part of the \TABARNAC visualization.
-Each plot shows the number of memory accesses for a particular data structure
-per page and per thread. Only structures \texttt{B} and \texttt{C} are
-presented, as for both algorithms \texttt{A} has a similar access
-pattern as \texttt{C}.
 
-\begin{figure}[htb]
+
+\begin{figure}[!t]
     \centering
     \subfigure[Structure B (naive version).]{
         \includegraphics[width=.45\linewidth] {mat_B_modulo}
@@ -110,11 +106,16 @@ pattern as \texttt{C}.
     }
     \caption{Per-thread access distribution on data structures B and C for the
     matrix multiplication.}
-    %\label{fig:matrix-naive}
+    \label{fig:matrix-analysis}
 \end{figure}
-
+% The figures presented in this sections are part of the \TABARNAC visualization.
+The analysis of the matrix multiplication is shown in Figure~\ref{fig:matrix-analysis}.
+Each plot shows the number of memory accesses for a particular data structure
+per page and per thread. Only structures \texttt{B} and \texttt{C} are
+presented, as for both algorithms \texttt{A} has a similar access
+pattern as \texttt{C}.
 For the naive matrix multiplication, as we can see in
-Figures~\ref{fig:matrix-B-naive}~and~\ref{fig:matrix-C-naive}, all the pages of both structures are used by every
+Figures~\ref{fig:matrix-B-naive}~and~\ref{fig:matrix-C-naive}, all pages of both structures are used by every
 thread. Therefore, when we execute this code on a NUMA machine, wherever we
 map the page, all the nodes but one will trigger remote memory accesses. There
 are several ways to improve this behavior: an easy solution
@@ -140,10 +141,10 @@ the algorithm to improve the locality, which means using the block algorithm.
 %\end{figure}
 
 As we can see in Figures~\ref{fig:matrix-B-bloc}~and~\ref{fig:matrix-C-bloc}, the block algorithm improves the page
-locality compared to the naive one. In our algorithm, structures \texttt{B}
+locality compared to the naive implementation. In our algorithm, structures \texttt{B}
 and \texttt{C} are not divided the same way, resulting in two different access patterns. For structure \texttt{B} (Figure~\ref{fig:matrix-B-bloc}), the pages
 are interleaved, threads $T0$ and $T1$ work on the same pages while threads
-$T2$ and $T3$ work on another set of pages. Structures \texttt{C} (and
+$T2$ and $T3$ work on another set of pages \tod{img unconvincing}. Structures \texttt{C} (and
 \texttt{A}, Figure~\ref{fig:matrix-C-bloc}) are split into two parts, the first half
 is shared by threads $T0$ and $T2$ while the two others works on the second
 half. This behavior provides strong page locality and is therefore more
@@ -153,10 +154,10 @@ suitable for NUMA machines. We can easily put each part of \texttt{C} (and
 
 To evaluate the efficiency of the proposed modifications, we compare the execution
 time of our modified code (\TABARNAC) to the original code, running without any
-improvements (base) and the same code executed with NUMA balancing enabled
-(NUMA Balancing)~\cite{Corbet}.
+improvements (base) and the same code executed with NUMA balancing enabled~\cite{Corbet}.
+\tod{mention we modify both naive and block}
 
-\begin{figure}[htb]
+\begin{figure}[!t]
     \centering
     \includegraphics[width=.7\linewidth]{mat_time}
     \caption{Execution time of the matrix multiplication for size $4096\times 4096$ doubles.}
@@ -181,110 +182,115 @@ or at least \TABARNAC will help choosing the best NUMA page mapping policy.
 \label{sec:exp-is}
 
 The \emph{IS} benchmark in its default version has an unstructured memory access behavior\footnote{\url{http://www.nas.nasa.gov/publications/npb.html}}. Thus, it is a good candidate to be optimized using \TABARNAC.
-
-\begin{figure}[htb]
+\begin{figure}[!p]
     \centering
 
     \subfigure[\texttt{key\_buff2}.]{
-        \includegraphics[height=.24\textheight]  {is_w_kb2_orig}
+        \includegraphics[height=.2\textheight]  {is_w_kb2_orig}
         \label{fig:is-behaviour-orig-kb2}
     }
+    \vspace{-2mm}
     \subfigure[\texttt{key\_array}.]{
-        \includegraphics[height=.24\textheight]  {is_w_kba_orig}
+        \includegraphics[height=.2\textheight]  {is_w_kba_orig}
         \label{fig:is-behaviour-orig-kba}
     }
+    \vspace{-2mm}
     \subfigure[\texttt{key\_buff1}.]{
-        \includegraphics[height=.24\textheight]  {is_w_kb1_orig}
+        \includegraphics[height=.2\textheight]  {is_w_kb1_orig}
         \label{fig:is-behaviour-orig-kb1}
     }
+    \vspace{-2mm}
     \caption{Original memory access distribution for the main structures of
         \emph{IS} with $4$ threads.}
     \label{fig:is-behaviour-orig}
 \end{figure}
-
 Figure~\ref{fig:is-behaviour-orig} shows the access distributions for the
 three main structures of \emph{IS} class \emph{W} with $4$ threads. We can see that
 each structure has a different access pattern: \texttt{key\_array}'s
 (Figure~\ref{fig:is-behaviour-orig-kba}) access distribution shows that every
-thread works on a different part of the structure which allows automated
+thread works on a different part of the structure, which allows automated
 tools to perform an efficient data/thread mapping on it. On the other hand, \texttt{key\_buff2}
-(Figure~\ref{fig:is-behaviour-orig-kb2}) is completely shared by all thread.
+(Figure~\ref{fig:is-behaviour-orig-kb2}) is completely shared by all threads.
 The most interesting access distribution is the one of \texttt{key\_buff1}
 (Figure~\ref{fig:is-behaviour-orig-kb1}). The access distribution follows a clear Gaussian curve, which means that a few pages are more used than the
 others. With such a distribution, automated tools might generate a lot of page
 migrations.
 
 \lstinputlisting[caption=\emph{IS} code responsible for the
-Gaussian distribution of memory accesses to the \texttt{key\_buff1} structure., label=lst:is, float=htb]{code/is.c}
+Gaussian distribution of memory accesses to the \texttt{key\_buff1} structure., label=lst:is, float=!p]{code/is.c}
 
 With this knowledge, we can identify the source of the
 Gaussian pattern in the \emph{IS} source code. All the accesses to \texttt{key\_buff1} are linear,
-excepts the one shown in Listing~\ref{lst:is}\footnote{
+except the ones shown in Listing~\ref{lst:is}\footnote{
     The code has been slightly modified to make it more readable. In the
-    original version, the arrays \texttt{key\_buff1} (resp \texttt{key\_buff2})
-    are accessed via a generic pointer called \texttt{key\_buff\_ptr} (resp
+    original version, the arrays \texttt{key\_buff1} (resp. \texttt{key\_buff2})
+    are accessed via a generic pointer called \texttt{key\_buff\_ptr} (resp.
     \texttt{key\_buff\_ptr2}).
-}  line \ref{lst:is-gaus}-\ref{lst:is-gaus-end} which depends on the values of
+}, line \ref{lst:is-gaus-end}, which depend on the values of
 \texttt{key\_buff2}.
-
-By default OpenMP threads are scheduled dynamically to avoid unbalanced
+By default, OpenMP threads are scheduled dynamically to avoid unbalanced
 distribution of work, but the developers also propose a cyclic distribution
 of the threads over the loop. As we know that the value of \texttt{key\_buff2}
-follows a Gaussian distribution, we can design a distribution of the thread
-providing both a good load balancing and locality of data. To do  so, we split
-the loop on two parts and distribute each part over the thread in a round
-robin way. This can be done only by modifying line \ref{lst:is-sched} as shown
+follows a Gaussian distribution, we can design a distribution of the threads
+providing both a good load balancing and locality of data. To do so, we split
+the loop into two parts and distribute each part over the threads in a round-robin way. This can be done by modifying line \ref{lst:is-sched} of the original code, as shown
 in Listing~\ref{lst:is-modif}.
 
-\begin{lstlisting}[float=htb,caption=Optimization for \emph{IS}., label=lst:is-modif]
+\begin{lstlisting}[float=!h,caption=Optimization for \emph{IS}., label=lst:is-modif]
 #pragma omp for schedule(static,NUM_BUCKETS/(2*omp_get_max_threads()))
 \end{lstlisting}
 
-\begin{figure}[htb]
+\begin{figure}[!p]
     \centering
 
     \subfigure[The \texttt{key\_buff2} structure.]{
-        \includegraphics[height=.24\textheight] {is_w_kb2_modif}
+        \includegraphics[height=.2\textheight] {is_w_kb2_modif}
         \label{fig:is-behaviour-modif-kb2}
     }
+
+    \vspace{-3mm}
     \subfigure[The \texttt{key\_array} structure.]{
-        \includegraphics[height=.24\textheight] {is_w_kba_modif}
+        \includegraphics[height=.2\textheight] {is_w_kba_modif}
         \label{fig:is-behaviour-modif-kba}
     }
 
+    \vspace{-3mm}
     \subfigure[The \texttt{key\_buff1} structure.]{
-        \includegraphics[height=.24\textheight] {is_w_kb1_modif}
+        \includegraphics[height=.2\textheight] {is_w_kb1_modif}
         \label{fig:is-behaviour-modif-kb1}
     }
+
+    \vspace{-3mm}
     \caption{Memory access distribution for the main structures of
         \emph{IS} with $4$ threads after our modifications.}
     \label{fig:is-behaviour-modif}
 \end{figure}
 
+
 With this simple code modification, we obtain the access distribution
 shown in Figure~\ref{fig:is-behaviour-modif}. We can see that the Gaussian
 access pattern of \texttt{key\_buff1} is now distributed between the threads. Each page
-of this structure is almost used by only one thread. Moreover,
+of this structure is mostly used by only one thread. Moreover,
 \texttt{key\_buff2}'s access distribution has also changed. We can see that
 each thread uses mostly one part of the array.
-
 The main point of our code modification is to improve the affinity between
 thread and memory, therefore we need to pin each thread on a core to keep them
-near to their data. To do so we use \texttt{GOMP\_CPU\_AFFINITY}. \TABARNAC
+near to their data. To perform the mapping, we use the \texttt{GOMP\_CPU\_AFFINITY} environment variable. \TABARNAC
 also shows us that the first touch is always done by the thread actually using
-the data for IS, therefore we do not need to map the data on NUMA nodes.
+the data for IS, therefore we do not need to map the data to the NUMA nodes.
 
-We then compare the execution time of \emph{IS.D} for the three scheduling
-methods \emph{Dynamic}, \emph{Cyclic} with a step of $1$ and \TABARNAC:
-cyclic with the proposed distribution. For the two first methods we compare the
-execution time on the bare operation system (Base), the execution time with
+We then compare the execution time of \emph{IS} (class \emph{D}) for the three scheduling
+methods, \emph{Dynamic}, \emph{Cyclic} with a step of $1$ and \TABARNAC:
+cyclic with the proposed distribution. For the two first methods, we compare the
+execution time on the bare operation system (Base), the execution time with an
 interleave policy (Interleave) and with NUMA balancing enabled in the kernel
 (NUMA Balancing). Interleave and NUMA Balancing are not relevant with
 \TABARNAC modifications and are therefore not shown.
 
-\begin{figure}[htb]
+\begin{figure}[!p]
     \centering
-    \includegraphics[width=.8\linewidth]{is_exectime}
+    \includegraphics[width=.7\linewidth]{is_exectime}
+    \vspace{-5mm}
     \caption{Speedup for \emph{IS} in class D compared to the baseline.}
 \label{fig:is-res}
 \end{figure}
@@ -295,13 +301,11 @@ optimization technique. The first thing to notice is that with the default
 \emph{Dynamic} scheduling, both Interleave and NUMA Balancing slow
 the application down, by up to $10\%$. This shows that simple, automatic optimization policies are can actually reduce performance
 for non NUMA conscious code.
-
 The \emph{Cyclic} policy, proposed in the original code, already provides up to $13\%$
 speedup. We can see that both interleave and NUMA Balancing are not suitable
-for this policy.
-
+for this policy, since they reduce the performance gains.
 The \TABARNAC version provides more than $20\%$ speedup with very small code
-modification (two lines of code and an \texttt{export} for the thread affinity).
+modification.
 This example shows how analyzing an application's memory behavior can lead to
 significant execution time improvement where automatic tools can actually slow
 the application down.
@@ -309,7 +313,7 @@ the application down.
 \subsection{Ondes3D}
 \label{sec:exp-ondes3d}
 
-\begin{figure}[htb]
+\begin{figure}[!t]
     \centering
 
     \subfigure[Access distribution for \texttt{fz}.]{
@@ -327,13 +331,13 @@ the application down.
 
 The analysis of \emph{Ondes3D} access distributions shows that each
 structure is well divided between the threads, as we can see for structure \texttt{fz} in Figure~\ref{fig:ondes3d-behaviour-fz-orig}.
-However, we note that thread $T0$ seems to access the whole structure. Looking at the first touch distribution (Figure~\ref{fig:ondes3d-ft-fz-orig}), we
-remark that indeed this thread is responsible for all first accesses to this structure. Due to
-this pattern, if we run \emph{Ondes3D} without doing any mapping, every page
+However, we note that thread $T0$ seems to access the whole structure. By looking at the first touch distribution (Figure~\ref{fig:ondes3d-ft-fz-orig}), we
+notice that indeed this thread is responsible for all first accesses to this structure. Due to
+this pattern, if we run \emph{Ondes3D} without any mapping, every page
 will be mapped to the NUMA node that executes $T0$, resulting in many remote accesses for the other threads. An easy fix is to
 perform the initialization in parallel and to pin each thread on a different core.
 
-\begin{figure}[htb]
+\begin{figure}[!t]
     \centering
 
     \subfigure[Access distribution for \texttt{fz}.]{
@@ -353,50 +357,59 @@ Such modifications result in the access distribution shown in Figure~\ref{fig:on
 its own portion of the structure. Moreover, Figure~\ref{fig:ondes3d-ft-fz-modif} shows that the first touch is now distributed
 over the structures and matches the actual access distribution, as expected.
 
-\begin{figure}[htpb]
+\begin{figure}[!t]
     \centering
     \includegraphics[width=.7\linewidth]{ondes3d_exectime}
     \caption{Speedup for \emph{Ondes3D} compared to the original application.}
 \label{fig:ondes-res}
 \end{figure}
 
-Finally, we evaluate the modified version by comparing it with the original
-version run on the normal OS, with NUMA Balancing activated and with an
+We evaluate the modified version by comparing it with the original
+version, running on the normal OS, with NUMA Balancing activated and with an
 interleave policy. Figure~\ref{fig:ondes-res} present the results of this
-evaluation. We can see that every method improves the execution time, still
-\emph{NUMA Balancing} provides less than $30\%$ speedup while static mapping
+evaluation. We can see that every method improves the execution time, but
+NUMA Balancing provides less than $30\%$ speedup, while the static mapping
 (Interleave or the modified code) allows us to get almost $60\%$ of speedup. This is
 due to the training time described in section \ref{sec:soa-mapping}. Indeed,
-with \emph{NUMA Balancing}, all pages are initially mapped by the OS to the NUMA node of thread $T0$, they
-are only moved a while later, after many remote accesses occurred. This is a case where static mapping can be substantially better than automated
-tools. The \emph{Interleave} policy provides almost the same speedup as
+with NUMA Balancing, all pages are initially mapped by the OS to the NUMA node of thread $T0$, they
+are only moved a while later, after many remote accesses have already occurred. This is a case where static mapping can be substantially better than automated
+tools. \tod{remove?:} The Interleave policy provides almost the same speedup as
 \TABARNAC as it distributes the pages over the NUMA nodes at the beginning of
 the execution. Nevertheless, the interleave version only maps the data no the
 threads, therefore if the performances might drop if the OS does not map them
 ``correctly'' while the modified version proposes a thread mapping that ensures better
 data locality.
 
-\subsection{Analysis overhead}
+\subsection{Analysis Overhead}
 \label{sec:expe-overhead}
 
-Our last experiment aims at evaluating the instrumentation cost. To do so we
-ran all the NAS Parallel Benchmarks in class B with 64 threads and compared
+Our last experiment aims at evaluating the instrumentation cost. To evaluate the analysis overhead of \TABARNAC, we
+executed all the NAS Parallel Benchmarks in class B with 64 threads and compared
 the original execution time with the execution time under instrumentation.
 
-\begin{figure}[htb]
+\begin{figure}[!t]
     \centering
     \includegraphics[width=.7\linewidth]{tool-ovh.pdf}
-    \caption{Overhead of \TABARNAC~ analysis for the NAS Parallel Benchmarks.}
+    \caption{Overhead of \TABARNAC analysis for the NAS Parallel Benchmarks.}
     \label{fig:ovh}
 \end{figure}
 
 
 We can see in Figure~\ref{fig:ovh} that
 the instrumentation is $10$ to $30$ times slower than the normal execution. Although it is
-no negligible, we have to consider the fact that often we can instrument
-smaller version of the applications as we focus on the general behavior.
-Moreover as we do not use sampling, our instrumentation is deterministic and
-there is no need to run several times the instrumentation. Finally as our
+not negligible, we have to consider the fact that often we can instrument
+smaller versions of the applications, as we focus on the general behavior.
+Moreover, as we do not use sampling, our instrumentation is deterministic and
+there is no need to run the instrumentation several times. Finally, as our
 analysis is designed to be used during the development phase of the
-application and not by an automated tool during the execution, even a factor $30$
-is quite reasonable.
+application and not by an automated tool during the execution, even a factor of $30$
+can be reasonable.
+
+\subsection{Summary}
+
+\tod{write this}
+
+- automatic policies with deficits (slower compared to baseline in many cases)
+- \TABARNAC always highest improvements
+- simple applications changes/mappings can result in substantial improvements
+- correct policy depends on application
