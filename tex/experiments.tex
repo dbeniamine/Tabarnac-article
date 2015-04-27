@@ -31,7 +31,7 @@ We present the hardware architecture and the applications that will be used in t
 
 All experiments were run on a NUMA machine that is composed of $4$ Intel Xeon X7550
 processors (Nehalem microarchitecture~\cite{Intel2010}). Each processor has its own memory controller and therefore forms a NUMA node. The hardware details are summarized in Table~\ref{tab:turing}.
-The machine runs version 3.13.0-48 of the Linux kernel.
+The machine runs version 3.13 of the Linux kernel.
 
 For the plots representing speedups or execution time, each configuration was executed at least 10 times. Each point represents the arithmetic mean of all runs.
 The error bars in those plots represent the standard deviation.
@@ -53,6 +53,14 @@ which is the maximum number of threads that our evaluation machine can execute
 in parallel. The \emph{matrix multiplication} performance was evaluated with
 matrices of size $4096 \times 4096$ doubles, for a memory usage of $12.8$Mib per matrix. \emph{IS} was run
 with input class \emph{D}, resulting in a memory usage of $33.5$Gib, Finally, Ondes3D has a memory usage of $11.3$Gib.
+
+\subsection{Mapping Policies}
+
+In the performance evaluation, we compare the following traditional mapping policies to \TABARNAC.
+The \emph{original Linux kernel} forms our baseline for the experiments. We use an unmodified Linux kernel, version 3.13, with the first-touch policy. The NUMA Balancing mechanism is disabled in this baseline.
+The \emph{interleave} policy is performed with the help of the \texttt{numactl} tool.
+We also compare our results to the recently introduced \emph{NUMA Balancing} technique~\cite{Corbet}, which is executed with its default configuration.
+
 
 \section{Analysis and Performance Results}
 \label{sec:expe-analysis}
@@ -143,10 +151,9 @@ the algorithm to improve the locality, which means using the block algorithm.
 
 As we can see in Figures~\ref{fig:matrix-B-bloc}~and~\ref{fig:matrix-C-bloc}, the block algorithm improves the page
 locality compared to the naive implementation. In our algorithm, structures \texttt{B}
-and \texttt{C} are not divided the same way, resulting in two different access patterns. For structure \texttt{B} (Figure~\ref{fig:matrix-B-bloc}), the pages
-are interleaved, threads $T0$ and $T1$ work on the same pages while threads
-$T2$ and $T3$ work on another set of pages \tod{img unconvincing}. Structures \texttt{C} (and
-\texttt{A}, Figure~\ref{fig:matrix-C-bloc}) are split into two parts, the first half
+and \texttt{C} are not divided the same way, resulting in two different access patterns. For structure \texttt{B} (Figure~\ref{fig:matrix-B-bloc}), the pages still
+have similar numbers of accesses for all threads. Structures \texttt{C} and
+\texttt{A} (Figure~\ref{fig:matrix-C-bloc}) are split into two parts, the first half
 is shared by threads $T0$ and $T2$ while the two others works on the second
 half. This behavior provides strong page locality and is therefore more
 suitable for NUMA machines. We can easily put each part of \texttt{C} (and
@@ -154,9 +161,8 @@ suitable for NUMA machines. We can easily put each part of \texttt{C} (and
 \texttt{B} can be distributed using an interleave policy.
 
 To evaluate the efficiency of the proposed modifications, we compare the execution
-time of our modified code (\TABARNAC) to the original code, running without any
-improvements (base) and the same code executed with NUMA balancing enabled~\cite{Corbet}.
-\tod{mention we modify both naive and block}
+time of both versions of the code (naive and block) with the mapping suggested by \TABARNAC to the original Linux kernel (base) and to NUMA Balancing.
+For this experiment, the interleave policy is identical to \TABARNAC and is therefore not shown separately.
 
 \begin{figure}[!t]
     \centering
@@ -190,17 +196,16 @@ The \emph{IS} benchmark in its default version has an unstructured memory access
         \includegraphics[height=.2\textheight]  {is_w_kb2_orig}
         \label{fig:is-behaviour-orig-kb2}
     }
-    \vspace{-2mm}
+    \vspace{-1mm}
     \subfigure[\texttt{key\_array}.]{
         \includegraphics[height=.2\textheight]  {is_w_kba_orig}
         \label{fig:is-behaviour-orig-kba}
     }
-    \vspace{-2mm}
+    \vspace{-1mm}
     \subfigure[\texttt{key\_buff1}.]{
         \includegraphics[height=.2\textheight]  {is_w_kb1_orig}
         \label{fig:is-behaviour-orig-kb1}
     }
-    \vspace{-2mm}
     \caption{Original memory access distribution for the main structures of
         \emph{IS} with $4$ threads.}
     \label{fig:is-behaviour-orig}
@@ -292,7 +297,7 @@ interleave policy (Interleave) and with NUMA balancing enabled in the kernel
     \centering
     \includegraphics[width=.7\linewidth]{is_exectime}
     \vspace{-5mm}
-    \caption{Speedup for \emph{IS} in class D compared to the baseline.}
+    \caption{Speedup for \emph{IS} (class D) compared to the baseline.}
 \label{fig:is-res}
 \end{figure}
 
