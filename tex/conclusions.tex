@@ -4,18 +4,45 @@
 \section{Conclusions and Future Work}
 \label{sec:concl}
 
+In this paper, we presented \TABARNAC: a new tool to trace, analyze and
+optimize the memory behavior of parallel applications running on NUMA
+machines. \TABARNAC is divided in two parts: the first is a memory tracer
+based on the Pin dynamic binary instrumentation. It records for each pages the
+number of read and write done by each threads. Instrumentation is the most
+accurate and portable way to generate memory trace. We evaluated the cost of
+the instrumentation and showed that one can expect to trace an application in
+$10$ to $30$ times the original execution time.
+\DB{Rewrite last sentence}
+Although this overhead can seem important, as our tool analyze the general
+behavior and not some performance counters, we lower it by analyzing programs
+running with smaller inputs without loosing accuracy.
 
-In this paper, we provided a new tool to trace and analyze the memory
-behavior of parallel applications running on NUMA architectures. Although the
-analysis time is not negligible ($10$ to $30$ time slowdown), it provide precise informations that can be used for several kinds of
-optimizations. Furthermore while memory traces are usually hard to analyze as
-they contains a lot of informations, \TABARNAC produces an easy to follow
-output, showing trace visualizations, explanations on how to interpret
-them, and optimization hints.
+Presenting memory traces in an intuitive way is a challenge, to address it, we
+choose to provide a summary of the trace in the form of a html page
+interleaving text and plots. This html page is generate by a R-markdown
+script. It start by a general explanation on NUMA machines and classical
+inefficient behavior, than it show several plots providing different
+interpretations of the trace. Each plots is preceded by explanations on how to
+read it, what kind of issues it can help to identify and how we can usually
+solve them
 
-Using this tool, we have been able to provide significant improvements on
-well known benchmarks over the result obtained by automated tools.
-\DB{Add some numbers / develop}
+Using this tool, we have analyze three applications. The first is a homemade
+matrix multiplication and is useful to discuss classical well known issues.
+Then we analyzed \emph{IS} from the NAS Parallel Benchmarks. Finally we study
+\emph{Ondes3D} a real life application which simulate seismic waves. For all
+these applications \TABARNAC helps us understanding their performance issues.
+Using this knowledge we have proposed some code modification resulting in
+significant speedup compared to the original version and to the results
+provided by automated tools.
+\DB{Numbers maybe}
+
+\DB{Future work}
+Future Work:
+\begin{itemize}
+    \item Structure detection (fortran)
+    \item Automatic detection of well known inefficient behavior
+    \item \ldots
+\end{itemize}
 
 Future work will focus on two directions. First, we will improve the
 structure detection support to be able to analyze Fortran programs, as many
