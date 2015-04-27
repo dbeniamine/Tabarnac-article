@@ -349,7 +349,12 @@ Email: $\{$mdiener,navaux$\}$@inf.ufrgs.br}
 % DOUBLE-BLIND!
 \author{}
 
-
+% add page numbers (required by submission)
+\makeatletter
+\g@addto@macro\maketitle{\thispagestyle{plain}}
+\makeatother
+\thispagestyle{plain}
+\pagestyle{plain}
 
 \begin{document}
 
