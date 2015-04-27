@@ -33,8 +33,7 @@ All experiments were run on a NUMA machine that is composed of $4$ Intel Xeon X7
 processors (Nehalem microarchitecture~\cite{Intel2010}). Each processor has its own memory controller and therefore forms a NUMA node. The hardware details are summarized in Table~\ref{tab:turing}.
 The machine runs version 3.13.0-48 of the Linux kernel.
 
-For the plots representing speedups or execution time, each configuration was executed between 10 and 30
-times.\tod{10 times?} Each point represents the arithmetic mean of all runs.
+For the plots representing speedups or execution time, each configuration was executed at least 10 times. Each point represents the arithmetic mean of all runs.
 The error bars in those plots represent the standard deviation.
 
 \subsection{Applications}
@@ -43,7 +42,7 @@ We evaluate the following applications with \TABARNAC: a \emph{matrix multiplica
 They were chosen to demonstrate different memory access behaviors with different strategies to improve them.
 
 The \emph{matrix multiplication} is a well-known algorithm that is used to verify the accuracy of \TABARNAC, as well as to discuss the performance improvements that can be achieved.
-\emph{IS} is a benchmark from the OpenMP implementation of the NAS Parallel Benchmark suite~(NPB)~\cite{Jin1999}. IS sorts a set of integer numbers using a bucket sort algorithm.
+\emph{IS} is a benchmark from the OpenMP implementation of the NAS Parallel Benchmark suite~(NPB)~\cite{Jin1999}. \emph{IS} sorts a set of integer numbers using a bucket sort algorithm.
 \emph{Ondes3D} is the main numerical kernel of the Ondes3D application~\cite{Dupros2008}. It simulates the propagation of seismic waves using a finite-differences numerical method.
 
 All applications were compiled with \texttt{gcc}, version 4.6.3, with the \texttt{-O2} optimization flag.
@@ -75,7 +74,7 @@ applications. We compare two implementations of the matrix multiplication, in
 the first one, called \emph{Naive}, each thread starts by computing
 $C[0][tid]$ and then jumps $N$ elements after in the matrix, where $N$ is the
 number of threads. Although this implementation is known to be inefficient, it is a
-good example of non-NUMA aware code, and comparing the \TABARNAC visualization
+good example of NUMA-unaware code, and comparing the \TABARNAC visualization
 for this algorithm to the one obtained with a better version helps understanding
 how to interpret it.
 Moreover, when an application has such an unstructured memory access pattern, it
@@ -84,11 +83,11 @@ interesting to discuss the improvement we can obtain on this kernel without
 modifying the algorithm. The second implementation uses a non recursive block
 decomposition.
 
-The figures presented in this sections are part of the \TABARNAC visualization.
-Each plot show for a particular data structure the number of memory accesses
-per page and per threads. Only structures \texttt{B} and \texttt{C} are
-presented as for both algorithm \texttt{A} have more or less the same access
-pattern than \texttt{C}.
+% The figures presented in this sections are part of the \TABARNAC visualization.
+Each plot shows the number of memory accesses for a particular data structure
+per page and per thread. Only structures \texttt{B} and \texttt{C} are
+presented, as for both algorithms \texttt{A} has a similar access
+pattern as \texttt{C}.
 
 \begin{figure}[htb]
     \centering
@@ -180,7 +179,7 @@ or at least \TABARNAC will help choosing the best NUMA page mapping policy.
 \subsection{IS}
 \label{sec:exp-is}
 
-The IS benchmark in its default version has an unstructured memory access behavior\footnote{\url{http://www.nas.nasa.gov/publications/npb.html}}. Thus, it is a good candidate to be optimized using \TABARNAC.
+The \emph{IS} benchmark in its default version has an unstructured memory access behavior\footnote{\url{http://www.nas.nasa.gov/publications/npb.html}}. Thus, it is a good candidate to be optimized using \TABARNAC.
 
 \begin{figure}[htb]
     \centering
