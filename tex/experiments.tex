@@ -281,7 +281,7 @@ Figure~\ref{fig:is-res} shows the speedup of \emph{IS} compared to
 the default version (\emph{Dynamic}) for each scheduling method and for each
 optimization technique. The first thing to notice is that with the default
 \emph{Dynamic} scheduling, both Interleave and NUMA Balancing slow
-the application down, by up to 10\%. This shows that simple, automatic optimization policies are can actually reduce performance
+the application down, by up to $10\%$. This shows that simple, automatic optimization policies are can actually reduce performance
 for non NUMA conscious code.
 
 The \emph{Cyclic} policy, proposed in the original code, already provides up to $13\%$
@@ -363,3 +363,28 @@ the execution. Nevertheless, the interleave version only maps the data no the
 threads, therefore if the performances might drop if the OS does not map them
 ``correctly'' while the modified version proposes a thread mapping that ensures better
 data locality.
+
+\subsection{Analysis overhead}
+\label{sec:expe-overhead}
+
+Our last experiment aims at evaluating the instrumentation cost. To do so we
+ran all the NAS Parallel Benchmarks in class B with 64 threads and compared
+the original execution time with the execution time under instrumentation.
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=.4\textwidth]{tool-ovh.pdf}
+    \caption{Overhead of \TABARNAC~ analysis for the NAS Parallel Benchmarks.}
+    \label{fig:ovh}
+\end{figure}
+
+
+We can see in Figure~\ref{fig:ovh} that
+the instrumentation is $10$ to $30$ times slower than the normal execution. Although it is
+no negligible, we have to consider the fact that often we can instrument
+smaller version of the applications as we focus on the general behavior.
+Moreover as we do not use sampling, our instrumentation is deterministic and
+there is no need to run several times the instrumentation. Finally as our
+analysis is designed to be used during the development phase of the
+application and not by an automated tool during the execution, even a factor $30$
+is quite reasonable.

@@ -108,26 +108,3 @@ accessing it. If the first touch distribution doest not fit the actual access
 distribution, the default mapping done by \emph{Linux} might not be efficient.
 To improve this issue, the developer can either distribute correctly the first touch or do some
 manual data mapping to ensure better memory access locality during the execution.
-
-\subsection{Analysis overhead}
-\label{sec:expe-overhead}
-
-\begin{figure}[htb]
-    \centering
-    \includegraphics[width=.4\textwidth]{tool-ovh.pdf}
-    \caption{Overhead of \TABARNAC~ analysis for the NAS Parallel Benchmarks.}
-    \label{fig:ovh}
-\end{figure}
-
-To evaluate the instrumentation overhead, we ran all the NAS Parallel Benchmarks in
-class B with 64 threads on our experimental machine (see Section~\ref{sec:metho}) and compared the original execution time with the
-execution time under instrumentation. We can see in Figure~\ref{fig:ovh} that
-the instrumentation is $10$ to $30$ times slower than the normal execution. Although it is
-no negligible, we have to consider the fact that often we can instrument
-smaller version of the applications as we focus on the general behavior.
-Moreover as we do not use sampling, our instrumentation is deterministic and
-there is no need to run several times the instrumentation. Finally as our
-analysis is designed to be used during the development phase of the
-application and not by an automated tool during the execution, even a factor $30$
-is quite reasonable.
-\itodo{should probably be in the results section}
