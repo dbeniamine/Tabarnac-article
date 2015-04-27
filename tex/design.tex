@@ -64,11 +64,11 @@ for the visualization.
 \label{sec:design-visu}
 
 Providing an easy to read visualization of a memory trace is a challenge. We
-opted for an assisted visualization. Once the analyze phase is done, \TABARNAC
-will generate an HTML page, providing a summary of the trace through several
-plots.  This HTML page is generated using R markdown as well.  Before each
-plot, we explain how to read it, what usual issues it can help to understand
-and we give hints on how to fix the issues.
+opted for an assisted visualization. Once the analysis phase is done, \TABARNAC
+will generates an HTML page, providing a summary of the trace through several
+plots.  This HTML page is generated using R markdown as well.  Each plot is
+introduced by an explanation of its presentation, what usual issues it can
+help to understand and we give hints on how to fix the issues.
 
 The visualization starts with a small introduction, reminding the main
 principles while developing for NUMA machines, then it shows the analysis
@@ -97,16 +97,16 @@ done to make the output more readable. However, it is possible to ask
     \caption{Global view of memory behavior.}
 \end{figure}
 
-The first series of plots aims to give information concerning the relative
+The first series of plots aims at giving information concerning the relative
 importance of data structures. It consists of three plots showing first the
 size of  each data structures, as in Figure~\ref{fig:example_sz}, then the
-number of read and write per threads (Figure~\ref{fig:example_rw}) and
+number of read and write done from each thread on each structure (Figure~\ref{fig:example_rw}) and
 finally the total number of read and write per structures. These plots gives a
 general idea of the structures used by threads, it allows also to identify
 master/slave patterns.  Moreover, knowing the read/write behavior is very
 useful as it determines the possible optimization. For instance, structures
 written only at initialization (or very rarely) can be (relatively) easily
-duplicated in a way that each NUMA node works on a local copy.
+duplicated so that each NUMA node works on a local copy.
 
 \begin{figure}[htb]
     \centering
@@ -146,6 +146,6 @@ which thread was responsible for the first touch
 default policy for Linux is to map a page as close as possible to the first
 thread accessing it. If the first touch distribution doest not fit the actual
 access distribution, the default mapping done by \emph{Linux} might not be
-efficient.  To improve this issue, the developer can either distribute
-correctly the first touch or do some manual data mapping to ensure better
-memory access locality during the execution.
+efficient.  To improve this issue, the developer can either solve the first
+touch or do some manual data mapping to ensure better memory access locality
+during the execution.
