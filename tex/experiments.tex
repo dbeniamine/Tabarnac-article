@@ -44,12 +44,13 @@ They were chosen to demonstrate different memory access behaviors with different
 The \emph{matrix multiplication} is a well-known algorithm that is used to verify the accuracy of \TABARNAC, as well as to discuss the performance improvements that can be achieved.
 \emph{IS} is a benchmark from the OpenMP implementation of the NAS Parallel Benchmark suite~(NPB)~\cite{Jin1999}. \emph{IS} sorts a set of integer numbers using a bucket sort algorithm.
 \emph{Ondes3D} is the main numerical kernel of the Ondes3D application~\cite{Dupros2008}. It simulates the propagation of seismic waves using a finite-differences numerical method.
+The \emph{matrix multiplication} is implemented with Pthreads, while \emph{IS} and \emph{Ondes3D} use OpenMP.
 
 All applications were compiled with \texttt{gcc}, version 4.6.3, with the \texttt{-O2} optimization flag.
 Due to space restrictions, we show the characterization of the applications
-with 4 threads.  The performance evaluation is performed with 64 threads,
+with 4 threads. However, the qualitative behavior remains the same with different numbers of threads. The performance evaluation is performed with 64 threads,
 which is the maximum number of threads that our evaluation machine can execute
-in parallel.  The \emph{matrix multiplication} performance was evaluated with
+in parallel. The \emph{matrix multiplication} performance was evaluated with
 matrices of size $4096 \times 4096$ doubles, for a memory usage of $12.8$Mib per matrix. \emph{IS} was run
 with input class \emph{D}, resulting in a memory usage of $33.5$Gib, Finally, Ondes3D has a memory usage of $11.3$Gib.
 
@@ -236,7 +237,7 @@ providing both a good load balancing and locality of data. To do so, we split
 the loop into two parts and distribute each part over the threads in a round-robin way. This can be done by modifying line \ref{lst:is-sched} of the original code, as shown
 in Listing~\ref{lst:is-modif}.
 
-\begin{lstlisting}[float=!h,caption=Optimization for \emph{IS}., label=lst:is-modif]
+\begin{lstlisting}[float=!ht,caption=Optimization for \emph{IS}., label=lst:is-modif]
 #pragma omp for schedule(static,NUM_BUCKETS/(2*omp_get_max_threads()))
 \end{lstlisting}
 
@@ -410,6 +411,9 @@ can be reasonable.
 \tod{write this}
 
 - automatic policies with deficits (slower compared to baseline in many cases)
+
 - \TABARNAC always highest improvements
+
 - simple applications changes/mappings can result in substantial improvements
+
 - correct policy depends on application

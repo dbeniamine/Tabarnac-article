@@ -285,7 +285,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage[T1]{fontenc}
-\usepackage{balance}
+\usepackage{balance,tikz}
 
 
 \usepackage{hyperref}
@@ -300,8 +300,6 @@
     % bookmarks=true, %créé des signets pour Acrobat
 bookmarksopen=true}
 
-\usepackage{todonotes}
-%\usepackage[disable]{todonotes}
 \usepackage{listings}
 \lstset{language=C,%
     basicstyle=\ttfamily \small,%
@@ -324,11 +322,6 @@ bookmarksopen=true}
 
 \newcommand{\TABARNAC}{\emph{TABARNAC}\xspace}
 \newcommand{\Input}[1]{\input{./tex/#1}}
-\newcommand{\itodo}[1]{\todo[inline]{#1}}
-\newcommand{\iatodo}[2]{\todo[inline,author=#1]{#2}}
-\newcommand{\DB}[1]{\iatodo{David}{#1}}
-\newcommand{\MD}[1]{\iatodo{Matthias}{#1}}
-\newcommand{\GH}[1]{\iatodo{Guillaume}{#1}}
 
 \newcommand{\tod}[1]{\textbf{\color{red}{\ul{TODO #1}}}}
 
@@ -407,9 +400,6 @@ tools.
 % For peerreview papers, this IEEEtran command inserts a page break and
 % creates the second title. It will be ignored for other modes.
 \IEEEpeerreviewmaketitle
-
-\listoftodos %%TODO: Remove me
-\itodo{remove list}
 
 \Input{intro.tex}
 \Input{stateOfTheArt.tex}
