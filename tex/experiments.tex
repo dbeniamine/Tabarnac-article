@@ -48,9 +48,8 @@ Due to space restrictions, we show the characterization of the applications
 with 4 threads. However, the qualitative behavior remains the same with different numbers of threads. The performance evaluation is performed with 64 threads,
 which is the maximum number of threads that our evaluation machine can execute
 in parallel. The \emph{matrix multiplication} performance was evaluated with
-matrices of size $4096 \times 4096$ doubles for the naive version and $8192
-\times 8192$ for the block, resulting on a memory usage of $128$Mib per matrix
-for the naive and $512Mib$ for the block. \emph{IS} was executed
+matrices of size $4096 \times 4096$ doubles and $8192 \times 8192$, resulting on
+a memory usage of $128$Mib and $512Mib$ per matrix. \emph{IS} was executed
 with input class \emph{D}, resulting in a memory usage of $33.5$Gib, Finally, Ondes3D has a memory usage of $11.3$Gib.
 
 \subsection{Mapping Policies}
@@ -165,8 +164,9 @@ suitable for NUMA machines. We can easily put each part of \texttt{C} (and
 To evaluate the performance improvements of the proposed modifications, we compare the execution
 time of both versions of the code (naive and block) with the mapping suggested by \TABARNAC to the original Linux kernel (base), and to NUMA Balancing.
 For the naive version, the interleave policy is identical to \TABARNAC and is therefore not shown separately.
-We use bigger matrix for the block version than for the naive one as the
-execution time is $10$ times smaller for the same size.
+We use bigger matrix for the block version than for the naive one as this
+algorithm is designed to benefit from cache and thus reduce the impact of NUMA
+mapping policy.
 
 
 \begin{figure}[!t]
@@ -180,9 +180,10 @@ execution time is $10$ times smaller for the same size.
 Figure~\ref{fig:matrix-res} shows the experimental results of the matrix multiplication. We can see that for
 the naive algorithm, NUMA Balancing is already quite efficient and results in a $40\%$
 speedup. However, using the \TABARNAC policy avoids the runtime overhead and
-allows us to obtain almost $50\%$ of speedup. For the block version, all policies
-provide similar execution times, as this algorithm is designed to fit in the
-caches of the system, such that the NUMA policy should not influence the results.
+allows us to obtain almost $50\%$ of speedup. For the block version, even with
+matrix $4$ times bigger, all policies provide similar execution times, as this
+algorithm is designed to fit in the caches of the system, such that the NUMA
+policy should not influence the results.
 
 This example shows
 how \TABARNAC can help improving an application by highlighting an inefficient
