@@ -48,7 +48,7 @@ Due to space restrictions, we show the characterization of the applications
 with 4 threads. However, the qualitative behavior remains the same with different numbers of threads. The performance evaluation is performed with 64 threads,
 which is the maximum number of threads that our evaluation machine can execute
 in parallel. The \emph{matrix multiplication} performance was evaluated with
-matrices of size $4096 \times 4096$ doubles, for a memory usage of $12.8$Mib per matrix \tod{4096*4096*8=128 MB?}. \emph{IS} was executed
+matrices of size $4096 \times 4096$ doubles, for a memory usage of $128$Mib per matrix. \emph{IS} was executed
 with input class \emph{D}, resulting in a memory usage of $33.5$Gib, Finally, Ondes3D has a memory usage of $11.3$Gib.
 
 \subsection{Mapping Policies}
@@ -58,8 +58,8 @@ The \emph{original Linux kernel} forms our baseline for the experiments. We use 
 The \emph{interleave} policy is performed with the help of the \texttt{numactl} tool.
 We also compare our results to the recently introduced \emph{NUMA Balancing} technique~\cite{Corbet}, which is executed with its default configuration.
 
-For the plots presenting speedups or execution time, each configuration was executed at least 10 times. Each point represents the arithmetic mean of all runs.
-The error bars in those plots represent the standard deviation.
+For the plots presenting speedups, each configuration was executed at least 10 times. Each point represents the arithmetic mean of all runs.
+The error bars in those plots represent the standard error.
 
 
 \section{Analysis and Performance Results}
@@ -193,14 +193,14 @@ The \emph{IS} benchmark in its default version has an unstructured memory access
 \begin{figure}[!p]
     \centering
 
-    \subfigure[\texttt{key\_buff2}.]{
-        \includegraphics[height=.2\textheight]  {is_w_kb2_orig}
-        \label{fig:is-behaviour-orig-kb2}
-    }
-    \vspace{-1mm}
     \subfigure[\texttt{key\_array}.]{
         \includegraphics[height=.2\textheight]  {is_w_kba_orig}
         \label{fig:is-behaviour-orig-kba}
+    }
+    \vspace{-1mm}
+    \subfigure[\texttt{key\_buff2}.]{
+        \includegraphics[height=.2\textheight]  {is_w_kb2_orig}
+        \label{fig:is-behaviour-orig-kb2}
     }
     \vspace{-1mm}
     \subfigure[\texttt{key\_buff1}.]{
@@ -252,15 +252,16 @@ in Listing~\ref{lst:is-modif}.
 \begin{figure}[!p]
     \centering
 
-    \subfigure[The \texttt{key\_buff2} structure.]{
-        \includegraphics[height=.2\textheight] {is_w_kb2_modif}
-        \label{fig:is-behaviour-modif-kb2}
-    }
-
-    \vspace{-3mm}
     \subfigure[The \texttt{key\_array} structure.]{
         \includegraphics[height=.2\textheight] {is_w_kba_modif}
         \label{fig:is-behaviour-modif-kba}
+    }
+
+    \vspace{-3mm}
+
+    \subfigure[The \texttt{key\_buff2} structure.]{
+        \includegraphics[height=.2\textheight] {is_w_kb2_modif}
+        \label{fig:is-behaviour-modif-kb2}
     }
 
     \vspace{-3mm}
@@ -391,7 +392,7 @@ the execution.
 \subsection{Analysis Overhead}
 \label{sec:expe-overhead}
 
-Our last experiment aims at evaluating the instrumentation cost. To evaluate the analysis overhead of \TABARNAC, we
+Our last experiment aims at evaluating the instrumentation cost. To do so, we
 executed all of the NAS Parallel Benchmarks in class \emph{B} with 64 threads on our evaluation system and compared
 the original execution time to the execution time with instrumentation enabled.
 
@@ -416,7 +417,7 @@ can be reasonable.
 
 Our experiments have highlighted the fact that although automated tools such
 as NUMA Balancing can be efficient, in several cases they result in
-performance losses. Moreover, although simple static mapping policies
+performance losses. Moreover, despite simple static mapping policies
 can result in substantial improvements, the best policy depends on the memory access behavior of the parallel application. Therefore, it is necessary to understand its memory behavior to
 select the most appropriate mapping policy.
 
