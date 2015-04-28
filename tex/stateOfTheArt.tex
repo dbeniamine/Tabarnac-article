@@ -43,7 +43,7 @@ Recent versions of the Linux kernel (starting with version 3.8) contain the NUMA
 A similar proposal is the AutoNUMA approach~\cite{Corbet2012}.
 Neither mechanism maintains an access history. This eliminates the need to store the access behavior, but also makes them susceptible to excessive migrations.
 Other proposals store such an access history.
-Dashti et al.~\cite{Dashti2013} introduced the Carrefour mechanism, which uses instruction-based sampling~(IBS) available in recent AMD architectures~\cite{AMD2012} to detect the memory access behavior.
+Dashti et al.~\cite{Dashti2013} introduced the Carrefour mechanism, which uses instruction-based sampling~(IBS)~\cite{Drongowski07Instructionbased} available in recent AMD architectures~\cite{AMD2012} to detect the memory access behavior.
 kMAF~\cite{Diener2014} is a similar mechanism that uses page faults to analyze the behavior.
 Due to the access history, these mechanisms can avoid excessive migrations, but still suffer from later migrations and a runtime overhead compared to mechanisms with prior information.
 
@@ -71,10 +71,10 @@ Generic tools to evaluate parallel application performance, such as Intel's VTun
 
 Many tools were designed to analyze and improve NUMA behavior. Nevertheless, analyzing
 memory accesses is a challenge due to the large amount of information to store and process.
-Several tools~\cite{Lachaize12MemProf,McCurdy2010}  address this difficulty by
-using sampling mechanism such as \emph{AMD  Instruction Based
-Sampling}~\cite{Drongowski07Instructionbased}. Not only sampling can miss important events, leading to inaccurate characterizations, but \emph{IBS} is a non-portable \emph{AMD}
-technology, therefore such tools can be used only in special circumstances. Another approach is to
+Several tools~\cite{Lachaize12MemProf,McCurdy2010} address this difficulty by
+using sampling mechanisms such as AMD's Instruction Based
+Sampling (IBS). Not only can sampling miss important events, leading to inaccurate characterizations, but \emph{IBS} is a non-portable \emph{AMD}
+technology, therefore such tools can only be used in special circumstances. Another approach is to
 use hardware performance counters~\cite{Majo13(Mis)understanding,
 Jiang14Understanding,Bosch00Rivet,Weyers14Visualization,Tao01Visualizing},
 which are special hardware registers that record events such as cache
@@ -84,27 +84,26 @@ memory, but not what triggered these events.
 
 The second difficulty of memory analysis is to present the information in such a
 way that the user can use it to improve the application. Some of the tools previously mentioned only provide
-a textual output~\cite{Lachaize12MemProf,McCurdy2010}. Even if these tools highlight the most relevant informations, it is hard to get an overview of the memory behavior from such output. The user might be lost in a
+a textual output~\cite{Lachaize12MemProf,McCurdy2010}. Even if these tools highlight the most relevant informations, it is hard to get an overview of the memory behavior from such output. The user might be faced with a
 huge amount of information and not be able to differentiate normal behaviors from
 problematic ones. Other tools provide more advanced visualizations. For
-instance, Tao et al.~\cite{Tao01Visualizing} propose a detailed view for each
-page, showing the number of remote and local accesses on each NUMA node. Weyers et
-al.~\cite{Weyers14Visualization} present the memory bandwidth between each pair of nodes,
+instance, Tao et al.~\cite{Tao01Visualizing} propose a detailed view of each memory
+page, showing the number of remote and local accesses from each NUMA node. Weyers et
+al.~\cite{Weyers14Visualization} depict the memory bandwidth between each pair of nodes,
 showing where the remote accesses occur. Finally, Bosch et al.~\cite{Bosch00Rivet} give several views of the execution and the possibility to
 navigate through them.
 
-Although all these tools enable their users to understand more or less easily and
-precisely what kind of performance issue they are facing, they never give the
-reason \emph{why} a certain behavior is happening or how to improve it.
+Although all these tools can help developers and users to understand the kind of performance issues they are facing, they never give the
+reason \emph{why} a certain behavior is happening, which code caused it, or how to improve it.
 Previous studies aimed to answer this question for some specific
 benchmarks~\cite{Majo13(Mis)understanding,Jiang14Understanding}.
-However, these studies use manual source code analysis and performance counters and do not provide a general tool or methodology usable for other applications.
+However, these studies use manual source code analysis and performance counters and do not provide a general tool or methodology that is usable for other applications.
 
-\subsection{Summary}
+\subsection{Summary of Related Work}
 
 Summarizing our discussion of previous work in this area, we conclude that tools to improve the memory access behavior on NUMA architectures with prior information have the highest potential for improvements.
 The two main challenges for this type of tool is to gather information about the memory access patterns in a fast, accurate and easy-to-use way, and providing information to the developers about the ways to improve the behavior of their applications.
-Our proposed tool, \TABARNAC, attempts to solve these challenges.
+Our proposed tool, \TABARNAC, provides a comprehensive solution for these challenges.
 
 % \MD{mechanisms with prior information have highest potential for improvements, but currently:
 % - lack of information about memory access behavior

@@ -6,20 +6,20 @@
 
 In this paper, we presented \TABARNAC, a new tool to trace, analyze and
 optimize the memory behavior of parallel applications running on NUMA
-machines. \TABARNAC is divided into two parts: the first is a memory tracer
-based on the Pin dynamic binary instrumentation. It records the
-number of reads and writes done by all threads for each page.
+machines. \TABARNAC is divided into two parts: the first is a custom memory tracer
+based on the Pin dynamic binary instrumentation tool. It records the
+number of memory reads and writes performed by all threads for each data structure.
 The advantage of instrumentation is that it is the most
 accurate and portable way to generate memory traces.
 Despite the overhead caused by the instrumentation, our tool is efficient enough to analyze even huge applications in a reasonable time.
 
-Presenting memory traces in an intuitive way is a challenge, to address it, we
-choose to provide a summary of the trace in the form of an HTML page
-interleaving text and plots. This HTML page is generate by a R-markdown
+Presenting memory traces in an intuitive way is a challenge. To address it, we
+chose to provide a summary of the trace in the form of an HTML page that
+interleaves plots and explanatory text. This HTML page is generate by a R-markdown
 script. It starts with a general explanation on NUMA machines and classical
-inefficient behavior, than it shows several plots providing different
-interpretations of the trace. Each plots is preceded by explanations on how to
-read it, what kind of issues it can help to identify and how to solve them.
+inefficient behavior, followed by multiple plots that provide different
+interpretations and analyses of the trace. Each plot is preceded by explanations on how to
+read it, what kind of memory access issues it can help to identify and how to solve them.
 
 Using \TABARNAC, we analyzed three parallel applications. The first is a
 matrix multiplication and is useful to discuss classical well known memory access issues.
