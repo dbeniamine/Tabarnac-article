@@ -24,14 +24,17 @@ developer understand and improve the performance of parallel applications.
 However, these tools rely on hardware performance counters and can therefore provide only indirect and sampled information about the memory access behavior, through cache miss statistics, for example.
 Tracing the memory behavior is complex, as many instructions trigger at least one memory access.
 Although several studies have addressed this problem using sampling
-\cite{Lachaize12MemProf,McCurdy2010}, none of them provide a user-friendly
-visualization with informations grouped by data structure or automatic suggestions for improvements.
+\cite{Lachaize12MemProf,McCurdy2010,Gimenez14Dissecting}, still their
+visualization tells what happens (remote access) but not why they happen in
+other word they does not tell how data structure are accessed and shared by
+the threads.
 
-In this paper, we present \emph{TABARNAC}, a \emph{Tool to Analyze the Behavior of
-Applications Running on NUMA ArChitectures}. This tool allows the user to
-trace, visualize and optimize the memory access behavior of parallel applications.
-\TABARNAC presents an easy to understand but comprehensive visualization of the memory access pattern and
-provides specific suggestions to improve the NUMA behavior.
+In this paper, we present \TABARNAC, a set of \emph{Tools and
+    methodologies to Analyze the Behavior of
+Applications Running on NUMA ArChitectures}. \TABARNAC provides tools to trace
+and methodologies to visualize and reach a deep understanding of the memory
+access behavior of parallel applications. Using this understanding, it helps
+the user to optimize their applications.
 Since it is based on memory access traces, \TABARNAC has a very high accuracy while maintaining a reasonable overhead that allows analysis of large applications.
 In an evaluation with several parallel applications, we show that relatively small code changes suggested by \TABARNAC can substantially improve application performance.
 
