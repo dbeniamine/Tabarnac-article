@@ -171,7 +171,7 @@ Philippe O. A. Navaux\\
 % number that will appear in the \additionalauthors section.
 
 \maketitle
-
+%\listoftodos
 
 
 \begin{abstract}
@@ -191,9 +191,7 @@ The main contributions of \TABARNAC are to provide a simple yet precise analysis
 user to easily reach a deep understanding of the memory access distribution,
 as well as suggestions for the developer on how to modify the source code or perform a manual mapping to improve performance.
 Using \TABARNAC, we explain why some applications do not benefit from data
-and thread mapping.
-\DB{Do we ?}
-Moreover, we propose several simple code modifications to
+and thread mapping. Moreover, we propose several simple code modifications to
 improve the memory access behavior as well as manual data and thread
 mappings. Finally, we evaluate the impact of these optimizations with and
 without thread and data mapping, comparing our manual mapping to automated
@@ -216,8 +214,9 @@ tools.
 \Input{experiments.tex}
 \Input{conclusions.tex}
 
-\balancecolumns
 \bibliography{biblio,library}
 \bibliographystyle{abbrv}
+%\balancecolumns
+\balance
 
 \end{document}

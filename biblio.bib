@@ -1476,7 +1476,7 @@
 	tags = "Profiling tools"
 }
 
-@InProceedings{Rose02SIGMA,
+@inproceedings{DeRose02SIGMA,
 	Bibsource = {{DBLP, http://dblp.uni-trier.de}},
 	booktitle = {{Supercomputing, ACM/IEEE 2002 Conference}},
 	Ee = {{http://doi.acm.org/10.1145/762761.762783}},
@@ -1484,7 +1484,7 @@
 	Keywords = {{Analytical models;Application software;Benchmark testing;Counting circuits;Data analysis;Data structures;Hardware;Instruments;Measurement;Performance analysis}},
 	Month = {{Nov}},
 	Url = {{http://dblp.org/db/conf/sc/sc2002.html#RoseEHS02}},
-	author = {Rose, Luiz De and Ekanadham, Kattamuri and Hollingsworth, Jeffrey K. and Sbaraglia, Simone},
+	author = {DeRose, Luiz and Ekanadham, Kattamuri and Hollingsworth, Jeffrey K. and Sbaraglia, Simone.},
 	title = {{SIGMA: a simulator infrastructure to guide memory analysis}},
 	pages = {1-13},
 	year = {2002},
@@ -1532,7 +1532,7 @@
 	Language = {{English}},
 	publisher = {{Springer Berlin Heidelberg}},
 	Url = {{http://dx.doi.org/10.1007/3-540-44681-8_19}},
-	author = {DeRose, LuizA.},
+	author = {DeRose, Luiz A.},
 	title = {{The Hardware Performance Monitor Toolkit}},
 	volume = {2150},
 	pages = {122-132},
@@ -2106,7 +2106,7 @@
 	pages = {42-49},
 	year = {2014},
 	doi = {10.1109/VPA.2014.12},
-	tags = "To read"
+	tags = "Visualisation, Memory optimisation, Profiling tools"
 }
 
 @inproceedings{Broquedis10hwloc,
@@ -2129,5 +2129,137 @@
 	title = {{The PARSEC Benchmark Suite: Characterization and Architectural Implications}},
 	year = {2008},
 	tags = "Benchmark"
+}
+
+@incollection{Vetter14Quantifying,
+	booktitle = {{High Performance Computing Systems. Performance Modeling, Benchmarking and Simulation}},
+	Chapter = {{Lecture Notes in Computer Science}},
+	editor = {Jarvis, Stephen A. and Wright, Steven A. and Hammond, Simon D.},
+	Isbn = {{978-3-319-10213-9}},
+	Language = {{English}},
+	publisher = {{Springer International Publishing}},
+	Url = {{http://dx.doi.org/10.1007/978-3-319-10214-6_1}},
+	author = {Vetter, JeffreyS. and Lee, Seyong and Li, Dong and Marin, Gabriel and McCurdy, Collin and Meredith, Jeremy and Roth, PhilipC. and Spafford, Kyle},
+	title = {{Quantifying Architectural Requirements of Contemporary Extreme-Scale Scientific Applications}},
+	volume = {8551},
+	pages = {3-24},
+	year = {2014},
+	doi = {10.1007/978-3-319-10214-6_1},
+	tags = "Memory optimisation, Profiling tools"
+}
+
+@inproceedings{Gimenez14Dissecting,
+	Acmid = {{2683612}},
+	address = {{Piscataway, NJ, USA}},
+	Bibsource = {{DBLP, http://dblp.uni-trier.de}},
+	booktitle = {{Proceedings of the International Conference for High Performance Computing, Networking, Storage and Analysis}},
+	Ee = {{http://dx.doi.org/10.1109/SC.2014.19}},
+	Isbn = {{978-1-4799-5500-8}},
+	Location = {{New Orleans, Louisana}},
+	Numpages = {{11}},
+	publisher = {{IEEE Press}},
+	series = {{SC ’14}},
+	Url = {{http://dx.doi.org/10.1109/SC.2014.19}},
+	author = {Giménez, Alfredo and Gamblin, Todd and Rountree, Barry and Bhatele, Abhinav and Jusufi, Ilir and Bremer, Peer-Timo and Hamann, Bernd},
+	title = {{Dissecting On-Node Memory Access Performance: A Semantic Approach}},
+	pages = {166-176},
+	year = {2014},
+	doi = {10.1109/SC.2014.19},
+	tags = "Memory optimisation, Profiling tools"
+}
+
+@inproceedings{Liu13Datacentric,
+	Acmid = {{2503297}},
+	address = {{New York, NY, USA}},
+	Articleno = {{28}},
+	booktitle = {{Proceedings of the International Conference on High Performance Computing, Networking, Storage and Analysis}},
+	Isbn = {{978-1-4503-2378-9}},
+	Keywords = {{data locality, data-centric profiling, scalable profiler}},
+	Location = {{Denver, Colorado}},
+	Numpages = {{12}},
+	publisher = {{ACM}},
+	series = {{SC ’13}},
+	Url = {{http://doi.acm.org/10.1145/2503210.2503297}},
+	author = {Liu, Xu and Mellor-Crummey, John},
+	title = {{A Data-centric Profiler for Parallel Programs}},
+	pages = {28-1},
+	year = {2013},
+	doi = {10.1145/2503210.2503297},
+	tags = "Memory optimisation, Profiling tools, To read"
+}
+
+@inproceedings{McCurdy10Memphis,
+	booktitle = {{Performance Analysis of Systems Software (ISPASS), 2010 IEEE International Symposium on}},
+	Keywords = {{multiprocessing programs;performance evaluation;Memphis;NUMA related performance problems;data-centric toolset;hardware performance counters;instruction based sampling;micro-processor design;multi-core platforms;non-uniform memory access;problematic memory accesses;Automatic control;CADCAM;Computer aided manufacturing;Counting circuits;Delay;Hardware;Laboratories;Programming profession;Sampling methods;Sockets}},
+	Month = {{March}},
+	author = {McCurdy, C. and Vetter, J.},
+	title = {{Memphis: Finding and fixing NUMA-related performance problems on multi-core platforms}},
+	pages = {87-96},
+	year = {2010},
+	doi = {10.1109/ISPASS.2010.5452060},
+	tags = "Memory optimisation, Profiling tools"
+}
+
+@inproceedings{Martonosi92MemSpy,
+	Acmid = {{133079}},
+	address = {{New York, NY, USA}},
+	booktitle = {{Proceedings of the 1992 ACM SIGMETRICS Joint International Conference on Measurement and Modeling of Computer Systems}},
+	Isbn = {{0-89791-507-0}},
+	Location = {{Newport, Rhode Island, USA}},
+	Numpages = {{12}},
+	publisher = {{ACM}},
+	series = {{SIGMETRICS ’92/PERFORMANCE ’92}},
+	Url = {{http://doi.acm.org/10.1145/133057.133079}},
+	author = {Martonosi, Margaret and Gupta, Anoop and Anderson, Thomas},
+	title = {{MemSpy: Analyzing Memory System Bottlenecks in Programs}},
+	pages = {1-12},
+	year = {1992},
+	doi = {10.1145/133057.133079},
+	tags = "Memory optimisation, Profiling tools"
+}
+
+@inproceedings{Alpern90Visualizing,
+	Acmid = {{949548}},
+	address = {{Los Alamitos, CA, USA}},
+	booktitle = {{Proceedings of the 1st Conference on Visualization ’90}},
+	Isbn = {{0-8186-2083-8}},
+	Location = {{San Francisco, California}},
+	Numpages = {{7}},
+	publisher = {{IEEE Computer Society Press}},
+	series = {{VIS ’90}},
+	Url = {{http://dl.acm.org/citation.cfm?id=949531.949548}},
+	author = {Alpern, Bowen and Carter, Larry and Selker, Ted},
+	title = {{Visualizing Computer Memory Architectures}},
+	pages = {107-113},
+	year = {1990},
+	tags = "Profiling tools, Visualisation"
+}
+
+@inproceedings{Liu14Tool,
+	Acmid = {{2555271}},
+	address = {{New York, NY, USA}},
+	booktitle = {{Proceedings of the 19th ACM SIGPLAN Symposium on Principles and Practice of Parallel Programming}},
+	Isbn = {{978-1-4503-2656-8}},
+	Keywords = {{NUMA, memory access pattern, performance optimization, profiler, threads}},
+	Location = {{Orlando, Florida, USA}},
+	Numpages = {{14}},
+	publisher = {{ACM}},
+	series = {{PPoPP ’14}},
+	Url = {{http://doi.acm.org/10.1145/2555243.2555271}},
+	author = {Liu, Xu and Mellor-Crummey, John},
+	title = {{A Tool to Analyze the Performance of Multithreaded Programs on NUMA Architectures}},
+	pages = {259-272},
+	year = {2014},
+	doi = {10.1145/2555243.2555271},
+	tags = "To read, Memory optimisation, Profiling tools"
+}
+
+@phdthesis{Servat15Towards,
+	address = {{Barcelona}},
+	school = {{Universitat Politècnica de Catalunya}},
+	author = {Servat Gelabert, Harald},
+	title = {{Towards instantaneous performance analysis using coarse-grain sampled and instrumented data}},
+	year = {2015},
+	tags = "Profiling tools, Memory optimisation"
 }
 
