@@ -10,7 +10,10 @@ visualization. In this section, we discuss the implementation of both parts.
 \subsection{Instrumentation}
 \label{sec:design-impl}
 
-The instrumentation part of \TABARNAC is based on a custom memory tracer for the Pin dynamic binary instrumentation tool~\cite{Luk05Pin}.
+The instrumentation part of \TABARNAC is based on a custom memory tracer for
+the Pin dynamic binary instrumentation tool~\cite{Luk05Pin}, although pin is
+an Intel technology, it works also on AMD processors
+\DB{If enough space, speak about slowdown on AMD \ldots} .
 Before running the application, our tool retrieves static memory allocation
 information using the \texttt{libelfg0} library. Dynamic allocations are
 intercepted with a \texttt{malloc} replacement. If the application is
@@ -43,11 +46,11 @@ Listing~\ref{lst:mem}, making the code completely lock-free, as well as minimizi
 %\end{figure}
 
 
-After tracing finishes, we generate two \texttt{csv} files.
-The first file contains the list of pages and the number of reads
-and writes per thread. The second file contains the
-list of structures with their names, sizes and start addresses.
-We then call an R-markdown script which reads the two \texttt{csv} files,
+After tracing finishes, we generate three \texttt{csv} files.  The first file
+contains the list of pages and the number of reads and writes per thread. The
+second file contains the list of structures with their names, sizes and start
+addresses, finally the third contains the stacks size and addresses.
+We then call an R-markdown script which reads the \texttt{csv} files,
 retrieves the page / data structure mapping and generates the final
 visualization presented in the next subsection.
 
@@ -64,13 +67,14 @@ visualization presented in the next subsection.
 \label{sec:design-visu}
 
 Providing an easy to analyze visualization of a memory trace is a challenge. We
-opted for an assisted visualization. Once the analysis phase is done, \TABARNAC
-generates an HTML page, providing a summary of the trace through several
-plots. Each plot is
-introduced by an explanation of its presentation, what common issues it can
-help to understand and provides suggestions on how to fix these issues.
-The visualization starts with a small introduction, recapitulating the main
-principles while developing for NUMA machines, and shows the hardware topology of the analyzed machine extracted with Hwloc~\cite{Broquedis10hwloc}.
+opted for an assisted visualization. Once the analysis phase is done,
+\TABARNAC generates the visualization (as an HTML page), providing a summary
+of the trace through several plots. Each plot is introduced by an explanation
+of its presentation, what common issues it can help to understand and provides
+suggestions on how to fix these issues.  The visualization starts with a small
+introduction, recapitulating the main principles while developing for NUMA
+machines, and shows the hardware topology of the analyzed machine extracted
+with Hwloc~\cite{Broquedis10hwloc}.
 
 In the next part, the visualization focuses on the usage of data structures. Some
 structures might be ignored for two reasons: either no accesses have been
@@ -85,23 +89,19 @@ done to make the output more readable. However, it is possible to ask
         \includegraphics[width=.45\linewidth]{example_sz}
         \label{fig:example_sz}
     }
-    \subfigure[First touch distribution inside one structure.
-%   Each point shows which thread is responsible of the first access on one page.
-    ]{
-        \includegraphics[width=.45\linewidth]{example_ft}
-        \label{fig:example_ft}
+    \subfigure[Number of Read and Write per structure.]{
+        \includegraphics[width=.45\linewidth]{example_rw}
+        \label{fig:example_rw}
     }
     \label{fig:example_plot1}
     \caption{Global view of memory behavior.}
 \end{figure}
 
 The first series of plots presents information concerning the relative
-importance of the data structures. It consists of three plots, showing first the
+importance of the data structures. It consists of two plots, showing first the
 size of each data structure, as in Figure~\ref{fig:example_sz}, then the
-number of reads and writes performed by each thread on each structure (Figure~\ref{fig:example_rw}) and
-finally the total number of reads and writes per structure. These plots give a
-general idea of the structures used by the parallel application, it also allows to identify
-threads with a particular pattern (for example, to find the master thread).
+number of reads and writes  on each structure (Figure~\ref{fig:example_rw}). These plots give a
+general idea of the structures used by the parallel application.
 Moreover, knowing the read/write behavior is very
 useful as it determines the possible optimizations. For instance, structures
 written only during initialization (or very rarely) can be relatively easily
@@ -109,26 +109,30 @@ duplicated, such that each NUMA node works on a local copy.
 
 \begin{figure}[htb]
     \centering
-    \subfigure[Number of Read and Write per threads and per structure.]{
-        \includegraphics[width=.45\linewidth]{example_rw}
-        \label{fig:example_rw}
-    }
-    \subfigure[Access distribution per thread inside one structure.
+
+    \subfigure[Access distribution.
 %    Each point represents the number of access to one page done by one thread.
     ]{
         \includegraphics[width=.45\linewidth]{example_dist}
         \label{fig:example_dist}
     }
-    \caption{Per thread view of memory behavior.}
+    \subfigure[First touch distribution.
+%   Each point shows which thread is responsible of the first access on one page.
+    ]{
+        \includegraphics[width=.45\linewidth]{example_ft}
+        \label{fig:example_ft}
+    }
+    \caption{Per thread distribution of one structure.}
     \label{fig:example_plot2}
 \end{figure}
 
-The second series of plots is the most important one. It shows for each thread
-and structure the distribution of accesses inside the structure. As we
-can see in Figure~\ref{fig:example_dist}, each point represents the number of
-accesses done by one thread to one page. It gives an easy way to understand the data
-sharing between threads and the usage of structures. They can be used to identify
-inefficient memory usage and to determine the best NUMA mapping policy.
+The second series of plots is the most important one. For each structures, it
+shows the density of access done by each thread over the structure and the
+global distribution. As we can see in Figure~\ref{fig:example_dist}, there is
+one line per thread, the darker is the line the more the thread accessed the
+page. It gives an easy way to understand the data sharing between threads and
+the usage of structures. They can be used to identify inefficient memory usage
+and to determine the best NUMA mapping policy.
 
 %\begin{figure}[htb]
 %    \centering
@@ -142,7 +146,7 @@ inefficient memory usage and to determine the best NUMA mapping policy.
 Finally, \TABARNAC provides a plot that shows for each page of each structure
 which thread was responsible for the first touch
 (Figure~\ref{fig:example_ft}). This information is important as the
-default policy for Linux and most other operating systems is to map a page as close as possible to the first
+default policy for \emph{Linux} and most other operating systems is to map a page as close as possible to the first
 thread accessing it. If the first touch distribution does not fit the actual
 access distribution, the default mapping done by \emph{Linux} might not be
 efficient. To improve this issue, the developer can either correct the first
