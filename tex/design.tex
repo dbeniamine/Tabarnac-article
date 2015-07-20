@@ -123,10 +123,11 @@ duplicated, such that each NUMA node works on a local copy.
 The second series of plots is the most important one. For each structures, it
 shows the density of access done by each thread over the structure and the
 global distribution. As we can see in Figure~\ref{fig:example_dist}, there is
-one line per thread, the darker is the line the more the thread accessed the
-page. It gives an easy way to understand the data sharing between threads and
-the usage of structures. They can be used to identify inefficient memory usage
-and to determine the best NUMA mapping policy.
+one line per thread and one line for the total number of accesses. The darker
+is the line the more the thread accessed the page. It gives an easy way to
+understand the data sharing between threads and the usage of structures. They
+can be used to identify inefficient memory usage and to determine the best
+NUMA mapping policy.
 
 %\begin{figure}[htb]
 %    \centering
