@@ -86,7 +86,7 @@ done to make the output more readable. However, it is possible to ask
 
 \begin{figure}[htb]
     \centering
-    \subfigure[Size of structures in pages.]{
+    \subfigure[Size of structures (pages).]{
         \includegraphics[width=.45\linewidth]{example_sz}
         \label{fig:example_sz}
     }
@@ -94,23 +94,6 @@ done to make the output more readable. However, it is possible to ask
         \includegraphics[width=.45\linewidth]{example_rw}
         \label{fig:example_rw}
     }
-    \label{fig:example_plot1}
-    \caption{Global view of memory behavior.}
-\end{figure}
-
-The first series of plots presents information concerning the relative
-importance of the data structures. It consists of two plots, showing first the
-size of each data structure, as in Figure~\ref{fig:example_sz}, then the
-number of reads and writes  on each structure (Figure~\ref{fig:example_rw}). These plots give a
-general idea of the structures used by the parallel application.
-Moreover, knowing the read/write behavior is very
-useful as it determines the possible optimizations. For instance, structures
-written only during initialization (or very rarely) can be relatively easily
-duplicated, such that each NUMA node works on a local copy.
-
-\begin{figure}[htb]
-    \centering
-
     \subfigure[Access distribution.
 %    Each point represents the number of access to one page done by one thread.
     ]{
@@ -123,9 +106,19 @@ duplicated, such that each NUMA node works on a local copy.
         \includegraphics[width=.45\linewidth]{example_ft}
         \label{fig:example_ft}
     }
-    \caption{Per thread distribution of one structure.}
-    \label{fig:example_plot2}
+    \label{fig:example_plot1}
+    \caption{Example plots from \TABARNAC.}
 \end{figure}
+
+The first series of plots presents information concerning the relative
+importance of the data structures. It consists of two plots, showing first the
+size of each data structure, as in Figure~\ref{fig:example_sz}, then the
+number of reads and writes  on each structure (Figure~\ref{fig:example_rw}). These plots give a
+general idea of the structures used by the parallel application.
+Moreover, knowing the read/write behavior is very
+useful as it determines the possible optimizations. For instance, structures
+written only during initialization (or very rarely) can be relatively easily
+duplicated, such that each NUMA node works on a local copy.
 
 The second series of plots is the most important one. For each structures, it
 shows the density of access done by each thread over the structure and the

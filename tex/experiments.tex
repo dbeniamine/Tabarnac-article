@@ -205,27 +205,42 @@ The \emph{IS} benchmark in its default version has an unstructured memory access
 \begin{figure}[htb]
     \centering
 
-    \subfigure[\texttt{key\_array}.]{
+    \subfigure[\texttt{key\_array} (original).]{
         \includegraphics[width=.45\linewidth]  {is_b_kba_orig}
         \label{fig:is-behaviour-orig-kba}
     }
-    \subfigure[\texttt{key\_buff2}.]{
+    \subfigure[\texttt{key\_array} (modified).]{
+        \includegraphics[width=.45\linewidth] {is_b_kba_modif}
+        \label{fig:is-behaviour-modif-kba}
+    }
+    \subfigure[\texttt{key\_buff2} (original).]{
         \includegraphics[width=.45\linewidth]  {is_b_kb2_orig}
         \label{fig:is-behaviour-orig-kb2}
     }
-    \subfigure[\texttt{key\_buff1}.]{
+    \subfigure[\texttt{key\_buff2} (modified).]{
+        \includegraphics[width=.45\linewidth] {is_b_kb2_modif}
+        \label{fig:is-behaviour-modif-kb2}
+    }
+    \subfigure[\texttt{key\_buff1} (original).]{
         \includegraphics[width=.45\linewidth]  {is_b_kb1_orig}
         \label{fig:is-behaviour-orig-kb1}
     }
-    \caption{Original memory access distribution for the main structures of
-        \emph{IS} with $4$ threads.}
-    \label{fig:is-behaviour-orig}
+    \subfigure[\texttt{key\_buff1} (modified).]{
+        \includegraphics[width=.45\linewidth] {is_b_kb1_modif}
+        \label{fig:is-behaviour-modif-kb1}
+    }
+
+    \caption{Memory access distribution for the main structures of
+        \emph{IS} with $64$ threads. Original behavior on the left, after
+    modification on the right.}
+    \label{fig:is-behaviour}
+
 \end{figure}
 
 \lstinputlisting[caption=\emph{IS} code responsible for the
 Gaussian distribution of memory accesses to the \texttt{key\_buff1} structure., label=lst:is, float=htb]{code/is.c}
 
-Figure~\ref{fig:is-behaviour-orig} shows the access distributions for the
+The left side of Figure~\ref{fig:is-behaviour} shows the original access distributions for the
 three main structures of \emph{IS} class \emph{B} with $64$ threads. We can see that
 each structure has a different access pattern: \texttt{key\_array}'s
 (Figure~\ref{fig:is-behaviour-orig-kba}) access distribution shows that every
@@ -261,30 +276,10 @@ in Listing~\ref{lst:is-modif}.
 #pragma omp for schedule(static,NUM_BUCKETS/(2*omp_get_num_threads()))
 \end{lstlisting}
 
-\begin{figure}[htb]
-    \centering
-
-    \subfigure[\texttt{key\_array}.]{
-        \includegraphics[width=.45\linewidth] {is_b_kba_modif}
-        \label{fig:is-behaviour-modif-kba}
-    }
-    \subfigure[\texttt{key\_buff2}.]{
-        \includegraphics[width=.45\linewidth] {is_b_kb2_modif}
-        \label{fig:is-behaviour-modif-kb2}
-    }
-    \subfigure[\texttt{key\_buff1}.]{
-        \includegraphics[width=.45\linewidth] {is_b_kb1_modif}
-        \label{fig:is-behaviour-modif-kb1}
-    }
-
-    \caption{Memory access distribution for the main structures of
-        \emph{IS} with $4$ threads after our modifications.}
-    \label{fig:is-behaviour-modif}
-\end{figure}
 
 
 With this simple code modification, we obtain the access distribution
-shown in Figure~\ref{fig:is-behaviour-modif}. We can see that the Gaussian
+shown in the right side of Figure~\ref{fig:is-behaviour}. We can see that the Gaussian
 access pattern of \texttt{key\_buff1} is now better balanced between the threads. Each page
 of this structure is mostly used by only one thread. Moreover,
 \texttt{key\_buff2}'s access distribution has also changed. We can see that
@@ -329,17 +324,26 @@ the application down.
 \begin{figure}[htb]
     \centering
 
-    \subfigure[Access distribution for \texttt{fz}.]{
+    \subfigure[Original access distribution.]{
         \includegraphics[width=.45\linewidth] {ondes3d_fz_dist_orig}
         \label{fig:ondes3d-behaviour-fz-orig}
     }
-    \subfigure[First-touch \texttt{fz}.]{
+    \subfigure[Access distribution after modifications.]{
+        \includegraphics[width=.45\linewidth] {ondes3d_fz_dist_modif}
+        \label{fig:ondes3d-behaviour-fz-modif}
+    }
+    \subfigure[Original First-touch.]{
         \includegraphics[width=.45\linewidth] {ondes3d_fz_ft_orig}
         \label{fig:ondes3d-ft-fz-orig}
     }
-    \caption{Original access and first-touch distribution for structure
-        \texttt{fz} from \emph{Ondes3D}.}
-    \label{fig:ondes3d-orig}
+    \subfigure[First-touch after modifications.]{
+        \includegraphics[width=.45\linewidth] {ondes3d_fz_ft_modif}
+        \label{fig:ondes3d-ft-fz-modif}
+    }
+    \caption{Access and first-touch distribution  for structure
+        \texttt{fz} from \emph{Ondes3D}. Original version on the left side,
+    after modifications on the right.}
+    \label{fig:ondes3d}
 \end{figure}
 
 The analysis of the access distributions of \emph{Ondes3D} shows that each
@@ -350,21 +354,7 @@ this pattern, if we run \emph{Ondes3D} without any mapping, every page
 will be mapped to the NUMA node that executes thread $0$, resulting in many remote accesses for the other threads. An easy fix is to
 perform the initialization in parallel and to pin each thread on a different core.
 
-\begin{figure}[htb]
-    \centering
 
-    \subfigure[Access distribution for \texttt{fz}.]{
-        \includegraphics[width=.45\linewidth] {ondes3d_fz_dist_modif}
-        \label{fig:ondes3d-behaviour-fz-modif}
-    }
-    \subfigure[First-touch \texttt{fz}.]{
-        \includegraphics[width=.45\linewidth] {ondes3d_fz_ft_modif}
-        \label{fig:ondes3d-ft-fz-modif}
-    }
-    \caption{Access and first-touch distribution  for structure
-        \texttt{fz} from \emph{Ondes3D}, after modifications.}
-    \label{fig:ondes3d-modif}
-\end{figure}
 
 Such modifications result in the access distribution shown in
 Figure~\ref{fig:ondes3d-behaviour-fz-modif}. We can see that now the thread $0$ accesses only
@@ -404,6 +394,7 @@ the original execution time to the execution time with instrumentation enabled.
 
 \begin{figure}[htb]
     \centering
+    \DB{Replace by a table if not enough space}
     \includegraphics[width=.63\linewidth]{tool-ovh.pdf}
     \caption{Overhead of \TABARNAC analysis for the NAS Parallel Benchmarks.}
     \label{fig:ovh}
@@ -427,7 +418,7 @@ performance losses. Moreover, although simple static mapping policies
 can result in substantial improvements, the best policy depends on the memory access behavior of the parallel application. Therefore, it is necessary to understand its memory behavior to
 select the most appropriate mapping policy.
 
-\TABARNAC enables developers and users to achieve performance improvements in two ways. First, by
+Our tools and methodology enables developers and users to achieve performance improvements in two ways. First, by
 providing a deep understanding of the memory access behavior, it allows the user to
 find the best mapping policy. Second, this knowledge can be used to
 identify and fix inefficient memory behavior. Our experiments showed that both
