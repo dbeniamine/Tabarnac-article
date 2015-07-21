@@ -12,8 +12,8 @@ visualization. In this section, we discuss the implementation of both parts.
 
 The instrumentation part of \TABARNAC is based on a custom memory tracer for
 the Pin dynamic binary instrumentation tool~\cite{Luk05Pin}, although pin is
-an Intel technology, it works also on AMD processors
-\DB{If enough space, speak about slowdown on AMD \ldots} .
+an Intel technology, it works also on AMD processors.
+
 Before running the application, our tool retrieves static memory allocation
 information using the \texttt{libelfg0} library. Dynamic allocations are
 intercepted with a \texttt{malloc} replacement. If the application is
@@ -28,14 +28,13 @@ printed in a file at the end of the analysis to be used by the visualization
 tool.
 
 During the execution, every memory access of the parallel application is traced.
-For each access, we store the type of access (read or write), the memory page that was accessed, and the thread ID.
+For each access, we store the type (read or write), the memory page that was accessed, and the thread ID.
 The information is stored on a per-thread basis, as shown in
 Listing~\ref{lst:mem}, making the code completely lock-free, as well as minimizing the amount of false sharing between threads.
 
 %\begin{figure}[!h]
 \begin{lstlisting}[caption={Code executed on each memory access. The \texttt{address}, \texttt{threadid} and \texttt{type} parameters are provided by Pin.},label=lst:mem]
-	void mem_access(unsigned long address, int threadid, char type)
-	{
+	void mem_access(unsigned long address, int threadid, char type){
 		uint64_t page = address >> page_bits;
 		acc[threadid][page][type]++;
 	}
@@ -46,13 +45,12 @@ Listing~\ref{lst:mem}, making the code completely lock-free, as well as minimizi
 %\end{figure}
 
 
-After tracing finishes, we generate three \texttt{csv} files.  The first file
+After tracing finishes, we generate three \texttt{csv} files.  The first
 contains the list of pages and the number of reads and writes per thread. The
-second file contains the list of structures with their names, sizes and start
-addresses, finally the third contains the stacks size and addresses.
-We then call an R-markdown script which reads the \texttt{csv} files,
-retrieves the page / data structure mapping and generates the final
-visualization presented in the next subsection.
+second contains the list of structures with their names, sizes and start
+addresses, the last file contains the stacks size and addresses.  Then, a
+script which reads these files, retrieves the page / data structure mapping
+and generates the final visualization presented in the next subsection.
 
 % not relevant I'd say:
 % \TABARNAC have very few dependencies and can be installed easily. If all the R
@@ -80,7 +78,7 @@ with Hwloc~\cite{Broquedis10hwloc}.
 In the next part, the visualization focuses on the usage of data structures. Some
 structures might be ignored for two reasons: either no accesses have been
 detected during the analysis, which happens for structures used by external
-libraries, or less than 0.01\% of the total accesses happens on them. This is
+libraries, or less than $0.01\%$ of the total accesses happens on them. This is
 done to make the output more readable. However, it is possible to ask
 \TABARNAC not to ignore structures in the second case for a more detailed view.
 
@@ -90,17 +88,17 @@ done to make the output more readable. However, it is possible to ask
         \includegraphics[width=.45\linewidth]{example_sz}
         \label{fig:example_sz}
     }
-    \subfigure[Number of Read and Write per structure.]{
+    \subfigure[Number of accesses per structure.]{
         \includegraphics[width=.45\linewidth]{example_rw}
         \label{fig:example_rw}
     }
-    \subfigure[Access distribution.
+    \subfigure[Access distribution inside a structure.
 %    Each point represents the number of access to one page done by one thread.
     ]{
         \includegraphics[width=.45\linewidth]{example_dist}
         \label{fig:example_dist}
     }
-    \subfigure[First touch distribution.
+    \subfigure[First touch distribution inside a structure.
 %   Each point shows which thread is responsible of the first access on one page.
     ]{
         \includegraphics[width=.45\linewidth]{example_ft}
@@ -125,8 +123,8 @@ shows the density of access done by each thread over the structure and the
 global distribution. As we can see in Figure~\ref{fig:example_dist}, there is
 one line per thread and one line for the total number of accesses. The darker
 is the line the more the thread accessed the page. It gives an easy way to
-understand the data sharing between threads and the usage of structures. They
-can be used to identify inefficient memory usage and to determine the best
+understand the data sharing between threads and the usage of structures. These
+plots be used to identify inefficient memory usage and to determine the best
 NUMA mapping policy.
 
 %\begin{figure}[htb]
@@ -138,7 +136,7 @@ NUMA mapping policy.
 %\end{figure}
 
 
-Finally, \TABARNAC provides a plot that shows for each page of each structure
+Finally, \TABARNAC shows for each page of each structure
 which thread was responsible for the first touch
 (Figure~\ref{fig:example_ft}). This information is important as the
 default policy for \emph{Linux} and most other operating systems is to map a page as close as possible to the first

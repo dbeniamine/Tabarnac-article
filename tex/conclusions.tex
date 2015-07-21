@@ -17,7 +17,7 @@ Presenting memory traces in an intuitive way is a challenge. To address it, we
 chose to provide several meaningful yet readable plots that provide different
 interpretations and analyses of the trace. Each plot is preceded by
 explanations on how to read it, what kind of memory access issues it can help
-to identify and how to solve them.  Out visualization also contains general
+to identify and how to solve them.  Our visualization also contains general
 explanations on NUMA machines and classical inefficient behavior.
 
 Using \TABARNAC, we analyzed two parallel applications: \emph{IS} from the NAS
@@ -25,9 +25,10 @@ Parallel Benchmarks which is known for being memory intensive with a random
 memory pattern. Then we studied \emph{Ondes3D}, a real life application that
 simulates seismic waves. For both applications, our methodology helped us
 understanding their performance issues.  Using this knowledge, we proposed
-simple code modification to optimize the behavior, resulting in significant
-speedups compared to the original version (up to $60\%$ speedup), and to the
-results provided by automated tools (more than $10\%$ speedup).
+simple code modification to optimize the behavior resulting, for each
+applications, in significant speedups compared to the original version (up to
+$60\%$ speedup), and to the results provided by automated tools (up to $30\%$
+speedup).
 
 Future work will focus on two directions. First, we will improve the
 structure detection support to be able to analyze Fortran programs, as many

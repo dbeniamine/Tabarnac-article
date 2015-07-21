@@ -83,7 +83,7 @@ Several methods have been used to address the problem of data collection. A
 lot of studies tries to deduce information from hardware performance
 counters~\cite{Majo13(Mis)understanding,
 Jiang14Understanding,Bosch00Rivet,Weyers14Visualization,Tao01Visualizing,DeRose01Hardware},
-the special register allows to record events such as cache misses and remote
+special registers that allow to record events such as cache misses and remote
 memory accesses, among others. Still, these counters only provide a partial
 view of the execution, they show events happening on the processor related to
 memory, but not what triggered them. Moreover available performance counters
@@ -129,10 +129,10 @@ al.~\cite{Weyers14Visualization} depict the memory bandwidth between each pair o
 showing where the remote accesses occur. Other
 tools~\cite{DeRose01Hardware,DeRose02SIGMA,Bosch00Rivet} provide several views
 of the execution, giving the ability to correlate them with the source code as
-we are used to do with traditional performance tools such as Vtune.
-
-Although all these tools can help developers and users to understand the kind of performance issues they are facing, they never give the
-reason \emph{why} the issue is happening, or how to improve it.
+we are used to do with traditional performance tools such as Vtune. Although
+all these tools can help developers and users to understand the kind of
+performance issues they are facing, they never give the reason \emph{why} the
+issue is happening, or how to improve it.
 
 Gimenez et al.~\cite{Gimenez14Dissecting} provides a NUMA oriented view of the
 execution, showing which node is responsible of how many access, moreover they
@@ -142,7 +142,7 @@ understand these graphs.
 
 Finally Liu et al.'s work~\cite{Liu14Tool} is quite near to the previous studies but
 they also show some \emph{address centric} visualization which helps answering
-why the performance issue occurred. However these views are not enough mature
+why the performance issue occurred. However these views are not mature enough
 yet and only answer a part of the question.
 
 %Previous studies aimed to answer this question for some specific
