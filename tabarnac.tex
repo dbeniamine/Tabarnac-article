@@ -175,27 +175,25 @@ Philippe O. A. Navaux\\
 
 \begin{abstract}
 
-\DB{Shorten the abstract, or fix the weird spaces \ldots}
 In modern parallel architectures, memory accesses represent a common bottleneck, making optimizing their behavior necessary to achieve optimal performance. This is even more important with NUMA
-memories, as the access time to data depends on the memory controller that is responsible for the
-access and the location of the data in the main memory. Many efforts were made to
-develop adaptive tools to improve memory accesses at the runtime by optimizing the mapping of data and threads to NUMA nodes. However, the improvements provided by these tools highly depend on
-the memory access pattern of the original application. A code
-written without considering memory performance at all might not benefit from
-them. Moreover, automatic mapping tools need time to detect the
-best mapping. During this training phase, opportunities for optimizations are lost. A
-deeper understanding of the memory behavior can help defining the correct mapping without the need for an analysis during execution.
+memories, as the access time to data depends on the location of the data in
+the memory. Many efforts were made to
+develop adaptive tools to improve memory accesses at the runtime by optimizing
+the mapping of data and threads to NUMA nodes.  However, theses tools are not
+able to change the memory access pattern of the original application,
+therefore a code written without considering memory performance might
+not benefit from them. Moreover, automatic mapping tools need time to detect the
+best mapping loosing optimization opportunities. A
+deeper understanding of the memory behavior can help defining the best mapping
+removing the need for runtime analysis.
 
 In this paper, we present \TABARNAC, a set of tools and methodologies for analyzing the memory behavior of parallel applications with a focus on NUMA architectures.
-The main contributions of \TABARNAC are to provide a simple yet precise analysis of the behavior, allowing the
-user to easily reach a deep understanding of the memory access distribution,
-as well as suggestions for the developer on how to modify the source code or perform a manual mapping to improve performance.
+Our main contributions are to provide a simple yet precise analysis of the behavior, allowing the
+user to easily reach a deep understanding of the memory usage.
 Using \TABARNAC, we explain why some applications do not benefit from data
 and thread mapping. Moreover, we propose several simple code modifications to
-improve the memory access behavior as well as manual data and thread
-mappings. Finally, we evaluate the impact of these optimizations with and
-without thread and data mapping, comparing our manual mapping to automated
-tools.
+improve the memory access behavior. Finally, we compare the impact of our
+proposition to automated tools.
 %
 \end{abstract}
 % A category with the (minimum) three required fields
