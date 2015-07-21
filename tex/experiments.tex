@@ -10,27 +10,66 @@ We present the hardware architecture, the applications that will be used in the 
 \subsection{Hardware Environment}
 \label{sec:expe-setup}
 
+We used two NUMA machines for our experiments \texttt{Turing} and
+\texttt{Idfreeze}. The second machine was only used to compare the
+instrumentation overhead on Intel and AMD machines, all the other experiments
+ran on \texttt{turing}. The hardware details are
+summarized in Table~\ref{tab:hw}. \texttt{Turing} runs version $3.13$ of the
+Linux kernel, while \texttt{Idfreeze} uses verions $3.2$.
 
-All experiments were executed on a NUMA machine that is composed of $4$ Intel Xeon X7550
-processors (Nehalem microarchitecture~\cite{Intel2010}). Each processor has its own memory controller and therefore forms a NUMA node. The hardware details are summarized in Table~\ref{tab:turing}.
-The machine runs version 3.13 of the Linux kernel.
+%\texttt{Turing} is composed of $4$ Intel Xeon X7550
+%processors (Nehalem microarchitecture~\cite{Intel2010}). Each processor has its own memory controller and therefore forms a NUMA node. The hardware details are summarized in Table~\ref{tab:turing}.
+%The machine runs version 3.13 of the Linux kernel.
+%
+%\texttt{Idfreeze} is composed of $4$ AMD Opteron $6174$ 
 
-\begin{table}[htb]
+%Boths machines are composed of $4$ processors.  Each processor has its own memory
+%controller and therefore forms a NUMA node.
+%
+%\begin{table}[htb]
+%    \centering
+%    \caption{Hardware configuration of our evaluation system.}
+%    \label{tab:turing}
+%    \footnotesize
+%        \begin{tabular}{lccccc}
+%            \toprule
+%            \multirow{2}{1.5cm}{System total} & Nodes & Threads & Freq & Memory \\
+%            \cmidrule(lr){2-5}
+%                & $4$   & $64$ & $2.00$Ghz & $128$Gib \\
+%            \midrule
+%            \multirow{2}{1.5cm}{Per NUMA node} & Cores & Threads & L3 Cache & Memory \\
+%           \cmidrule(lr){2-5}
+%            & $8$ & $16$ & $18$Mib & $32$Gib  \\
+%            \bottomrule
+%        \end{tabular}
+%\end{table}
+
+\DB{Complete Hardware}
+\begin{table}
     \centering
+    \begin{tabular}{lp{1.1cm}rp{1cm}p{1.35cm}p{1cm}}
+        \toprule
+        \multirow{3}{.8cm}{CPU}
+        &  & \multicolumn{2}{c}{Vendor} & \multicolumn{2}{c}{Model} \\
+        \cmidrule(lr){3-6}
+        & \texttt{Turing}  & \multicolumn{2}{c}{Intel} & \multicolumn{2}{c}{Xeon X7550} \\
+        & \texttt{Idfreeze} & \multicolumn{2}{c}{AMD} & \multicolumn{2}{c}{Opteron 6174} \\
+        \midrule
+        \multirow{3}{.8cm}{System totals}
+        & & Nodes & Threads & Freq & Memory \\
+        \cmidrule(lr){3-6}
+        & \texttt{Turing}     & $4$ & $64$ & $2.00$Ghz & $128$Gib \\
+        & \texttt{Idfreeze} & $8$ & $48$   & $2.20$Ghz        &  $256$Gib\\
+        \midrule
+        \multirow{3}{.8cm}{Per node}
+        & & Cores & Threads & L3 Cache & Memory \\
+        \cmidrule(lr){3-6}
+        & \texttt{Turing}     & $8$ & $16$ & $18$Mib & $32$Gib \\
+        & \texttt{Idfreeze}   & $6$  & $6$   & $12$Mib  &  $32$Gib \\
+        \bottomrule
+    \end{tabular}
     \caption{Hardware configuration of our evaluation system.}
-    \label{tab:turing}
-    \footnotesize
-        \begin{tabular}{lccccc}
-            \toprule
-            \multirow{2}{1.5cm}{System total} & Nodes & Threads & Freq & Memory \\
-            \cmidrule(lr){2-5}
-                & $4$   & $64$ & $2.00$Ghz & $128$Gib \\
-            \midrule
-            \multirow{2}{1.5cm}{Per NUMA node} & Cores & Threads & L3 Cache & Memory \\
-           \cmidrule(lr){2-5}
-            & $8$ & $16$ & $18$Mib & $32$Gib  \\
-            \bottomrule
-        \end{tabular}
+    \label{tab:hw}
 \end{table}
 
 \subsection{Applications}
@@ -392,16 +431,40 @@ Our last experiment aims at evaluating the instrumentation cost. To do so, we
 executed all of the NAS Parallel Benchmarks in class \emph{B} with $64$ threads on our evaluation system and compared
 the original execution time to the execution time with instrumentation enabled.
 
-\begin{figure}[htb]
+%\begin{figure}[htb]
+%    \centering
+%    \DB{Replace by a table if not enough space}
+%    \includegraphics[width=.63\linewidth]{tool-ovh.pdf}
+%    \caption{Overhead of \TABARNAC analysis for the NAS Parallel Benchmarks.}
+%    \label{fig:ovh}
+%\end{figure}
+
+\DB{AMD overhead}
+\begin{table}
     \centering
-    \DB{Replace by a table if not enough space}
-    \includegraphics[width=.63\linewidth]{tool-ovh.pdf}
-    \caption{Overhead of \TABARNAC analysis for the NAS Parallel Benchmarks.}
-    \label{fig:ovh}
-\end{figure}
+    \begin{tabular}{lrr}
+        \toprule
+        \multirow{2}{*}{Benchmark} & \multicolumn{2}{c}{Slowdown factor} \\
+        \cmidrule(lr){2-3}
+        & Intel & AMD \\
+        \midrule
+        \texttt{CG}  &   $9.75 $ & $N/A$ \\
+        \texttt{DC}  &   $12.77$ & $N/A$ \\
+        \texttt{MG}  &   $16.23$ & $N/A$ \\
+        \texttt{FT}  &   $19.17$ & $N/A$ \\
+        \texttt{EP}  &   $22.56$ & $N/A$ \\
+        \texttt{IS}  &   $27.28$ & $N/A$ \\
+        \texttt{UA}  &   $29.65$ & $N/A$ \\
+        \texttt{LU}  &   $32.13$ & $N/A$ \\
+        \texttt{BT}  &   $33.13$ & $N/A$ \\
+        \bottomrule
+    \end{tabular}
+    \caption{Overhead of \TABARNAC instrumentation for the NAS Parallel
+    Benchmarks, class B on both Intel and AMD machine.}
+    \label{tab:ovh}
+\end{table}
 
-
-We can see in Figure~\ref{fig:ovh} that
+We can see in Table~\ref{tab:ovh} that
 the instrumentation application is $10$ to $30$ times slower than the normal execution. Although it is
 not negligible, we have to consider the fact that often we can instrument
 smaller versions of the applications, as we focus on the general behavior.
