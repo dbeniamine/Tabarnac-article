@@ -17,7 +17,7 @@ an Intel technology, it works also on AMD processors.
 Before running the application, our tool retrieves static memory allocation
 information using the \texttt{libelfg0} library. Dynamic allocations are
 intercepted with a \texttt{malloc} replacement. If the application is
-compiled with debug flags~(\texttt{-g}), the structure names that are malloced can be extracted from the source
+compiled with debug flags (\texttt{-g}), the structure names that are malloced can be extracted from the source
 code. Finally, each time a thread is created, we compute
 its stack bounds, and create a virtual structure named \texttt{Stack\#N} where
 $N$ is the thread id. Only structures that are bigger than one page (usually

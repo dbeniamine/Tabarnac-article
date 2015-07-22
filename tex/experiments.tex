@@ -283,8 +283,8 @@ each structure has a different access pattern: \texttt{key\_array}'s
 thread works on a different part of the structure, which allows automated
 tools to perform an efficient data/thread mapping on it. On the other hand, \texttt{key\_buff2}
 (Figure~\ref{fig:is-behaviour-orig-kb2}) is completely shared by all threads.
-The most interesting access distribution is the one of \texttt{key\_buff1}
-(Figure~\ref{fig:is-behaviour-orig-kb1}). The pages $500$ to $1500$ are
+\texttt{key\_buff1}'s access distribution (Figure~\ref{fig:is-behaviour-orig-kb1})
+is the most interesting one. The pages $500$ to $1500$ are
 accessed by each thread more than every other page. More precisely, every
 thread seems to have a Gaussian distribution of accesses centered on the
 middle of \texttt{key\_buff1}. With such a distribution, automated tools might
@@ -440,7 +440,7 @@ threads on both machines and compared the original execution time to the executi
 %    \label{fig:ovh}
 %\end{figure}
 
-\DB{AMD overhead and discussion}
+\DB{AMD definitive values}
 \begin{table}
     \centering
     \begin{tabular}{lrr}
@@ -449,15 +449,15 @@ threads on both machines and compared the original execution time to the executi
         \cmidrule(lr){2-3}
         & \texttt{Turing} (Intel) & \texttt{Idfreeze} (AMD) \\
         \midrule
-        \texttt{CG}  &   $9.75 $ & $N/A$ \\
+        \texttt{CG}  &   $9.75 $ & $20.06$ \\
         \texttt{DC}  &   $12.77$ & $N/A$ \\
-        \texttt{MG}  &   $16.23$ & $N/A$ \\
-        \texttt{FT}  &   $19.17$ & $N/A$ \\
-        \texttt{EP}  &   $22.56$ & $N/A$ \\
-        \texttt{IS}  &   $27.28$ & $N/A$ \\
-        \texttt{UA}  &   $29.65$ & $N/A$ \\
-        \texttt{LU}  &   $32.13$ & $N/A$ \\
-        \texttt{BT}  &   $33.13$ & $N/A$ \\
+        \texttt{MG}  &   $16.23$ & $27.47$ \\
+        \texttt{FT}  &   $19.17$ & $64.50$ \\
+        \texttt{EP}  &   $22.56$ & $13.72$ \\
+        \texttt{IS}  &   $27.28$ & $29.75$ \\
+        \texttt{UA}  &   $29.65$ & $34.13$ \\
+        \texttt{LU}  &   $32.13$ & $45.56$ \\
+        \texttt{BT}  &   $33.13$ & $52.68$ \\
         \bottomrule
     \end{tabular}
     \caption{Overhead of \TABARNAC instrumentation for the NAS Parallel
@@ -465,14 +465,19 @@ threads on both machines and compared the original execution time to the executi
     \label{tab:ovh}
 \end{table}
 
-We can see in Table~\ref{tab:ovh} that
-the instrumentation application is $10$ to $30$ times slower than the normal execution. Although it is
-not negligible, we have to consider the fact that often we can instrument
+We can see in Table~\ref{tab:ovh} that, on the Intel machine,
+the instrumentation application is $10$ to $30$ times slower than the normal
+execution. On the AMD machine, the overhead is almost always higher, for
+pathological cases, the instrumentation is two to three times slower.
+%On most benchmarks, the instrumentation is $10$ to $50\%$ slower on
+%AMD than on Intel processor. For the pathological cases (\texttt{FT} and
+%\texttt{BT}) the instrumentation can be two or three time slower on AMD. 
+Although this overhead is not negligible, we have to consider the fact that often we can instrument
 smaller versions of the applications, as we focus on the general behavior.
 Moreover, as we do not use sampling, our instrumentation is deterministic and
 there is no need to run it several times. Finally, as our
-analysis is designed to be used during the development phase and not by an automated tool during the execution, even a factor of $30$
-can be reasonable.
+analysis is designed to be used during the development phase and not by an
+automated tool during the execution, a factor of $30$ is reasonable.
 
 \subsection{Summary}
 
