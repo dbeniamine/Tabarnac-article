@@ -364,40 +364,44 @@ the application down.
     \centering
 
     \subfigure[Original access distribution.]{
-        \includegraphics[width=.45\linewidth] {ondes3d_fz_dist_orig}
-        \label{fig:ondes3d-behaviour-fz-orig}
+        \includegraphics[width=.45\linewidth] {ondes3d_vz0_dist_orig}
+        \label{fig:ondes3d-behaviour-vz0-orig}
     }
     \subfigure[Access distribution after modifications.]{
-        \includegraphics[width=.45\linewidth] {ondes3d_fz_dist_modif}
-        \label{fig:ondes3d-behaviour-fz-modif}
+        \includegraphics[width=.45\linewidth] {ondes3d_vz0_dist_modif}
+        \label{fig:ondes3d-behaviour-vz0-modif}
     }
     \subfigure[Original First-touch.]{
-        \includegraphics[width=.45\linewidth] {ondes3d_fz_ft_orig}
-        \label{fig:ondes3d-ft-fz-orig}
+        \includegraphics[width=.45\linewidth] {ondes3d_vz0_ft_orig}
+        \label{fig:ondes3d-ft-vz0-orig}
     }
     \subfigure[First-touch after modifications.]{
-        \includegraphics[width=.45\linewidth] {ondes3d_fz_ft_modif}
-        \label{fig:ondes3d-ft-fz-modif}
+        \includegraphics[width=.45\linewidth] {ondes3d_vz0_ft_modif}
+        \label{fig:ondes3d-ft-vz0-modif}
     }
     \caption{Access and first-touch distribution  for structure
-        \texttt{fz} from \emph{Ondes3D}. Original version on the left side,
+        \texttt{vz0} from \emph{Ondes3D}. Original version on the left side,
     after modifications on the right.}
     \label{fig:ondes3d}
 \end{figure}
 
 The analysis of the access distributions of \emph{Ondes3D} shows that each
-structure is well divided between the threads, as we can see for structure \texttt{fz} in Figure~\ref{fig:ondes3d-behaviour-fz-orig}.
-However, it is also visible that the thread~$0$ access the whole structure. By looking at the first touch distribution (Figure~\ref{fig:ondes3d-ft-fz-orig}), we
-notice that indeed this thread is responsible for all first accesses to this structure. Due to
-this pattern, if we run \emph{Ondes3D} without any mapping, every page
-will be mapped to the NUMA node that executes thread~$0$, resulting in many remote accesses for the other threads. An easy fix is to
-perform the initialization in parallel and to pin each thread on a different core.
+structure seems to be well divided between the threads, as we can see for
+structure \texttt{vz0} in Figure~\ref{fig:ondes3d-behaviour-vz0-orig}, still
+if we look closely, we can see a light horizontal line indicating that
+thread~$0$ is accessing at least once the whole structure.Indedd,the first
+touch distribution (Figure~\ref{fig:ondes3d-ft-vz0-orig}), shows that
+thread~$0$ is responsible for all first accesses to this structure. Due to
+this pattern, if we run \emph{Ondes3D} without any mapping, every page will be
+mapped to the NUMA node that executes thread~$0$, resulting in many remote
+accesses for the other threads. An easy fix is to perform the initialization
+in parallel and to pin each thread on a different core.
 
 
 
 Such modifications result in the access distribution shown in
-Figure~\ref{fig:ondes3d-behaviour-fz-modif}. We can see that now the thread~$0$ accesses only
-its own portion of the structure. Moreover, Figure~\ref{fig:ondes3d-ft-fz-modif} shows that the first touch is now distributed
+Figure~\ref{fig:ondes3d-behaviour-vz0-modif}. We can see that now the thread~$0$ accesses only
+its own portion of the structure. Moreover, Figure~\ref{fig:ondes3d-ft-vz0-modif} shows that the first touch is now distributed
 over the structures and matches the actual access distribution, as expected.
 
 \begin{figure}[htb]
