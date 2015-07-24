@@ -9,11 +9,14 @@ This section presents an overview of related work in the area of data mapping me
 \subsection{Data Mapping Mechanisms}
 \label{sec:soa-mapping}
 
-From a high-level view, data mapping mechanisms can be classified into two categories.
-Mechanisms that have information about the memory accesses before the application starts executing, and mechanisms without prior information that need to determine the memory access behavior during execution of the parallel application.
-Mechanisms that have prior information can have higher improvements compared to mechanisms without prior information, as the collection of information during runtime has a potentially high overhead, limiting the amount and accuracy of information that can be collected.
-Furthermore, opportunities for improvements are lost while information about the memory access pattern is collected.
-On the other hand, if the memory access behavior is analyzed during application execution, no prior analysis is required.
+%From a high-level view, data mapping mechanisms can be classified into two categories.
+%Mechanisms that have information about the memory accesses before the application starts executing, and mechanisms without prior information that need to determine the memory access behavior during execution of the parallel application.
+There are two kinds of data mapping mechanisms: the ones which have prior
+information about the memory access and the ones which do not. The first can
+have higher, as the collection of information induce a potentially high overhead, limiting the amount and accuracy of information that can be collected.
+But the second do not require any prior analysis.
+%Furthermore, opportunities for improvements are lost while information about the memory access pattern is collected.
+%On the other hand, if the memory access behavior is analyzed during application execution, no prior analysis is required.
 %Figure~\ref{fig:timeline} shows a comparison of the operation of these two types of applications with a parallel application consisting of four threads.
 %In this example, a mechanism with prior information can perform the mapping as soon as the parallel phase starts (or even earlier), while mechanisms without this information need to learn the behavior for some time and can perform mapping decisions only at a later stage of the execution.
 %
@@ -24,42 +27,52 @@ On the other hand, if the memory access behavior is analyzed during application 
 %    \label{fig:timeline}
 %\end{figure}
 
-\subsubsection{Mechanisms Without Prior Information}
-\DB{Can we shorten this part, keep only main ideas ?}
-% kernel old
-Most mechanisms that have no prior information about the memory access behavior operate within the operating system.
-Traditionally, operating systems have used the \emph{first-touch}~\cite{Marchetti1995}, \emph{next-touch}~\cite{Lof2005} and \emph{interleave}~\cite{Kleen2004} policies to map memory pages to NUMA nodes.
-The first-touch policy~\cite{Marchetti1995}, which is the default policy in most current operating systems (such as Linux), allocates a page on the NUMA node that performs the first memory access to it.
-The page is never migrated between nodes.
-First-touch requires that the programmer takes care of which thread accesses data first.
-In some circumstances, this policy can lead to reduced performance, for
-instance when a single thread initializes a large part of the memory and places most pages on a single node.
-In next-touch~\cite{Lof2005}, each page is periodically migrated to the NUMA node that performs the next access to a page.
-This policy can lead to excessive page migrations if the memory access behavior is changing fast.
-The interleave policy (which is available in Linux via the \texttt{numactl} tool~\cite{Kleen2004} for example) distributes memory pages equally among all NUMA nodes, but does not take any locality of memory accesses into account.
+%\subsubsection{Mechanisms Without Prior Information}
 
-Newer developments in operating systems focus on refining the data mapping during the execution of parallel applications, using online profiling of memory accesses to guide migration decisions.
-Recent versions of the Linux kernel (starting with version 3.8) contain the NUMA Balancing technique~\cite{Corbet}, which uses page faults during execution to determine if a page should be migrated to a different NUMA node. To increase the accuracy of this mechanism, extra page faults are inserted during execution, creating an additional overhead.
-A similar proposal is the AutoNUMA approach~\cite{Corbet2012}.
-Neither mechanism maintains an access history. This eliminates the need to store the access behavior, but also makes them susceptible to excessive migrations.
-Other proposals store such an access history.
-Dashti et al.~\cite{Dashti2013} introduced the Carrefour mechanism, which uses instruction-based sampling~(IBS)~\cite{Drongowski07Instructionbased} available in recent AMD architectures~\cite{AMD2012} to detect the memory access behavior.
-kMAF~\cite{Diener2014} is a similar mechanism that uses page faults to analyze the behavior.
-Due to the access history, these mechanisms can avoid excessive migrations, but still suffer from later migrations and a runtime overhead compared to mechanisms with prior information.
+%Most mechanisms that have no prior information about the memory access behavior operate within the operating system.
+Traditionally, operating systems have used the \emph{first-touch}~\cite{Marchetti1995}, \emph{next-touch}~\cite{Lof2005} and \emph{interleave}~\cite{Kleen2004} policies to map memory pages to NUMA nodes.
+The first-touch policy, which is the default policy in most current operating systems (such as Linux), allocates a page on the NUMA node that performs the first memory access to it.
+It requires that the programmer takes care of which thread accesses data
+first, or it can lead to reduced performance.
+In next-touch~\cite{Lof2005}, each page is periodically migrated to the NUMA
+node that performs the next access to a page. This technique is more flexible
+but can lead to excessive page migrations.
+The interleave policy (available in Linux via the \texttt{numactl}
+tool~\cite{Kleen2004}) distributes memory pages equally among all NUMA nodes,
+avoiding to stress a memory controller more than the others, but does not take any locality into account.
+
+Newer developments in operating systems focus on refining the data mapping during the execution of parallel applications, using online profiling.
+Recent versions of the Linux kernel (starting with version 3.8) contain the
+NUMA Balancing technique~\cite{Corbet}, which uses page faults to determine if
+a page should be migrated to a different NUMA node. To increase the accuracy
+of this mechanism, extra page faults are inserted at runtime, creating an additional overhead.
+%A similar proposal is the AutoNUMA approach~\cite{Corbet2012}.
+%Neither mechanism maintains an access history. This eliminates the need to store the access behavior, but also makes them susceptible to excessive migrations.
+%Other proposals store such an access history.
+%Dashti et al.~\cite{Dashti2013} introduced the Carrefour mechanism, which uses instruction-based sampling~(IBS)~\cite{Drongowski07Instructionbased} available in recent AMD architectures~\cite{AMD2012} to detect the memory access behavior.
+%kMAF~\cite{Diener2014} is a similar mechanism that uses page faults to analyze the behavior.
+%Due to the access history, these mechanisms can avoid excessive migrations, but still suffer from later migrations and a runtime overhead compared to mechanisms with prior information.
 
 % hardware
 % marathe, lapt
 
-\subsubsection{Mechanisms With Prior Information}
+%\subsubsection{Mechanisms With Prior Information}
 
-Most mechanisms with prior information about memory access behavior perform mapping in user space, on the compiler or runtime library level.
-Piccoli et al.~\cite{Piccoli2014} propose a compiler extension that analyzes the memory access pattern of loops that are executed in parallel and use this information to migrate pages before the loop is entered.
-Nikolopoulos et al.~\cite{Nikolopoulos2000a,Nikolopoulos2000} present an integrated compiler/OS-based data mapping mechanism based on a custom OpenMP compiler and IRIX kernel extensions. The compiler inserts instrumentation code to identify access patterns to shared memory areas and to guide migration decisions.
+Most mechanisms with prior information about memory access behavior perform
+mapping on the compiler, the runtime or at a library level.
+Piccoli et al.~\cite{Piccoli2014} propose a compiler extension that analyzes
+the memory access pattern of parallel loops use this information to migrate
+pages before executing the loop.
+%Nikolopoulos et al.~\cite{Nikolopoulos2000a,Nikolopoulos2000} present an integrated compiler/OS-based data mapping mechanism based on a custom OpenMP compiler and IRIX kernel extensions. The compiler inserts instrumentation code to identify access patterns to shared memory areas and to guide migration decisions.
 ForestGOMP~\cite{Broquedis2010a} requires source code annotations to identify memory access behavior and is limited to the OpenMP library.
 These techniques use predictions about the memory access behavior, which might be dependent on input data and can cause wrong mappings.
-Furthermore, no improvements to the memory access pattern are performed.
+%Furthermore, no improvements to the memory access pattern are performed.
 
-Libraries that support NUMA-aware memory allocation include libnuma~\cite{Kleen2004} and MAi~\cite{Ribeiro2009}. With these libraries, data structures can be allocated according to the specification of the programmer, such as on a particular NUMA node, or with an interleave policy. These techniques can achieve large improvements, but place the burden of the mapping on the programmer, who has to determine the best placement himself.
+Libraries such as libnuma~\cite{Kleen2004} and MAi~\cite{Ribeiro2009} provide the ability
+to allocate data structures on a particular NUMA node, or with an interleave
+policy. These techniques can achieve large improvements, but place the burden
+of the mapping on the programmer, who has to determine the best placement
+alone.
 % An evolution of MAi, the Minas framework~\cite{Ribeiro2010}, optionally uses a source code preprocessor to determine data mapping policies for arrays.
 %
 Previous research also uses memory access traces to perform data mapping~\cite{Diener2015,Marathe2010,Bolosky1992}. These can be useful to determine the maximum gains that can be achieved with mapping policies, but are not applicable in general due to their substantial overhead and the fact that the access behavior might change with different input data and different numbers of threads, for instance.
@@ -94,7 +107,7 @@ analysis on different machines with these tools.
 Another approach used by several
 tools~\cite{Lachaize12MemProf,McCurdy2010,Liu14Tool,Gimenez14Dissecting}
 consist on  using sampling mechanisms such as AMD's Instruction Based Sampling
-(IBS) or Intel PEBS. Not only can sampling miss important events, leading to
+(IBS)~\cite{Drongowski07Instructionbased} or Intel PEBS. Not only can sampling miss important events, leading to
 inaccurate characterizations, but these technologies are not portable and work
 only with a few recent architecture, therefore such tools can only be used in
 special circumstances.
