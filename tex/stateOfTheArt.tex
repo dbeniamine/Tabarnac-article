@@ -12,9 +12,10 @@ This section presents an overview of related work in the area of data mapping me
 %From a high-level view, data mapping mechanisms can be classified into two categories.
 %Mechanisms that have information about the memory accesses before the application starts executing, and mechanisms without prior information that need to determine the memory access behavior during execution of the parallel application.
 There are two kinds of data mapping mechanisms: the ones which have prior
-information about the memory access and the ones which do not. The first can
-have higher, as the collection of information induce a potentially high overhead, limiting the amount and accuracy of information that can be collected.
-But the second do not require any prior analysis.
+information about the memory accesses and the ones which do not. The formers can
+have higher improvements, as the collection of information induce a
+potentially high overhead, limiting the quantity and accuracy of information that can be collected.
+But the others do not require any prior analysis.
 %Furthermore, opportunities for improvements are lost while information about the memory access pattern is collected.
 %On the other hand, if the memory access behavior is analyzed during application execution, no prior analysis is required.
 %Figure~\ref{fig:timeline} shows a comparison of the operation of these two types of applications with a parallel application consisting of four threads.
@@ -38,14 +39,14 @@ In next-touch~\cite{Lof2005}, each page is periodically migrated to the NUMA
 node that performs the next access to a page. This technique is more flexible
 but can lead to excessive page migrations.
 The interleave policy (available in Linux via the \texttt{numactl}
-tool~\cite{Kleen2004}) distributes memory pages equally among all NUMA nodes,
-avoiding to stress a memory controller more than the others, but does not take any locality into account.
+tool~\cite{Kleen2004}) distributes memory pages cyclically among all NUMA nodes,
+usually avoiding load imbalance among memory controllers, but does not take any locality into account.
 
 Newer developments in operating systems focus on refining the data mapping during the execution of parallel applications, using online profiling.
 Recent versions of the Linux kernel (starting with version 3.8) contain the
 NUMA Balancing technique~\cite{Corbet}, which uses page faults to determine if
-a page should be migrated to a different NUMA node. To increase the accuracy
-of this mechanism, extra page faults are inserted at runtime, creating an additional overhead.
+a page should be migrated to a different NUMA node.%To increase the accuracy
+%of this mechanism, extra page faults are inserted at runtime, creating an additional overhead.
 %A similar proposal is the AutoNUMA approach~\cite{Corbet2012}.
 %Neither mechanism maintains an access history. This eliminates the need to store the access behavior, but also makes them susceptible to excessive migrations.
 %Other proposals store such an access history.
@@ -59,33 +60,43 @@ of this mechanism, extra page faults are inserted at runtime, creating an additi
 %\subsubsection{Mechanisms With Prior Information}
 
 Most mechanisms with prior information about memory access behavior perform
-mapping on the compiler, the runtime or at a library level.
+mapping in the compiler, the runtime or at a library level.
 Piccoli et al.~\cite{Piccoli2014} propose a compiler extension that analyzes
-the memory access pattern of parallel loops use this information to migrate
+the memory accesses patterns of parallel loops and uses this information to migrate
 pages before executing the loop.
 %Nikolopoulos et al.~\cite{Nikolopoulos2000a,Nikolopoulos2000} present an integrated compiler/OS-based data mapping mechanism based on a custom OpenMP compiler and IRIX kernel extensions. The compiler inserts instrumentation code to identify access patterns to shared memory areas and to guide migration decisions.
+\DB{Rewrite next sentence}
 ForestGOMP~\cite{Broquedis2010a} requires source code annotations to identify memory access behavior and is limited to the OpenMP library.
 These techniques use predictions about the memory access behavior, which might be dependent on input data and can cause wrong mappings.
 %Furthermore, no improvements to the memory access pattern are performed.
 
-Libraries such as libnuma~\cite{Kleen2004} and MAi~\cite{Ribeiro2009} provide the ability
-to allocate data structures on a particular NUMA node, or with an interleave
-policy. These techniques can achieve large improvements, but place the burden
-of the mapping on the programmer, who has to determine the best placement
-alone.
+Previous research also uses memory access traces to perform data mapping~\cite{Diener2015,Marathe2010,Bolosky1992}. These can be useful to determine the maximum gains that can be achieved with mapping policies, but are not applicable in general due to their substantial overhead and the fact that the access behavior might change with different input data and different numbers of threads, for instance.
+
+
+Libraries such as libnuma~\cite{Kleen2004} and MAi~\cite{Ribeiro2009} provide
+the ability to allocate data structures on a particular NUMA node, or with an
+interleave policy. These techniques can achieve large improvements, it
+requires a deep understanding of the applications memory behavior to use them
+efficiently.
+Generic tools to evaluate parallel application performance, such as Intel's
+VTune~\cite{Reinders05VTune} and Performance Counter
+Monitor~(PCM)~\cite{Intel2012b}, the HPCToolkit~\cite{Adhianto10HPCTOOLKIT},
+and AMD's CodeAnalyst~\cite{Drongowski2008}, provide only indirect information
+about the memory access behavior which is not enough to use correctly these
+library. Our study provides tools to easily understand this memory behavior
+and therefore be able to take advantage of these libraries.
+
 % An evolution of MAi, the Minas framework~\cite{Ribeiro2010}, optionally uses a source code preprocessor to determine data mapping policies for arrays.
 %
-Previous research also uses memory access traces to perform data mapping~\cite{Diener2015,Marathe2010,Bolosky1992}. These can be useful to determine the maximum gains that can be achieved with mapping policies, but are not applicable in general due to their substantial overhead and the fact that the access behavior might change with different input data and different numbers of threads, for instance.
-Generic tools to evaluate parallel application performance, such as Intel's VTune~\cite{Reinders05VTune} and Performance Counter Monitor~(PCM)~\cite{Intel2012b}, the HPCToolkit~\cite{Adhianto10HPCTOOLKIT}, and AMD's CodeAnalyst~\cite{Drongowski2008}, provide only indirect information about the memory access behavior and do not propose specific strategies to improve it.
-
 
 \subsection{Memory Profiling}
 \label{sec:soa-profiling}
 
-Profiling memory behavior raise two main challenges, first collecting the
+Profiling memory behavior raise two main challenges. The first one is the
+collect of
 information: if performance counters have been developed to get quick and
 easy access to information about the CPU usage, there is no such mechanism for
-the memory. Second memory access traces provides huge amounts of information
+the memory. Regarding the second one, memory access traces provides huge amounts of information
 on several dimension (data structure, threads, access type (read/write),
 sharing, time \ldots) displaying them to the user in a readable and meaningful
 way is therefore not trivial.
@@ -93,11 +104,11 @@ way is therefore not trivial.
 \subsubsection{Data collection}
 
 Several methods have been used to address the problem of data collection. A
-lot of studies tries to deduce information from hardware performance
+lot of studies deduce information from hardware performance
 counters~\cite{Majo13(Mis)understanding,
 Jiang14Understanding,Bosch00Rivet,Weyers14Visualization,Tao01Visualizing,DeRose01Hardware},
-special registers that allow to record events such as cache misses and remote
-memory accesses, among others. Still, these counters only provide a partial
+which are special registers that allow to record events such as cache misses and remote
+memory accesses. Still, these counters only provide a partial
 view of the execution, they show events happening on the processor related to
 memory, but not what triggered them. Moreover available performance counters
 depends of the architecture therefore it is hard to reproduce the same
@@ -106,7 +117,7 @@ analysis on different machines with these tools.
 
 Another approach used by several
 tools~\cite{Lachaize12MemProf,McCurdy2010,Liu14Tool,Gimenez14Dissecting}
-consist on  using sampling mechanisms such as AMD's Instruction Based Sampling
+consist in using sampling mechanisms such as AMD's Instruction Based Sampling
 (IBS)~\cite{Drongowski07Instructionbased} or Intel PEBS. Not only can sampling miss important events, leading to
 inaccurate characterizations, but these technologies are not portable and work
 only with a few recent architecture, therefore such tools can only be used in
@@ -118,7 +129,7 @@ collection it is even less portable.
 
 
 Finally, instrumentation can provide these informations as in
-\cite{DeRose02SIGMA,Rozar14Amelioration}, although this method is slower than
+\cite{DeRose02SIGMA}, although this method is slower than
 the other previously described, it is more portable and precise. Moreover as
 we show in section \ref{sec:expe-overhead} an efficient instrumentation
 provides an acceptable overhead.
@@ -145,7 +156,7 @@ of the execution, giving the ability to correlate them with the source code as
 we are used to do with traditional performance tools such as Vtune. Although
 all these tools can help developers and users to understand the kind of
 performance issues they are facing, they never give the reason \emph{why} the
-issue is happening, or how to improve it.
+issue is happening for instance by showing the distribution of accesses inside data structures.
 
 Gimenez et al.~\cite{Gimenez14Dissecting} provides a NUMA oriented view of the
 execution, showing which node is responsible of how many access, moreover they
@@ -173,7 +184,7 @@ it occurs (structure, function, or line of code), still they never tell
 \emph{why} these events happens.  Two kinds of information can help answering
 this question: what thread is responsible for the first touch (as the default
 page mapping depends on it), and how are the structure accessed by the
-different threads. This study provides some tools and methodology to explain
+different threads (distribution). This study provides some tools and methodology to explain
 \emph{why} performance issues related to memory occurs.
 
 %The two main challenges for this type of tool is to gather information about the memory access patterns in a fast, accurate and easy-to-use way, and providing information to the developers about the ways to improve the behavior of their applications.
