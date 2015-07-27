@@ -94,31 +94,32 @@ done to make the output more readable.
 %However, it is possible to ask
 %\TABARNAC not to ignore structures in the second case for a more detailed view.
 
-\begin{figure}[htb]
+\begin{figure*}[htb]
     \centering
-    \subfigure[Size of structures (pages).]{
-        \includegraphics[width=.45\linewidth]{example_sz}
+    \subfigure[Structures size (pages).]{
+        \includegraphics[width=.23\linewidth]{example_sz}
         \label{fig:example_sz}
     }
-    \subfigure[Number of accesses per structure.]{
-        \includegraphics[width=.45\linewidth]{example_rw}
+    \subfigure[Number of accesses.]{
+        \includegraphics[width=.23\linewidth]{example_rw}
         \label{fig:example_rw}
     }
-    \subfigure[Access distribution inside a structure.
+    \subfigure[Access distribution.% inside a structure.
 %    Each point represents the number of access to one page done by one thread.
     ]{
-        \includegraphics[width=.45\linewidth]{example_dist}
+        \includegraphics[width=.23\linewidth]{example_dist}
         \label{fig:example_dist}
     }
-    \subfigure[First touch distribution inside a structure.
+    \subfigure[First touch distribution.% inside a structure.
 %   Each point shows which thread is responsible of the first access on one page.
     ]{
-        \includegraphics[width=.45\linewidth]{example_ft}
+        \includegraphics[width=.23\linewidth]{example_ft}
         \label{fig:example_ft}
     }
     \label{fig:example_plot1}
-    \caption{Example plots from \TABARNAC.}
-\end{figure}
+    \caption{Example plots from \TABARNAC, Figures~\ref{fig:example_dist}
+    and~\ref{fig:example_ft} represents distributions inside one structure.}
+\end{figure*}
 
 The first series of plots presents information concerning the relative
 importance of the data structures. It consists of two plots, showing first the

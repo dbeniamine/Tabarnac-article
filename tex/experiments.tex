@@ -255,13 +255,13 @@ for the analysis.
         \includegraphics[width=.45\linewidth] {ondes3d_vz0_ft_orig}
         \label{fig:ondes3d-ft-vz0-orig}
     }
-    \subfigure[First-touch after modifications.]{
+    \subfigure[First-touch modified.]{
         \includegraphics[width=.45\linewidth] {ondes3d_vz0_ft_modif}
         \label{fig:ondes3d-ft-vz0-modif}
     }
-    \caption{First-touch distribution  for structure
-        \texttt{vz0} from \emph{Ondes3D}. Original version on the left side,
-    after modifications on the right.}
+    \caption{First-touch for structure
+        \texttt{vz0} from \emph{Ondes3D}.} %Original version on the left,
+    %modified on the right.}
     \label{fig:ondes3d}
 \end{figure}
 
@@ -277,24 +277,10 @@ accesses for the other threads. An easy fix is to perform the initialization
 in parallel and to pin each thread on a different core, or to use the
 interleave policy.
 
-\DB{Put back distribution or change this sentence}
 Such modification results in the first touch distribution shown in
 Figure~\ref{fig:ondes3d-ft-vz0-modif}. We can see that the first touch is now distributed
-over the structures and matches the actual access distribution, as expected.
+over the structures.
 
-\begin{figure}[htb]
-    \centering
-    \subfigure[\emph{Ondes3D}.]{
-        \includegraphics[width=.45\linewidth]{ondes3d_exectime}
-        \label{fig:ondes-res}
-    }
-    \subfigure[\emph{IS} (class D).]{
-        \includegraphics[width=.45\linewidth]{is_exectime}
-        \label{fig:is-res}
-    }
-    \caption{Speedup obtained for the modified version of each application
-    compared to the original version.}
-\end{figure}
 
 We evaluate the modified version by comparing it with the original
 version, running on the normal OS, with NUMA Balancing activated and with an
@@ -314,6 +300,18 @@ the execution, still our tool shows clearly where does the issue comes from.
 % ``correctly'' while the modified version proposes a thread mapping that ensures better
 % data locality.
 
+\begin{figure}[htb]
+    \centering
+%    \subfigure[\emph{Ondes3D}.]{
+    \includegraphics[width=.63\linewidth]{ondes3d_exectime}
+%    }
+%    \subfigure[\emph{IS} (class D).]{
+%        \includegraphics[width=.45\linewidth]{is_exectime}
+%        \label{fig:is-res}
+%    }
+    \caption{Speedup for \emph{Ondes3D} compared to the baseline.}
+    \label{fig:ondes-res}
+\end{figure}
 
 \subsection{IS}
 \label{sec:exp-is}
@@ -365,13 +363,13 @@ the analysis, with a memory usage of $0.25Gib$.
     }
 
     \caption{Memory access distribution for the main structures of
-        \emph{IS} with $64$ threads. Original behavior on the top, modified on
+        \emph{IS}. Original behavior on the top, modified on
     the bottom.}
     \label{fig:is-behaviour}
 
 \end{figure*}
 
-The left side of Figure~\ref{fig:is-behaviour} shows the original access distributions for the
+The top of Figure~\ref{fig:is-behaviour} shows the original access distributions for the
 three main structures of \emph{IS} class \emph{B} with $64$ threads. We can see that
 each structure has a different access pattern: \texttt{key\_array}'s
 (Figure~\ref{fig:is-behaviour-orig-kba}) access distribution shows that each
@@ -417,7 +415,7 @@ This modification can be done by simply changing one line of code, the
 
 
 With this simple code modification, we obtain the access distribution
-shown in the right side of Figure~\ref{fig:is-behaviour}. We can see that the Gaussian
+shown in the bottom of Figure~\ref{fig:is-behaviour}. We can see that the Gaussian
 access pattern of \texttt{key\_buff1} is now better balanced between the threads. Each page
 of this structure is mostly used by only one thread. Moreover,
 \texttt{key\_buff2}'s access distribution has also changed. We can see that
@@ -435,12 +433,12 @@ execution time on the base operating system, the interleave policy and with
 NUMA balancing enabled. As we map thread manually, interleave and NUMA
 Balancing are not relevant with our modifications and are therefore not included.
 
-%\begin{figure}[htb]
-%    \centering
-%    \includegraphics[width=.6\linewidth]{is_exectime}
-%    \caption{Speedup for \emph{IS} (class D) compared to the baseline.}
-%\label{fig:is-res}
-%\end{figure}
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=.63\linewidth]{is_exectime}
+    \caption{Speedup for \emph{IS} (class D) compared to the baseline.}
+\label{fig:is-res}
+\end{figure}
 
 Figure~\ref{fig:is-res} shows the speedup of \emph{IS} compared to
 the default version (\emph{Dynamic}) for each scheduling method and for each
@@ -456,6 +454,9 @@ modification.
 This example shows how analyzing an application's memory behavior can lead to
 significant execution time improvement on an already optimized application where automatic techniques can actually slow
 the application down.
+
+
+
 
 \subsection{Overhead Analysis}
 \label{sec:expe-overhead}
