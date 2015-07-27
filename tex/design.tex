@@ -31,17 +31,19 @@ tool~\cite{Luk05Pin}, although it is an Intel technology, it works also on AMD
 processors.
 
 Before running the application, our tool retrieves static memory allocation
-information using the \texttt{libelfg0} library. Dynamic allocations are
-intercepted with a \texttt{malloc} replacement. If the application is
-compiled with debug flags (\texttt{-g}), the structure names that are malloced can be extracted from the source
-code. Finally, each time a thread is created, we compute
-its stack bounds, and create a virtual structure named \texttt{Stack\#N} where
+information %using the \texttt{libelfg0} library.
+Dynamic allocations are intercepted with at the runtime and structure names
+are extracted using the debug flags.
+%\texttt{malloc} replacement. If the application is
+%compiled with debug flags (\texttt{-g}), the structure names that are malloced can be extracted from the source
+%code.
+Finally, each time a thread is created, we compute
+stack bounds, and create a virtual structure named \texttt{Stack\#N} where
 $N$ is the thread id. Only structures that are bigger than one page (usually
 $4$Kib in current x86\_64 architectures) are recorded as our
 analysis granularity is the memory page. The data structure informations (name,
-size and address) are not used during the instrumentation, they are only
-printed in a file at the end of the analysis to be used by the visualization
-tool.
+size and address) are only used to generate the visualization, after the end
+of the instrumentation.
 
 %For each access, we store the type (read or write), the memory page that was
 %accessed, and the thread ID responsible of it.
@@ -77,19 +79,20 @@ of the trace through several plots\footnote{A full example is available at
 The visualization aims at showing \emph{why} performances issues related
 to memory occurs, it therefore shows several plots helping to understand the
 importance of each data structure and how it is accessed.
-Each plot is introduced by an explanation
+For newcomers, each plot is introduced by an explanation
 of its presentation, what common issues it can help to understand and provides
 suggestions on how to fix these issues.  The visualization starts with a small
-introduction, recapitulating the main principles while developing for NUMA
+introduction, summarizing the main principles while developing for NUMA
 machines, and shows the hardware topology of the analyzed machine extracted
 with Hwloc~\cite{Broquedis10hwloc}.
 
-In the next part, the visualization focuses on the usage of data structures. Some
-structures might be ignored for two reasons: either no accesses have been
+After the introduction, the visualization focuses on the usage of data structures. Some
+structures are not displayed for two reasons: either no accesses have been
 detected during the analysis, which happens for structures used by external
 libraries, or less than $0.01\%$ of the total accesses happens on them. This is
-done to make the output more readable. However, it is possible to ask
-\TABARNAC not to ignore structures in the second case for a more detailed view.
+done to make the output more readable.
+%However, it is possible to ask
+%\TABARNAC not to ignore structures in the second case for a more detailed view.
 
 \begin{figure}[htb]
     \centering
@@ -120,20 +123,20 @@ done to make the output more readable. However, it is possible to ask
 The first series of plots presents information concerning the relative
 importance of the data structures. It consists of two plots, showing first the
 size of each data structure, as in Figure~\ref{fig:example_sz}, then the
-number of reads and writes  on each structure (Figure~\ref{fig:example_rw}). These plots give a
+number of reads and writes  in each structure (Figure~\ref{fig:example_rw}). These plots give a
 general idea of the structures used by the parallel application.
 Moreover, knowing the read/write behavior is very
 useful as it determines the possible optimizations. For instance, structures
 written only during initialization (or very rarely) can be relatively easily
 duplicated, such that each NUMA node works on a local copy.
 
-The second series of plots is the most important one. For each structures, it
-shows the density of access done by each thread over the structure and the
+The second series of plots is the most important one. For each structure, it
+shows the density of accesses performed by each thread and the
 global distribution. As we can see in Figure~\ref{fig:example_dist}, there is
-one line per thread and one line for the total number of accesses. The darker
-is the line the more the thread accessed the page. It gives an easy way to
+one line per thread and one line for the average number of accesses. The darker
+is the line the more the thread accesses the page. It gives an easy way to
 understand the data sharing between threads and the usage of structures. These
-plots be used to identify inefficient memory usage and to determine the best
+plots can be used to identify inefficient memory usages and to determine the best
 NUMA mapping policy.
 
 %\begin{figure}[htb]
@@ -151,6 +154,6 @@ which thread was responsible for the first touch
 default policy for \emph{Linux} and most other operating systems is to map a page as close as possible to the first
 thread accessing it. If the first touch distribution does not fit the actual
 access distribution, the default mapping done by \emph{Linux} might not be
-efficient. To improve this issue, the developer can either correct the first
+efficient. To address this issue, the developer can either correct the first
 touch or do some manual data mapping to ensure better memory access locality
 during the execution.
