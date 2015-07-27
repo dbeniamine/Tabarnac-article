@@ -13,12 +13,18 @@ The advantage of instrumentation is that it is the most
 accurate and portable way to generate memory traces.
 Despite the overhead caused by the instrumentation, our tool is efficient enough to analyze even huge applications in a reasonable time.
 
+While other studies tells how many remote access are triggered by which NUMA
+node, line of code or data structure, we provide information on how data
+structure are accessed. Such information allows the user to understand
+\emph{why} performance issues occurs.
+
 Presenting memory traces in an intuitive way is a challenge. To address it, we
 chose to provide several meaningful yet readable plots that provide different
 interpretations and analyses of the trace. Each plot is preceded by
 explanations on how to read it, what kind of memory access issues it can help
-to identify and how to solve them.  Our visualization also contains general
-explanations on NUMA machines and classical inefficient behavior.
+to identify and how to solve them.
+%Our visualization also contains general
+%explanations on NUMA machines and classical inefficient behavior.
 
 Using \TABARNAC, we analyzed two parallel applications: \emph{IS} from the NAS
 Parallel Benchmarks which is known for being memory intensive with a random
