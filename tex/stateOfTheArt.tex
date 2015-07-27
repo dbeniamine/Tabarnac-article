@@ -71,13 +71,17 @@ issue is happening, for instance by showing the distribution of memory accesses 
 
 Gimenez et al.~\cite{Gimenez14Dissecting} provide a NUMA-oriented view of the
 execution, showing which node is responsible for how many memory access.
-Moreover, they provide \emph{parallel coordinate graphs} to understand where memory
-problems originate. However, it requires a lot of experiments by the developer to
-understand these graphs.\MD{previous phrase unclear}
+Moreover, they provide \emph{parallel coordinate graphs} which correlate
+several metrics to help the user understanding where memory
+problems originate. Although these graphs help finding
+the source of the issue, they only correlate metrics and do not show how the memory
+is accessed.
+
 Finally, the proposal of Liu et al.~\cite{Liu14Tool} is quite similar to the previous studies, but
-they also show an \emph{address centric} visualization which helps answering
-why performance issue occurred. However, these views are not mature enough
-yet and only answer a part of the question.\MD{more explanation}
+they also show an \emph{address centric} visualization, these graphs shows how
+much a data structure is used by each thread. Still it does not tell how the
+accesses are distributed inside the structure and therefore miss some
+important informations.
 
 %Previous studies aimed to answer this question for some specific
 %benchmarks~\cite{Majo13(Mis)understanding,Jiang14Understanding}.
