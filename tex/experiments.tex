@@ -276,29 +276,9 @@ mapped to the NUMA node that executes the thread~$0$, resulting in mostly remote
 accesses for the other threads. An easy fix is to perform the initialization
 in parallel and to pin each thread on a different core, or to use the
 interleave policy.
-
 Such modification results in the first touch distribution shown in
 Figure~\ref{fig:ondes3d-ft-vz0-modif}. We can see that the first touch is now distributed
 over the structures.
-
-
-We evaluate the modified version by comparing it with the original
-version, running on the normal OS, with NUMA Balancing activated and with an
-interleave policy. Figure~\ref{fig:ondes-res} present the results of this
-evaluation. We can see that all methods improve the execution time, but
-NUMA Balancing provides less than $30\%$ speedup, while the static mappings
-(Interleave or the modified code) allows us to get almost $60\%$ of speedup. This is
-due to the training time described in section \ref{sec:soa-mapping}. Indeed,
-with NUMA Balancing, all pages are initially mapped by the OS to the NUMA node
-of thread~$0$, they
-are only moved later on, after many remote accesses have already occurred. This is a case where static mapping can be substantially better than automated
-tools. The Interleave policy provides a similar speedup as
-\TABARNAC since it distributes the pages over the NUMA nodes at the beginning of
-the execution, still our tool shows clearly where does the issue comes from.
-% Nevertheless, the interleave version only maps the data no the
-% threads, therefore the performances might drop if the OS does not map them
-% ``correctly'' while the modified version proposes a thread mapping that ensures better
-% data locality.
 
 \begin{figure}[htb]
     \centering
@@ -312,6 +292,25 @@ the execution, still our tool shows clearly where does the issue comes from.
     \caption{Speedup for \emph{Ondes3D} compared to the baseline.}
     \label{fig:ondes-res}
 \end{figure}
+
+We evaluate the modified version by comparing it with the original
+version, running on the normal OS, with NUMA Balancing activated and with an
+interleave policy. Figure~\ref{fig:ondes-res} present the results of this
+evaluation. We can see that all methods improve the execution time, but
+NUMA Balancing provides less than $30\%$ speedup, while the static mappings
+(Interleave or the modified code) allows us to get almost $60\%$ of speedup. This is
+due to the training time described in section \ref{sec:soa-mapping}. Indeed,
+with NUMA Balancing, all pages are initially mapped by the OS to the NUMA node
+of thread~$0$, they
+are only moved later on, after many remote accesses have already occurred. This is a case where static mapping can be substantially better than automated
+tools. The Interleave policy provides a similar speedup as
+\TABARNAC since it distributes the pages over the NUMA nodes at the beginning of
+the execution, still our tool shows clearly the cause of the performances issue.
+% Nevertheless, the interleave version only maps the data no the
+% threads, therefore the performances might drop if the OS does not map them
+% ``correctly'' while the modified version proposes a thread mapping that ensures better
+% data locality.
+
 
 \subsection{IS}
 \label{sec:exp-is}

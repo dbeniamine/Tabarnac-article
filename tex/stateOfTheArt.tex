@@ -74,13 +74,13 @@ execution, showing which node is responsible for how many memory access.
 Moreover, they provide \emph{parallel coordinate graphs} which correlate
 several metrics to help the user understanding where memory
 problems originate. Although these graphs help finding
-the source of the issue, they only correlate metrics and do not show how the memory
+the source of the issue, do not show how the memory
 is accessed.
 
 Finally, the proposal of Liu et al.~\cite{Liu14Tool} is quite similar to the previous studies, but
 they also show an \emph{address centric} visualization, these graphs shows how
-much a data structure is used by each thread. Still it does not tell how the
-accesses are distributed inside the structure and therefore miss some
+much each thread access a data structure. Still it does not tell the
+accesses distribution inside the structure and therefore miss
 important informations.
 
 %Previous studies aimed to answer this question for some specific
