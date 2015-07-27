@@ -14,7 +14,7 @@ application uses have a significant impact on the overall performance, with
 most policies aiming at improving the \emph{locality} of memory accesses~\cite{Diener2015}.
 
 The optimal mapping of memory pages to NUMA nodes depends on the way an application accesses the memory.
-To improve the mapping without changing the application, several automatic tools were proposed~\cite{Corbet2012,Corbet,Dashti2013,Diener2014,Piccoli2014}.
+To improve the mapping without changing the application, several automatic tools were proposed~\cite{Corbet,Dashti2013,Diener2014,Piccoli2014}.
 However, these tools have a runtime overhead as they need to analyze the application behavior during execution and lose opportunities for improvements during this training.
 Furthermore, they are not able to change the memory access pattern for additional improvements.
 Therefore, if the memory behavior is not designed for NUMA machines, their improvements might be limited.
