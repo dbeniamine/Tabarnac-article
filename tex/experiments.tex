@@ -283,7 +283,7 @@ over the structures.
 \begin{figure}[htb]
     \centering
 %    \subfigure[\emph{Ondes3D}.]{
-    \includegraphics[width=.64\linewidth]{ondes3d_exectime}
+    \includegraphics[width=.9\linewidth]{ondes3d_exectime}
 %    }
 %    \subfigure[\emph{IS} (class D).]{
 %        \includegraphics[width=.45\linewidth]{is_exectime}
@@ -413,12 +413,16 @@ This modification can be done by simply changing one line of code, the
 %\end{lstlisting}
 
 
-With this simple code modification, we obtain the access distribution
-shown in the bottom of Figure~\ref{fig:is-behaviour}. We can see that the Gaussian
-access pattern of \texttt{key\_buff1} is now better balanced between the threads. Each page
-of this structure is mostly used by only one thread. Moreover,
-\texttt{key\_buff2}'s access distribution has also changed. We can see that
-each thread uses mostly one part of the array.
+With this simple code modification, we obtain the access distribution shown in
+the bottom of Figure~\ref{fig:is-behaviour}. We can see that now each thread
+access a different part of \texttt{key\_buff1}. Furthermore, if most of the
+accesses still occurs in the middle of the structure, the average number of
+access across the structure is the same for every threads which means that our
+distribution preserve the good load balancing. Our modification has also
+changed \texttt{key\_buff2}'s accesses distribution. We can see that each
+thread uses mostly one part of the array and again the load balance is
+preserved.
+
 The main point of our code modification is to improve the affinity between
 thread and memory, therefore we need to pin each thread on a core to keep them
 close to the data they access. %To perform the thread mapping, we use the \texttt{GOMP\_CPU\_AFFINITY} environment variable.
@@ -434,7 +438,7 @@ Balancing are not relevant with our modifications and are therefore not included
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=.64\linewidth]{is_exectime}
+    \includegraphics[width=.9\linewidth]{is_exectime}
     \caption{Speedup for \emph{IS} (class D) compared to the baseline.}
 \label{fig:is-res}
 \end{figure}

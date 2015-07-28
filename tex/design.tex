@@ -95,18 +95,25 @@ done to make the output more readable.
 %However, it is possible to ask
 %\TABARNAC not to ignore structures in the second case for a more detailed view.
 
-\begin{figure}[htb]
+\begin{figure*}[htb]
     \centering
     \subfigure[Structures size.]{
-        \includegraphics[width=.64\linewidth]{example_sz}
+        \includegraphics[width=.3\linewidth]{example_sz}
         \label{fig:example_sz}
     }
-    \subfigure[Number of accesses.]{
-        \includegraphics[width=.64\linewidth]{example_rw}
+    \subfigure[Number of accesses per structures.]{
+        \includegraphics[width=.3\linewidth]{example_rw}
         \label{fig:example_rw}
     }
-    \caption{Overview of an application's data structures}
-\end{figure}
+    \subfigure[First touch distribution inside a structure.
+%   Each point shows which thread is responsible of the first access on one page.
+    ]{
+        \includegraphics[width=.3\linewidth]{example_ft}
+        \label{fig:example_ft}
+    }
+    \caption{Example plots from \TABARNAC.}
+    \label{fig:example_plot1}
+\end{figure*}
 
 The first series of plots presents information concerning the relative
 importance of the data structures. It consists of two plots, showing first the
@@ -118,31 +125,17 @@ useful as it determines the possible optimizations. For instance, structures
 written only during initialization (or very rarely) can be relatively easily
 duplicated, such that each NUMA node works on a local copy.
 
-\begin{figure}[htb]
-    \centering
-    \subfigure[Access distribution.% inside a structure.
-%    Each point represents the number of access to one page done by one thread.
-    ]{
-        \includegraphics[width=.64\linewidth]{example_dist}
-        \label{fig:example_dist}
-    }
-    \subfigure[First touch distribution.% inside a structure.
-%   Each point shows which thread is responsible of the first access on one page.
-    ]{
-        \includegraphics[width=.64\linewidth]{example_ft}
-        \label{fig:example_ft}
-    }
-    \label{fig:example_plot1}
-    \caption{Per thread usage of a data structure.}
-\end{figure}
 The second series of plots is the most important one. For each structure, it
-shows the density of accesses performed by each thread and the
-global distribution. As we can see in Figure~\ref{fig:example_dist}, there is
-one line per thread and one line for the average number of accesses. The darker
-is the line the more the thread accesses the page. It gives an easy way to
-understand the data sharing between threads and the usage of structures. These
-plots can be used to identify inefficient memory usages and to determine the best
-NUMA mapping policy.
+shows for each page of each structure
+which thread was responsible for the first touch
+(Figure~\ref{fig:example_ft}). This information is important as the
+default policy for \emph{Linux} and most other operating systems is to map a page as close as possible to the first
+thread accessing it. If the first touch distribution does not fit the actual
+access distribution, the default mapping done by \emph{Linux} might not be
+efficient. To address this issue, the developer can either correct the first
+touch or do some manual data mapping to ensure better memory access locality
+during the execution.
+
 
 %\begin{figure}[htb]
 %    \centering
@@ -153,12 +146,21 @@ NUMA mapping policy.
 %\end{figure}
 
 
-Finally, \TABARNAC shows for each page of each structure
-which thread was responsible for the first touch
-(Figure~\ref{fig:example_ft}). This information is important as the
-default policy for \emph{Linux} and most other operating systems is to map a page as close as possible to the first
-thread accessing it. If the first touch distribution does not fit the actual
-access distribution, the default mapping done by \emph{Linux} might not be
-efficient. To address this issue, the developer can either correct the first
-touch or do some manual data mapping to ensure better memory access locality
-during the execution.
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=.7\linewidth]{example_dist}
+    \caption{Per thread access distribution inside a structure.}
+    \label{fig:example_dist}
+\end{figure}
+
+Finally, \TABARNAC shows the density of accesses performed by each thread and
+the global distribution. As we can see in Figure~\ref{fig:example_dist}, each
+horizontal line represents the number of accesses on one page, there is one
+line per thread and one for the average number of accesses. Moreover for each
+thread the average number of accesses to the structure is displayed. The
+darker is the line the more the thread accesses the page. It gives an easy way
+to understand the data sharing between threads, the balance between pages and
+threads. These plots can be used to identify inefficient memory usages and to
+determine the best NUMA mapping policy.
+
