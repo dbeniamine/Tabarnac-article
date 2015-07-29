@@ -1,7 +1,7 @@
 # Makefile
 
 #Commands
-TEX = pdflatex -interaction=nonstopmode
+TEX = pdflatex -interaction=nonstopmode -synctex=1
 BIB = bibtex
 
 #Files
@@ -39,9 +39,6 @@ bib-default : $(PDF) $(BIBSRC)
 finalize : $(AUX) $(BBL)
 	$(TEXCOMPILE)
 	$(TEXCOMPILE)
-
-run :
-	xdg-open $(PDF)
 
 clean :
 	rm -rf *.tdo *.idx *.nlo *.log *.lof *.lot *.bbl *.blg *.thm *.pdf *.aux *.backup *.bak *.toc *.out *.ilg *.nls *~ .*~ img/*eps-converted-to.pdf

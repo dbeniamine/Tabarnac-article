@@ -468,65 +468,38 @@ Our last experiment aims at evaluating the instrumentation cost. To do so, we
 executed all of the NAS Parallel Benchmarks in class \emph{B} with $64$
 threads on both machines and compared the original execution time to the execution time with instrumentation enabled.
 
-%\begin{figure}[htb]
-%    \centering
-%    \DB{Replace by a table if not enough space}
-%    \includegraphics[width=.63\linewidth]{tool-ovh.pdf}
-%    \caption{Overhead of \TABARNAC analysis for the NAS Parallel Benchmarks.}
-%    \label{fig:ovh}
-%\end{figure}
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=.9\linewidth]{tool-ovh.pdf}
+    \caption{\TABARNAC's instrumentation overhead}.}
+    \label{fig:ovh}
+\end{figure}
 
 %\begin{table}
 %    \centering
-%    \begin{tabular}{lrr}
+%    \begin{tabular}{lrrrrr}
 %        \toprule
-%        \multirow{2}{*}{Bench} & \multicolumn{2}{c}{Slowdown factor} \\
-%        \cmidrule(lr){2-3}
-%        & Intel & AMD \\
+%        %\multirow{2}{*}{Machine}
+%         & \multicolumn{5}{c}{Benchmark (CLASS)} \\
+%        \cmidrule(lr){2-6}
+%            &\texttt{DC} (A) &\texttt{SP} (B)&\texttt{CG} (B)&\texttt{MG} (B)&\texttt{FT} (B) \\ 
+%        \cmidrule(lr){2-6}
+%        \texttt{Turing} &$26.26$ & $7.37$ &$9.75 $ &$16.23$ &$19.17$ \\
+%        \texttt{Idfreeze} &$4.30$  & $4.07$  &  $19.92$ &   $30.66$ &    $60.54$ \\
 %        \midrule
-%        \texttt{DC}  &   $N/A$ & $2.10$ \\
-%        \texttt{SP}  &   $N/A$ & $4.39$ \\
-%        \texttt{CG}  &   $9.75 $ & $19.92$ \\
-%        \texttt{MG}  &   $16.23$ & $30.66$ \\
-%        \texttt{FT}  &   $19.17$ & $60.54$ \\
-%        \texttt{EP}  &   $22.56$ & $13.64$ \\
-%        \texttt{IS}  &   $27.28$ & $31.32$ \\
-%        \texttt{UA}  &   $29.65$ & $37.17$ \\
-%        \texttt{LU}  &   $32.13$ & $40.05$ \\
-%        \texttt{BT}  &   $33.13$ & $54.22$ \\
+%        \midrule
+%                &\texttt{EP} (B)&\texttt{IS} (B)&\texttt{UA} (B)&\texttt{LU} (B)&\texttt{BT} (B)\\
+%        \cmidrule(lr){2-6}
+%        \texttt{Turing} &$22.56$ &$27.28$ &$29.65$ &$32.13$ &$33.13$ \\
+%        \texttt{Idfreeze} & $13.64$ &$31.32$ & $37.17$ &  $40.05$ &   $54.22$ \\
 %        \bottomrule
 %    \end{tabular}
-%    \caption{Overhead of \TABARNAC instrumentation for the NAS Parallel
-%        Benchmarks, class B on both Intel (\texttt{Turing}) and AMD
-%        (\texttt{Idfreeze}) machine.}
+%    \caption{Slowdown factor of \TABARNAC instrumentation for the 10 NAS Parallel
+%        Benchmarks on both machines.}
 %    \label{tab:ovh}
 %\end{table}
 
-\begin{table}
-    \centering
-    \begin{tabular}{lrrrrr}
-        \toprule
-        %\multirow{2}{*}{Machine}
-         & \multicolumn{5}{c}{Benchmark (CLASS)} \\
-        \cmidrule(lr){2-6}
-            &\texttt{DC} (A) &\texttt{SP} (B)&\texttt{CG} (B)&\texttt{MG} (B)&\texttt{FT} (B) \\ 
-        \cmidrule(lr){2-6}
-        \texttt{Turing} &$26.26$ & $7.37$ &$9.75 $ &$16.23$ &$19.17$ \\
-        \texttt{Idfreeze} &$4.30$  & $4.07$  &  $19.92$ &   $30.66$ &    $60.54$ \\
-        \midrule
-        \midrule
-                &\texttt{EP} (B)&\texttt{IS} (B)&\texttt{UA} (B)&\texttt{LU} (B)&\texttt{BT} (B)\\
-        \cmidrule(lr){2-6}
-        \texttt{Turing} &$22.56$ &$27.28$ &$29.65$ &$32.13$ &$33.13$ \\
-        \texttt{Idfreeze} & $13.64$ &$31.32$ & $37.17$ &  $40.05$ &   $54.22$ \\
-        \bottomrule
-    \end{tabular}
-    \caption{Slowdown factor of \TABARNAC instrumentation for the 10 NAS Parallel
-        Benchmarks on both machines.}
-    \label{tab:ovh}
-\end{table}
-
-As we can see in Table~\ref{tab:ovh}, on the Intel machine,
+As we can see in Figure~\ref{fig:ovh}, on the Intel machine,
 the instrumented applications are $10$ to $30$ times slower than the normal
 executions. On the AMD machine, the overhead is almost always higher, for
 pathological cases, the instrumentation is two to three times slower than on
