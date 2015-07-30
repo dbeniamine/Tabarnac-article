@@ -17,14 +17,11 @@ and type (Read/Write). The information is stored on a per-thread basis, as
 shown in Listing~\ref{lst:mem}, making the code completely lock-free, as well
 as minimizing the amount of false sharing between threads.
 
-%\begin{figure}[!h]
-\newpage
 \begin{lstlisting}[caption={Code executed on each memory access. The \texttt{address}, \texttt{threadid} and \texttt{type} parameters are provided by Pin.},label=lst:mem]
 	void mem_access(unsigned long address, int threadid, char type){
 		uint64_t page = address >> page_bits;
 		acc[threadid][page][type]++;
 	}
-
 \end{lstlisting}
 
 The instrumentation uses the Pin dynamic binary instrumentation
@@ -87,6 +84,26 @@ introduction, summarizing the main principles while developing for NUMA
 machines, and shows the hardware topology of the analyzed machine extracted
 with Hwloc~\cite{Broquedis10hwloc}.
 
+\begin{figure*}[h!]
+    \centering
+    \subfigure[Structures size.]{
+        \includegraphics[height=.2\textheight]{example_sz}
+        \label{fig:example_sz}
+    }
+    \subfigure[Number of accesses per structures.]{
+        \includegraphics[height=.2\textheight]{example_rw}
+        \label{fig:example_rw}
+    }
+    \subfigure[First touch distribution inside a structure.
+    ]{
+        \includegraphics[height=.2\textheight]{example_ft}
+        \label{fig:example_ft}
+    }
+    \caption{Example plots from \TABARNAC.}
+    \label{fig:example_plot1}
+\end{figure*}
+
+
 After the introduction, the visualization focuses on the usage of data structures. Some
 structures are not displayed for two reasons: either no accesses have been
 detected during the analysis, which happens for structures used by external
@@ -94,26 +111,6 @@ libraries, or less than $0.01\%$ of the total accesses happens on them. This is
 done to make the output more readable.
 %However, it is possible to ask
 %\TABARNAC not to ignore structures in the second case for a more detailed view.
-
-\begin{figure*}[htb]
-    \centering
-    \subfigure[Structures size.]{
-        \includegraphics[width=.3\linewidth]{example_sz}
-        \label{fig:example_sz}
-    }
-    \subfigure[Number of accesses per structures.]{
-        \includegraphics[width=.3\linewidth]{example_rw}
-        \label{fig:example_rw}
-    }
-    \subfigure[First touch distribution inside a structure.
-%   Each point shows which thread is responsible of the first access on one page.
-    ]{
-        \includegraphics[width=.3\linewidth]{example_ft}
-        \label{fig:example_ft}
-    }
-    \caption{Example plots from \TABARNAC.}
-    \label{fig:example_plot1}
-\end{figure*}
 
 The first series of plots presents information concerning the relative
 importance of the data structures. It consists of two plots, showing first the
@@ -125,6 +122,13 @@ useful as it determines the possible optimizations. For instance, structures
 written only during initialization (or very rarely) can be relatively easily
 duplicated, such that each NUMA node works on a local copy.
 
+\begin{figure}[htb]
+    \centering
+    \includegraphics[height=.22\textheight]{example_dist}
+    \caption{Per thread access distribution inside a structure.}
+    \label{fig:example_dist}
+\end{figure}
+
 The second series of plots is the most important one. For each structure, it
 shows for each page of each structure
 which thread was responsible for the first touch
@@ -135,24 +139,6 @@ access distribution, the default mapping done by \emph{Linux} might not be
 efficient. To address this issue, the developer can either correct the first
 touch or do some manual data mapping to ensure better memory access locality
 during the execution.
-
-
-%\begin{figure}[htb]
-%    \centering
-%    \includegraphics[height=.2\textheight]{example_ft}
-%    \caption{Example of first touch distribution Each point show which thread
-%    is responsible of the first access on one page.}
-%    \label{fig:example_ft}
-%\end{figure}
-
-
-
-\begin{figure}[htb]
-    \centering
-    \includegraphics[width=.7\linewidth]{example_dist}
-    \caption{Per thread access distribution inside a structure.}
-    \label{fig:example_dist}
-\end{figure}
 
 Finally, \TABARNAC shows the density of accesses performed by each thread and
 the global distribution. As we can see in Figure~\ref{fig:example_dist}, each

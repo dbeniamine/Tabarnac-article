@@ -282,13 +282,7 @@ over the structures.
 
 \begin{figure}[htb]
     \centering
-%    \subfigure[\emph{Ondes3D}.]{
     \includegraphics[scale=.6]{ondes3d_exectime}
-%    }
-%    \subfigure[\emph{IS} (class D).]{
-%        \includegraphics[width=.45\linewidth]{is_exectime}
-%        \label{fig:is-res}
-%    }
     \caption{Speedup for \emph{Ondes3D} compared to the baseline.}
     \label{fig:ondes-res}
 \end{figure}
@@ -337,27 +331,27 @@ the analysis, with a memory usage of $0.25Gib$.
     \centering
 
     \subfigure[\texttt{key\_array} (original).]{
-        \includegraphics[width=.3\linewidth]  {is_b_kba_orig}
+        \includegraphics[width=.28\linewidth]  {is_b_kba_orig}
         \label{fig:is-behaviour-orig-kba}
     }
     \subfigure[\texttt{key\_buff2} (original).]{
-        \includegraphics[width=.3\linewidth]  {is_b_kb2_orig}
+        \includegraphics[width=.28\linewidth]  {is_b_kb2_orig}
         \label{fig:is-behaviour-orig-kb2}
     }
     \subfigure[\texttt{key\_buff1} (original).]{
-        \includegraphics[width=.3\linewidth]  {is_b_kb1_orig}
+        \includegraphics[width=.28\linewidth]  {is_b_kb1_orig}
         \label{fig:is-behaviour-orig-kb1}
     }
     \subfigure[\texttt{key\_array} (modified).]{
-        \includegraphics[width=.3\linewidth] {is_b_kba_modif}
+        \includegraphics[width=.28\linewidth] {is_b_kba_modif}
         \label{fig:is-behaviour-modif-kba}
     }
     \subfigure[\texttt{key\_buff2} (modified).]{
-        \includegraphics[width=.3\linewidth] {is_b_kb2_modif}
+        \includegraphics[width=.28\linewidth] {is_b_kb2_modif}
         \label{fig:is-behaviour-modif-kb2}
     }
     \subfigure[\texttt{key\_buff1} (modified).]{
-        \includegraphics[width=.3\linewidth] {is_b_kb1_modif}
+        \includegraphics[width=.28\linewidth] {is_b_kb1_modif}
         \label{fig:is-behaviour-modif-kb1}
     }
 
@@ -438,7 +432,7 @@ Balancing are not relevant with our modifications and are therefore not included
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[scale=.75]{is_exectime}
+    \includegraphics[scale=.62]{is_exectime}
     \caption{Speedup for \emph{IS} (class D) compared to the baseline.}
 \label{fig:is-res}
 \end{figure}
@@ -470,7 +464,7 @@ threads on both machines and compared the original execution time to the executi
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[scale=.55]{tool-ovh.pdf}
+    \includegraphics[scale=.6]{tool-ovh.pdf}
     \caption{\TABARNAC's instrumentation overhead.}
     \label{fig:ovh}
 \end{figure}
@@ -500,19 +494,19 @@ threads on both machines and compared the original execution time to the executi
 %\end{table}
 
 As we can see in Figure~\ref{fig:ovh}, on the Intel machine,
-the instrumented applications are $10$ to $30$ times slower than the normal
-executions. On the AMD machine, the overhead is almost always higher, for
-pathological cases, the instrumentation is two to three times slower than on
+the instrumentation slows the execution down by a factor from $10$to $30$.
+On the AMD machine, the overhead is almost always higher, and for
+pathological cases, is two to three times slower than on
 the Intel machine.
 %On most benchmarks, the instrumentation is $10$ to $50\%$ slower on
 %AMD than on Intel processor. For the pathological cases (\texttt{FT} and
 %\texttt{BT}) the instrumentation can be two or three time slower on AMD. 
 Although this overhead is not negligible, we have to consider the fact that often we can instrument
 smaller versions of the applications, as we focus on the general behavior.
-Moreover our instrumentation is more precise than sampling based methods and
-there is no need to run it several times. Finally, as our
-analysis is designed to be used during the development phase and not by an
-automated tool during the execution, a factor of $30$ is acceptable.
+Moreover our method is more precise than sampling and
+thus one run is often enough. Finally, as our
+analysis is designed to be used during development phase and at runtime in an
+automated tool, this overhead is acceptable.
 
 \subsection{Summary}
 

@@ -69,19 +69,28 @@ all these tools can help developers understand the kind of
 performance issues they are facing, they never give the reason \emph{why} a particular
 issue is happening, for instance by showing the distribution of memory accesses within data structures.
 
-Gimenez et al.~\cite{Gimenez14Dissecting} provide a NUMA-oriented view of the
-execution, showing which node is responsible for how many memory access.
-Moreover, they provide \emph{parallel coordinate graphs} which correlate
-several metrics to help the user understanding where memory
-problems originate. Although these graphs help finding
-the source of the issue, do not show how the memory
-is accessed.
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=.9\linewidth]{memAxes.png}
+    \caption{Screenshot from MemAxes on the example data.}
+    \label{fig:memaxes}
+\end{figure}
+
+MemAxes~\cite{Gimenez14Dissecting} is one of the most advanced NUMA-oriented
+visualization tool, as we can see in Figure~\ref{fig:memaxes}, it allows to select a
+part of the memory hierarchy or of the code and see the events related to it.
+A \emph{parallel coordinate graph} also help to correlate informations.
+Although this visualization is designed for understanding NUMA performances
+issues, it show \emph{what} event occurs and \emph{where} but it still does not
+tell \emph{why} it occurs, the user still have to correlate the information to
+guess the source of the problem.
 
 Finally, the proposal of Liu et al.~\cite{Liu14Tool} is quite similar to the previous studies, but
-they also show an \emph{address centric} visualization, these graphs shows how
-much each thread access a data structure. Still it does not tell the
-accesses distribution inside the structure and therefore miss
-important informations.
+they also provide an \emph{address centric} visualization, these graphs shows how
+much each thread access a data structure. Such visualization is a bit closer
+to give the source of the performance issue, but it does not show how the
+accesses are distributed inside a structure, and how the structure is shared by
+the threads.
 
 %Previous studies aimed to answer this question for some specific
 %benchmarks~\cite{Majo13(Mis)understanding,Jiang14Understanding}.
@@ -174,10 +183,15 @@ and therefore enable the developer to improve performance significantly.
 % We conclude that tools to improve the memory access behavior on NUMA architectures with prior
 % information have the highest potential for improvements.
 Several studies already provide tools to analyze memory accesses.
-These tools usually point out \emph{which} performance issues occur (such as a high number of cache misses or accesses to remote NUMA nodes), sometimes \emph{where} they occur (such as information about the structure, function, or line of code).
-However, no tool gives the reason \emph{why} such issues occur and how to fix them.
+These tools usually point out \emph{what} performance issues occur (such as a
+high number of cache misses or accesses to remote NUMA nodes), sometimes
+\emph{where} they occur (such as information about the structure, function, or
+line of code), the most advanced tools helps to correlate these information to
+guess \emph{why} the issue is happening. Still, no tool gives directly the
+reason \emph{why} such issues occur and \emph{how} to fix them.
 Two types of information can help answering this question: which thread is responsible for the first touch (as the default page mapping of most operating systems depends on it), and how different threads access data structures.
-This study provides a tool, \TABARNAC, and a methodology to explain \emph{why} performance issues related to memory occur and how they can be resolved.
+This study presents \TABARNAC, a tool to explain \emph{why} performance issues
+related to memory occur and \emph{how} they can be resolved.
 
 %The two main challenges for this type of tool is to gather information about the memory access patterns in a fast, accurate and easy-to-use way, and providing information to the developers about the ways to improve the behavior of their applications.
 %This study, provides a comprehensive solution for these challenges.
