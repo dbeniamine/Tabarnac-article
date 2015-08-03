@@ -287,7 +287,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage[T1]{fontenc}
-\usepackage{balance,tikz}
+\usepackage{balance,tikz,dblfloatfix}
 
 \usepackage[]{graphicx}
 \graphicspath{{./img/}}
@@ -370,8 +370,8 @@ Email: $\{$mdiener,navaux$\}$@inf.ufrgs.br}
 \begin{abstract}
 
 In modern parallel architectures, memory accesses represent a common
-bottleneck. This optimizing the way applications access to memory. This is even more important with NUMA
-memories, as the access time to data depends on its location in
+bottleneck. Thus, optimizing the way applications access the memory is an important way to improve performance and energy consumption. Memory accesses are even more important with NUMA
+machines, as the access time to data depends on its location in
 the memory. Many efforts were made to
 develop adaptive tools to improve memory accesses at the runtime by optimizing
 the mapping of data and threads to NUMA nodes.  However, theses tools are not
@@ -379,17 +379,17 @@ able to change the memory access pattern of the original application,
 therefore a code written without considering memory performance might
 not benefit from them. Moreover, automatic mapping tools take time to converge
 towards the best mapping loosing optimization opportunities. A
-deeper understanding of the memory behavior can help defining the best initial mapping
+deeper understanding of the memory behavior can help optimizing it,
 removing the need for runtime analysis.
 
 In this paper, we present \TABARNAC, a tool for analyzing the memory behavior of parallel applications with a focus on NUMA architectures.
-Our main contributions are to provide some visualization of the access
+Our main contributions are to provide a new visualization of the memory access behavior
 distribution by thread and by structure. Such visualization allows the
-user to easily understand why performance issues occurs.
+develop to easily understand why performance issues occurs.
 Using \TABARNAC, we explain why some applications do not benefit from data
-and thread mapping. Moreover, we propose several simple code modifications to
-improve the memory access behavior of some applications. Finally, we compare
-the performance gain of our proposition to automated tools.
+and thread mapping. Moreover, we propose several code modifications to
+improve the memory access behavior of some applications.
+% Finally, we compare the performance gain of our proposal to automated tools.
 %
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.

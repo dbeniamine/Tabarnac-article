@@ -49,7 +49,7 @@ Linux kernel, while \texttt{Idfreeze} version $3.2$.
 %processors (Nehalem microarchitecture~\cite{Intel2010}). Each processor has its own memory controller and therefore forms a NUMA node. The hardware details are summarized in Table~\ref{tab:turing}.
 %The machine runs version 3.13 of the Linux kernel.
 %
-%\texttt{Idfreeze} is composed of $4$ AMD Opteron $6174$ 
+%\texttt{Idfreeze} is composed of $4$ AMD Opteron $6174$
 
 %Boths machines are composed of $4$ processors.  Each processor has its own memory
 %controller and therefore forms a NUMA node.
@@ -255,7 +255,7 @@ for the analysis.
         \includegraphics[width=.45\linewidth] {ondes3d_vz0_ft_orig}
         \label{fig:ondes3d-ft-vz0-orig}
     }
-    \subfigure[First-touch modified.]{
+    \subfigure[Improved First-touch.]{
         \includegraphics[width=.45\linewidth] {ondes3d_vz0_ft_modif}
         \label{fig:ondes3d-ft-vz0-modif}
     }
@@ -293,29 +293,29 @@ interleave policy. Figure~\ref{fig:ondes-res} present the results of this
 evaluation. We can see that all methods improve the execution time, but
 NUMA Balancing provides less than $30\%$ speedup, while the static mappings
 (Interleave or the modified code) allows us to get almost $60\%$ of speedup. This is
-due to the training time described in section \ref{sec:soa-mapping}. Indeed,
+due to the training time described in Section~\ref{sec:soa-mapping}. Indeed,
 with NUMA Balancing, all pages are initially mapped by the OS to the NUMA node
 of thread~$0$, they
 are only moved later on, after many remote accesses have already occurred. This is a case where static mapping can be substantially better than automated
 tools. The Interleave policy provides a similar speedup as
 \TABARNAC since it distributes the pages over the NUMA nodes at the beginning of
-the execution, still our tool shows clearly the cause of the performances issue.
+the execution, but our tool shows clearly the cause of the performances issue.
 % Nevertheless, the interleave version only maps the data no the
 % threads, therefore the performances might drop if the OS does not map them
 % ``correctly'' while the modified version proposes a thread mapping that ensures better
 % data locality.
 
 
-\subsection{IS}
+\subsection{The IS Benchmark}
 \label{sec:exp-is}
 
-
-We've run \TABARNAC on all benchmarks written in \texttt{C} from the OpenMP
-implementation of the NAS Parallel Benchmark suite~(NPB)~\cite{Jin1999}. Most
+\tod{i suggest removing the next 2 phrases:}
+We executed \TABARNAC on all benchmarks written in \texttt{C} from the OpenMP
+implementation of the NAS Parallel Benchmark suite~(NPB)~\cite{Jin1999}\tod{there are just 2...}. Most
 of them have either a well balanced accesses pattern between the threads or a
 totally random accesses distribution. For all of them the first touch fits exactly
-the access distribution (as the do a fake run before the actual
-initialization). Still the analysis of \emph{IS} caught our attention.
+the access distribution \tod{rm:(as the do a fake run before the actual
+initialization)}. Still the analysis of \emph{IS} caught our attention.
 \emph{IS} sorts a set of integer numbers using a parallel bucket sort
 algorithm, and according to the NAS
 website\footnote{\url{http://www.nas.nasa.gov/publications/npb.html}} has a
@@ -366,13 +366,13 @@ The top of Figure~\ref{fig:is-behaviour} shows the original access distributions
 three main structures of \emph{IS} class \emph{B} with $64$ threads. We can see that
 each structure has a different access pattern: \texttt{key\_array}'s
 (Figure~\ref{fig:is-behaviour-orig-kba}) access distribution shows that each
-thread works on a different part of the structure, which let automated
+thread works on a different part of the structure, which permits automated
 tools perform an efficient data/thread mapping on it. On the other hand, \texttt{key\_buff2}
 (Figure~\ref{fig:is-behaviour-orig-kb2}) is completely shared by all threads.
 \texttt{key\_buff1}'s access distribution (Figure~\ref{fig:is-behaviour-orig-kb1})
-is the most interesting one. We can see that pages almost all accesses occurs
-on page in the middle of the structure (from $500$ to $1500$), and those pages
-are shared by all threads. It mean that the number of access per page  for
+is the most interesting one. We can see that almost all accesses occur
+in pages in the middle of the structure (from $500$ to $1500$), and those pages
+are shared by all threads. This means that the number of access per page  for
 each thread follows a Gaussian distribution centered in the middle of the
 structure.
 
@@ -380,7 +380,7 @@ structure.
 %Gaussian distribution of memory accesses to the \texttt{key\_buff1} structure., label=lst:is, float=htb]{code/is.c}
 
 We can identify the source of this pattern in the \emph{IS} source code. Indeed, all the accesses to \texttt{key\_buff1} are linear,
-except in one openMP parallel loop where the depend on the value of
+except in one OpenMP parallel loop where they depend on the value of
 %except the ones shown in Listing~\ref{lst:is}\footnote{
 %    The code has been slightly modified to make it more readable. In the
 %    original version, the arrays \texttt{key\_buff1} (resp. \texttt{key\_buff2})
@@ -407,7 +407,7 @@ This modification can be done by simply changing one line of code, the
 %\end{lstlisting}
 
 
-With this simple code modification, we obtain the access distribution shown in
+With this code modification, we obtain the access distribution shown in
 the bottom of Figure~\ref{fig:is-behaviour}. We can see that now each thread
 access a different part of \texttt{key\_buff1}. Furthermore, if most of the
 accesses still occurs in the middle of the structure, the average number of
@@ -476,7 +476,7 @@ threads on both machines and compared the original execution time to the executi
 %        %\multirow{2}{*}{Machine}
 %         & \multicolumn{5}{c}{Benchmark (CLASS)} \\
 %        \cmidrule(lr){2-6}
-%            &\texttt{DC} (A) &\texttt{SP} (B)&\texttt{CG} (B)&\texttt{MG} (B)&\texttt{FT} (B) \\ 
+%            &\texttt{DC} (A) &\texttt{SP} (B)&\texttt{CG} (B)&\texttt{MG} (B)&\texttt{FT} (B) \\
 %        \cmidrule(lr){2-6}
 %        \texttt{Turing} &$26.26$ & $7.37$ &$9.75 $ &$16.23$ &$19.17$ \\
 %        \texttt{Idfreeze} &$4.30$  & $4.07$  &  $19.92$ &   $30.66$ &    $60.54$ \\
@@ -500,7 +500,7 @@ pathological cases, is two to three times slower than on
 the Intel machine.
 %On most benchmarks, the instrumentation is $10$ to $50\%$ slower on
 %AMD than on Intel processor. For the pathological cases (\texttt{FT} and
-%\texttt{BT}) the instrumentation can be two or three time slower on AMD. 
+%\texttt{BT}) the instrumentation can be two or three time slower on AMD.
 Although this overhead is not negligible, we have to consider the fact that often we can instrument
 smaller versions of the applications, as we focus on the general behavior.
 Moreover our method is more precise than sampling and

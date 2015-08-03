@@ -4,10 +4,11 @@
 \section{TABARNAC}
 \label{sec:design}
 
+\tod{what is tabarnac?}
 \TABARNAC is divided into two parts: the instrumentation tool and the
 visualization. In this section, we discuss the implementation of both parts.
 
-\subsection{Data collection}
+\subsection{Collecting Memory Access Information}
 \label{sec:design-impl}
 
 \TABARNAC data collection aims at providing information on how data structure
@@ -17,7 +18,7 @@ and type (Read/Write). The information is stored on a per-thread basis, as
 shown in Listing~\ref{lst:mem}, making the code completely lock-free, as well
 as minimizing the amount of false sharing between threads.
 
-\begin{lstlisting}[caption={Code executed on each memory access. The \texttt{address}, \texttt{threadid} and \texttt{type} parameters are provided by Pin.},label=lst:mem]
+\begin{lstlisting}[caption={Code executed on each memory access. Pin provides the \texttt{address}, \texttt{threadid} and \texttt{type} parameters.},label=lst:mem]
 	void mem_access(unsigned long address, int threadid, char type){
 		uint64_t page = address >> page_bits;
 		acc[threadid][page][type]++;
@@ -25,19 +26,20 @@ as minimizing the amount of false sharing between threads.
 \end{lstlisting}
 
 The instrumentation uses the Pin dynamic binary instrumentation
-tool~\cite{Luk05Pin}, although it is an Intel technology, it works also on AMD
+tool~\cite{Luk05Pin}. Although it is an Intel technology, it works also on AMD
 processors.
+Previous versions of Pin also support Intel Itanium~(IA64) and ARM architectures.
 
-Before running the application, our tool retrieves static memory allocation
-information %using the \texttt{libelfg0} library.
-Dynamic allocations are intercepted with at the runtime and structure names
-are extracted using the debug flags.
+Before running the application, \TABARNAC retrieves static memory allocation
+information. %using the \texttt{libelfg0} library.
+Dynamic allocations are intercepted at runtime and structure names
+are extracted using the debug information provided by the compiler.
 %\texttt{malloc} replacement. If the application is
 %compiled with debug flags (\texttt{-g}), the structure names that are malloced can be extracted from the source
 %code.
-Finally, each time a thread is created, we compute
-stack bounds, and create a virtual structure named \texttt{Stack\#N} where
-$N$ is the thread id. Only structures that are bigger than one page (usually
+Finally, each time a thread is created, we compute its
+stack bounds and create a virtual structure named \texttt{Stack\#N} where
+$N$ is the thread ID. Only structures that are bigger than one page (usually
 $4$Kib in current x86\_64 architectures) are recorded as our
 analysis granularity is the memory page. The data structure informations (name,
 size and address) are only used to generate the visualization, after the end
@@ -70,7 +72,7 @@ of the instrumentation.
 \label{sec:design-visu}
 
 
-Once the analysis phase is done,
+Once the data collection phase is done,
 \TABARNAC generates the visualization (as an HTML page), providing a summary
 of the trace through several plots\footnote{A full example is available at
     \url{http://dbeniamine.github.io/Tabarnac/example}}.
@@ -84,7 +86,7 @@ introduction, summarizing the main principles while developing for NUMA
 machines, and shows the hardware topology of the analyzed machine extracted
 with Hwloc~\cite{Broquedis10hwloc}.
 
-\begin{figure*}[h!]
+\begin{figure*}[ht!]
     \centering
     \subfigure[Structures size.]{
         \includegraphics[height=.2\textheight]{example_sz}
@@ -122,7 +124,7 @@ useful as it determines the possible optimizations. For instance, structures
 written only during initialization (or very rarely) can be relatively easily
 duplicated, such that each NUMA node works on a local copy.
 
-\begin{figure}[htb]
+\begin{figure}[!htb]
     \centering
     \includegraphics[height=.22\textheight]{example_dist}
     \caption{Per thread access distribution inside a structure.}

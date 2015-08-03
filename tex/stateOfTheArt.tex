@@ -17,7 +17,7 @@ The second challenge is the amount of information that needs to be interpreted a
 Memory access traces provide huge amounts of information on several dimensions (data structure, threads, access type (read/write), sharing, time of access, among others).
 Presenting them to the developer in a readable and meaningful way is therefore not trivial.
 
-\subsubsection{Data collection}
+\subsubsection{Data Collection}
 
 Several methods have been used to address the problem of data collection. A
 lot of studies deduce information from hardware performance
@@ -33,8 +33,8 @@ analysis on different machines with these tools.
 
 Another approach used by several
 tools~\cite{Lachaize12MemProf,McCurdy2010,Liu14Tool,Gimenez14Dissecting}
-consist in using sampling mechanisms such as AMD's Instruction Based Sampling
-(IBS)~\cite{Drongowski07Instructionbased} or Intel PEBS. Not only can sampling miss important events, leading to
+consists of using sampling mechanisms such as AMD's Instruction Based Sampling
+(IBS)~\cite{Drongowski07Instructionbased} or Intel PEBS to analyze applications. Not only can sampling miss important events, leading to
 inaccurate characterizations, but these technologies are usually not portable and work
 only with a few recent architecture, therefore such tools can only be used in
 special circumstances.
@@ -72,24 +72,24 @@ issue is happening, for instance by showing the distribution of memory accesses 
 \begin{figure}[htb]
     \centering
     \includegraphics[width=.9\linewidth]{memAxes.png}
-    \caption{Screenshot from MemAxes on the example data.}
+    \caption{Screenshot from MemAxes on the example data. \tod{source? really necessary?}}
     \label{fig:memaxes}
 \end{figure}
 
 MemAxes~\cite{Gimenez14Dissecting} is one of the most advanced NUMA-oriented
-visualization tool, as we can see in Figure~\ref{fig:memaxes}, it allows to select a
+visualization tool. As we can see in Figure~\ref{fig:memaxes}\tod{rm}, it allows to select a
 part of the memory hierarchy or of the code and see the events related to it.
 A \emph{parallel coordinate graph} also help to correlate informations.
-Although this visualization is designed for understanding NUMA performances
-issues, it show \emph{what} event occurs and \emph{where} but it still does not
-tell \emph{why} it occurs, the user still have to correlate the information to
-guess the source of the problem.
+Although this visualization is designed for understanding NUMA performance
+issues, it shows \emph{what} event occurs and \emph{where} but it still does not
+tell \emph{why} it occurs, the user still has to correlate the information to
+guess the source of the problem.\tod{unclear}
 
 Finally, the proposal of Liu et al.~\cite{Liu14Tool} is quite similar to the previous studies, but
 they also provide an \emph{address centric} visualization, these graphs shows how
 much each thread access a data structure. Such visualization is a bit closer
 to give the source of the performance issue, but it does not show how the
-accesses are distributed inside a structure, and how the structure is shared by
+accesses are distributed inside a structure, and how the structure is shared between
 the threads.
 
 %Previous studies aimed to answer this question for some specific
@@ -144,12 +144,9 @@ a page should be migrated to a different NUMA node.%To increase the accuracy
 %Dashti et al.~\cite{Dashti2013} introduced the Carrefour mechanism, which uses instruction-based sampling~(IBS)~\cite{Drongowski07Instructionbased} available in recent AMD architectures~\cite{AMD2012} to detect the memory access behavior.
 %kMAF~\cite{Diener2014} is a similar mechanism that uses page faults to analyze the behavior.
 %Due to the access history, these mechanisms can avoid excessive migrations, but still suffer from later migrations and a runtime overhead compared to mechanisms with prior information.
-
 % hardware
 % marathe, lapt
-
 %\subsubsection{Mechanisms With Prior Information}
-
 Other solutions improve data mapping in the compiler, the runtime or at a library level.
 Piccoli et al.~\cite{Piccoli2014} propose a compiler extension that analyzes
 the memory accesses patterns of parallel loops and uses this information to migrate
@@ -159,7 +156,7 @@ pages before executing the loop.
 % ForestGOMP~\cite{Broquedis2010a} requires source code annotations to identify memory access behavior and is limited to the OpenMP library.
 % These techniques use predictions about the memory access behavior, which might be dependent on input data and can cause wrong mappings.
 %Furthermore, no improvements to the memory access pattern are performed.
-Previous research also uses memory access traces to perform data mapping~\cite{Marathe2010,Bolosky1992}. These can be useful to determine the maximum gains that can be achieved with mapping policies, but are not applicable in general due to their substantial overhead and the fact that the access behavior might change with different input data and different numbers of threads, for instance.
+% Previous research also uses memory access traces to perform data mapping~\cite{Marathe2010,Bolosky1992}. These can be useful to determine the maximum gains that can be achieved with mapping policies, but are not applicable in general due to their substantial overhead and the fact that the access behavior might change with different input data and different numbers of threads, for instance.
 
 
 Libraries such as libnuma~\cite{Kleen2004} and MAi~\cite{Ribeiro2009} provide
