@@ -309,13 +309,17 @@ the execution, but our tool shows clearly the cause of the performances issue.
 \subsection{The IS Benchmark}
 \label{sec:exp-is}
 
-\tod{i suggest removing the next 2 phrases:}
-We executed \TABARNAC on all benchmarks written in \texttt{C} from the OpenMP
-implementation of the NAS Parallel Benchmark suite~(NPB)~\cite{Jin1999}\tod{there are just 2...}. Most
+%\tod{i suggest removing the next 2 phrases:}
+We executed \TABARNAC on several benchmarks %written in \texttt{C}
+from the OpenMP
+implementation of the NAS Parallel Benchmark suite~(NPB)~\cite{Jin1999}.
+%\tod{there are just 2...}
+% David: Actually we tried also some fortran NPB but I didn't insist on
+% getting the good structure names as the access patterns were ``good''
+Most
 of them have either a well balanced accesses pattern between the threads or a
 totally random accesses distribution. For all of them the first touch fits exactly
-the access distribution \tod{rm:(as the do a fake run before the actual
-initialization)}. Still the analysis of \emph{IS} caught our attention.
+the access distribution. Still the analysis of \emph{IS} caught our attention.
 \emph{IS} sorts a set of integer numbers using a parallel bucket sort
 algorithm, and according to the NAS
 website\footnote{\url{http://www.nas.nasa.gov/publications/npb.html}} has a

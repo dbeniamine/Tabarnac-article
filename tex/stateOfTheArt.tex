@@ -71,19 +71,22 @@ issue is happening, for instance by showing the distribution of memory accesses 
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=.9\linewidth]{memAxes.png}
-    \caption{Screenshot from MemAxes on the example data. \tod{source? really necessary?}}
+    \includegraphics[width=\linewidth]{memAxes.png}
+    \caption{Screenshot from MemAxes on the example data provided with the
+    tool.}
     \label{fig:memaxes}
 \end{figure}
 
 MemAxes~\cite{Gimenez14Dissecting} is one of the most advanced NUMA-oriented
-visualization tool. As we can see in Figure~\ref{fig:memaxes}\tod{rm}, it allows to select a
-part of the memory hierarchy or of the code and see the events related to it.
-A \emph{parallel coordinate graph} also help to correlate informations.
+visualization tool.
+Figure~\ref{fig:memaxes}, shows a screenshot of this tool on an example data
+trace provided with the tool. We can see that it show the source code of the
+application (left upper side), the NUMA hierarchy of the machine (right upper side)
+and A \emph{parallel coordinate graph} (lower side) designed to  help correlating informations.
 Although this visualization is designed for understanding NUMA performance
 issues, it shows \emph{what} event occurs and \emph{where} but it still does not
-tell \emph{why} it occurs, the user still has to correlate the information to
-guess the source of the problem.\tod{unclear}
+tell directly \emph{why} it occurs. The user still has to correlate several
+informations to guess the source of the performance issue.
 
 Finally, the proposal of Liu et al.~\cite{Liu14Tool} is quite similar to the previous studies, but
 they also provide an \emph{address centric} visualization, these graphs shows how
