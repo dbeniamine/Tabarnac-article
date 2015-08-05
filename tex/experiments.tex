@@ -41,12 +41,12 @@ and presents relevant information on the experimental environment.
 We used two NUMA machines for our experiments \texttt{Turing} and
 \texttt{Idfreeze}. The second machine was only used to compare the
 instrumentation overhead on Intel and AMD machines, all the other experiments
-ran on \texttt{turing}. The hardware details are
+ran on \texttt{Turing}. The hardware details are
 summarized in Table~\ref{tab:hw}. \texttt{Turing} runs version $3.13$ of the
 Linux kernel, while \texttt{Idfreeze} version $3.2$.
 
 %\texttt{Turing} is composed of $4$ Intel Xeon X7550
-%processors (Nehalem microarchitecture~\cite{Intel2010}). Each processor has its own memory controller and therefore forms a NUMA node. The hardware details are summarized in Table~\ref{tab:turing}.
+%processors (Nehalem microarchitecture~\cite{Intel2010}). Each processor has its own memory controller and therefore forms a NUMA node. The hardware details are summarized in Table~\ref{tab:Turing}.
 %The machine runs version 3.13 of the Linux kernel.
 %
 %\texttt{Idfreeze} is composed of $4$ AMD Opteron $6174$
@@ -57,7 +57,7 @@ Linux kernel, while \texttt{Idfreeze} version $3.2$.
 %\begin{table}[htb]
 %    \centering
 %    \caption{Hardware configuration of our evaluation system.}
-%    \label{tab:turing}
+%    \label{tab:Turing}
 %    \footnotesize
 %        \begin{tabular}{lccccc}
 %            \toprule
@@ -265,7 +265,8 @@ for the analysis.
     \label{fig:ondes3d}
 \end{figure}
 
-The analysis of the accesses distribution in \emph{Ondes3D} shows that each
+The analysis of the accesses distribution in \emph{Ondes3D} (not displayed
+here) shows that each
 structure seems to be well distributed between the threads. %, as we can see for
 %structure \texttt{vz0} in Figure~\ref{fig:ondes3d-behaviour-vz0-orig}.
 Still for each structures, as we can see for \texttt{vz0} in
@@ -292,11 +293,13 @@ version, running on the normal OS, with NUMA Balancing activated and with an
 interleave policy. Figure~\ref{fig:ondes-res} present the results of this
 evaluation. We can see that all methods improve the execution time, but
 NUMA Balancing provides less than $30\%$ speedup, while the static mappings
-(Interleave or the modified code) allows us to get almost $60\%$ of speedup. This is
-due to the training time described in Section~\ref{sec:soa-mapping}. Indeed,
+(Interleave or the modified code) allows us to get almost $60\%$ of speedup.
+%This is due to the training time described in Section~\ref{sec:soa-mapping}.
+ndeed,
 with NUMA Balancing, all pages are initially mapped by the OS to the NUMA node
 of thread~$0$, they
-are only moved later on, after many remote accesses have already occurred. This is a case where static mapping can be substantially better than automated
+are only moved later on, after many remote accesses have already occurred
+therefore some optimization opportunities are lost. This is a case where static mapping can be substantially better than automated
 tools. The Interleave policy provides a similar speedup as
 \TABARNAC since it distributes the pages over the NUMA nodes at the beginning of
 the execution, but our tool shows clearly the cause of the performances issue.
@@ -335,27 +338,27 @@ the analysis, with a memory usage of $0.25Gib$.
     \centering
 
     \subfigure[\texttt{key\_array} (original).]{
-        \includegraphics[width=.28\linewidth]  {is_b_kba_orig}
+        \includegraphics[width=.285\linewidth]  {is_b_kba_orig}
         \label{fig:is-behaviour-orig-kba}
     }
     \subfigure[\texttt{key\_buff2} (original).]{
-        \includegraphics[width=.28\linewidth]  {is_b_kb2_orig}
+        \includegraphics[width=.285\linewidth]  {is_b_kb2_orig}
         \label{fig:is-behaviour-orig-kb2}
     }
     \subfigure[\texttt{key\_buff1} (original).]{
-        \includegraphics[width=.28\linewidth]  {is_b_kb1_orig}
+        \includegraphics[width=.285\linewidth]  {is_b_kb1_orig}
         \label{fig:is-behaviour-orig-kb1}
     }
     \subfigure[\texttt{key\_array} (modified).]{
-        \includegraphics[width=.28\linewidth] {is_b_kba_modif}
+        \includegraphics[width=.285\linewidth] {is_b_kba_modif}
         \label{fig:is-behaviour-modif-kba}
     }
     \subfigure[\texttt{key\_buff2} (modified).]{
-        \includegraphics[width=.28\linewidth] {is_b_kb2_modif}
+        \includegraphics[width=.285\linewidth] {is_b_kb2_modif}
         \label{fig:is-behaviour-modif-kb2}
     }
     \subfigure[\texttt{key\_buff1} (modified).]{
-        \includegraphics[width=.28\linewidth] {is_b_kb1_modif}
+        \includegraphics[width=.285\linewidth] {is_b_kb1_modif}
         \label{fig:is-behaviour-modif-kb1}
     }
 
@@ -375,7 +378,7 @@ tools perform an efficient data/thread mapping on it. On the other hand, \texttt
 (Figure~\ref{fig:is-behaviour-orig-kb2}) is completely shared by all threads.
 \texttt{key\_buff1}'s access distribution (Figure~\ref{fig:is-behaviour-orig-kb1})
 is the most interesting one. We can see that almost all accesses occur
-in pages in the middle of the structure (from $500$ to $1500$), and those pages
+in pages in the middle of the structure (from page $500$ to $1500$), and those pages
 are shared by all threads. This means that the number of access per page  for
 each thread follows a Gaussian distribution centered in the middle of the
 structure.
@@ -393,7 +396,7 @@ except in one OpenMP parallel loop where they depend on the value of
 %}, line \ref{lst:is-gaus-end}, which depend on the values of
 \texttt{key\_buff2}.
 
-As have noticed in Figure~\ref{fig:is-behaviour-orig-kb1} that the values of \texttt{key\_buff2}
+As we noticed in Figure~\ref{fig:is-behaviour-orig-kb1} that the values of \texttt{key\_buff2}
 follow a Gaussian distribution, we can design a distribution of the threads that
 provides both a good load balancing and locality of data.
 By default, OpenMP threads are scheduled dynamically to avoid unbalanced
@@ -436,7 +439,7 @@ Balancing are not relevant with our modifications and are therefore not included
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[scale=.62]{is_exectime}
+    \includegraphics[scale=.68]{is_exectime}
     \caption{Speedup for \emph{IS} (class D) compared to the baseline.}
 \label{fig:is-res}
 \end{figure}
@@ -468,7 +471,7 @@ threads on both machines and compared the original execution time to the executi
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[scale=.6]{tool-ovh.pdf}
+    \includegraphics[scale=.68]{tool-ovh.pdf}
     \caption{\TABARNAC's instrumentation overhead.}
     \label{fig:ovh}
 \end{figure}
@@ -498,7 +501,7 @@ threads on both machines and compared the original execution time to the executi
 %\end{table}
 
 As we can see in Figure~\ref{fig:ovh}, on the Intel machine,
-the instrumentation slows the execution down by a factor from $10$to $30$.
+the instrumentation slows the execution down by a factor from $10$ to $30$.
 On the AMD machine, the overhead is almost always higher, and for
 pathological cases, is two to three times slower than on
 the Intel machine.

@@ -31,16 +31,17 @@ Indeed tracing the memory behavior is complex, as many instructions trigger at l
 Several studies have addressed this problem using sampling
 \cite{Lachaize12MemProf,McCurdy2010,Gimenez14Dissecting},
 and can find out \emph{what} happens (remote access, cache miss \ldots),
-\emph{where} (data structure, line of code), but not how data structure are
+\emph{where} (data structure, line of code), but not \emph{how} data structure are
 accessed and shared by the different threads (which causes the remote access).
 
 In this paper, we present \TABARNAC\footnote{\TABARNAC is available at
-    \url{https://github.com/dbeniamine/Tabarnac}}, a set of \emph{Tools and
-    methodologies to Analyze the Behavior of
+    \url{https://github.com/dbeniamine/Tabarnac}}, a set of \emph{Tools for
+        Analyzing the Behavior of
 Applications Running on NUMA ArChitectures}. \TABARNAC provides tools to trace
-and methodologies to visualize the memory access behavior of parallel
+and visualize the memory access behavior of parallel
 applications. More precisely, it helps to understand \emph{why} performance
-issues occur by providing information on how data structures are accessed by the
+issues occur by providing information on how data structures are accessed and
+shared by the
 different threads.
 Since it is based on memory accesses traces, \TABARNAC has a very high
 accuracy while maintaining a reasonable overhead that enables the analysis of large applications.

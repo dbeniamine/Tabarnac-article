@@ -4,17 +4,25 @@
 \section{Related Work}
 \label{sec:soa}
 
-This section presents an overview of related work in the area of memory access profiling of parallel applications based on shared memory.
+This section presents an overview of related work in the area of memory access
+profiling for parallel applications based on shared memory.
 We also discuss some mechanisms to improve performance on NUMA architectures.
 
 \subsection{Memory Profiling}
 \label{sec:soa-profiling}
 
+Generic tools to evaluate parallel application performance, such as Intel's
+VTune~\cite{Reinders05VTune} and Performance Counter
+Monitor~(PCM)~\cite{Intel2012b}, the HPCToolkit~\cite{Adhianto10HPCTOOLKIT},
+and AMD's CodeAnalyst~\cite{Drongowski2008}, provide only indirect information
+about the memory access behavior, more specific tools are therefore required to improve it.
+
 Profiling memory behavior raise two major challenges.
 The first one is the collection of accurate and detailed information: performance counters provide precise and easy access to statistics about the CPU usage, but there are few such mechanisms for the memory.
 For a maximum level of detail, memory access traces need to be created.
 The second challenge is the amount of information that needs to be interpreted and presented to the developer.
-Memory access traces provide huge amounts of information on several dimensions (data structure, threads, access type (read/write), sharing, time of access, among others).
+Memory access traces provide huge amounts of information on several
+dimensions: data structure, threads, access type (read/write), sharing, time of access.
 Presenting them to the developer in a readable and meaningful way is therefore not trivial.
 
 \subsubsection{Data Collection}
@@ -34,7 +42,8 @@ analysis on different machines with these tools.
 Another approach used by several
 tools~\cite{Lachaize12MemProf,McCurdy2010,Liu14Tool,Gimenez14Dissecting}
 consists of using sampling mechanisms such as AMD's Instruction Based Sampling
-(IBS)~\cite{Drongowski07Instructionbased} or Intel PEBS to analyze applications. Not only can sampling miss important events, leading to
+(IBS)~\cite{Drongowski07Instructionbased} or Intel Precise Event Based
+Sampling (PEBS) to analyze applications. Not only can sampling miss important events, leading to
 inaccurate characterizations, but these technologies are usually not portable and work
 only with a few recent architecture, therefore such tools can only be used in
 special circumstances.
@@ -72,7 +81,7 @@ issue is happening, for instance by showing the distribution of memory accesses 
 \begin{figure}[htb]
     \centering
     \includegraphics[width=\linewidth]{memAxes.png}
-    \caption{Screenshot from MemAxes on the example data provided with the
+    \caption{Screenshot from MemAxes on the example data trace provided with the
     tool.}
     \label{fig:memaxes}
 \end{figure}
@@ -80,7 +89,7 @@ issue is happening, for instance by showing the distribution of memory accesses 
 MemAxes~\cite{Gimenez14Dissecting} is one of the most advanced NUMA-oriented
 visualization tool.
 Figure~\ref{fig:memaxes}, shows a screenshot of this tool on an example data
-trace provided with the tool. We can see that it show the source code of the
+trace provided with it. We can see that it show the source code of the
 application (left upper side), the NUMA hierarchy of the machine (right upper side)
 and A \emph{parallel coordinate graph} (lower side) designed to  help correlating informations.
 Although this visualization is designed for understanding NUMA performance
@@ -98,7 +107,6 @@ the threads.
 %Previous studies aimed to answer this question for some specific
 %benchmarks~\cite{Majo13(Mis)understanding,Jiang14Understanding}.
 %However, these studies use manual source code analysis and performance counters and do not provide a general tool or methodology that is usable for other applications.
-
 \subsection{Data Mapping Mechanisms}
 \label{sec:soa-mapping}
 
@@ -167,11 +175,6 @@ the ability to allocate data structures on a particular NUMA node, or with an
 interleave policy. These techniques can achieve large improvements, it
 requires a deep understanding of the applications memory behavior to use them
 efficiently.
-Generic tools to evaluate parallel application performance, such as Intel's
-VTune~\cite{Reinders05VTune} and Performance Counter
-Monitor~(PCM)~\cite{Intel2012b}, the HPCToolkit~\cite{Adhianto10HPCTOOLKIT},
-and AMD's CodeAnalyst~\cite{Drongowski2008}, provide only indirect information
-about the memory access behavior and are therefore not sufficient to improve it.
 Our study provides tools to easily understand the memory behavior
 and therefore enable the developer to improve performance significantly.
 
@@ -190,7 +193,7 @@ line of code), the most advanced tools helps to correlate these information to
 guess \emph{why} the issue is happening. Still, no tool gives directly the
 reason \emph{why} such issues occur and \emph{how} to fix them.
 Two types of information can help answering this question: which thread is responsible for the first touch (as the default page mapping of most operating systems depends on it), and how different threads access data structures.
-This study presents \TABARNAC, a tool to explain \emph{why} performance issues
+This study presents \TABARNAC, a set of tools to explain \emph{why} performance issues
 related to memory occur and \emph{how} they can be resolved.
 
 %The two main challenges for this type of tool is to gather information about the memory access patterns in a fast, accurate and easy-to-use way, and providing information to the developers about the ways to improve the behavior of their applications.

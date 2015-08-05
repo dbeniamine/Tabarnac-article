@@ -4,7 +4,7 @@
 \section{Conclusions and Future Work}
 \label{sec:concl}
 
-In this paper, we presented \TABARNAC, a set of tools and methodology to analyze and
+In this paper, we presented \TABARNAC, a set of tools to analyze and
 optimize the memory behavior of parallel applications running on NUMA
 machines. We provide a custom memory tracer
 based on the Pin dynamic binary instrumentation tool which records the
@@ -23,10 +23,10 @@ and how to solve them.
 %Our visualization also contains general
 %explanations on NUMA machines and classical inefficient behavior.
 
-Using \TABARNAC, we analyzed two parallel applications: \emph{IS} from the NAS
+Using \TABARNAC, we analyzed two parallel applications: \emph{Ondes3D}, a real life application that
+simulates seismic waves, and\emph{IS} from the NAS
 Parallel Benchmarks which is known for being memory intensive with a random
-memory pattern, and \emph{Ondes3D}, a real life application that
-simulates seismic waves. For both applications, \TABARNAC helped us
+memory pattern. For both applications, \TABARNAC helped us
 understand their performance issues.  Using this knowledge, we proposed
 simple code modifications to optimize the memory behavior resulting, for each
 application, in significant speedups compared to the original version (up to

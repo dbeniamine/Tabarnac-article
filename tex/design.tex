@@ -1,11 +1,10 @@
 %!TEX encoding=UTF-8 Unicode
 %!TEX root=../tabarnac.tex
-\newpage
 \section{TABARNAC}
 \label{sec:design}
 
 \TABARNAC: Tools for Analyzing the Behavior of Applications Running on NUMA
-ArChitecture is divided into two parts. The instrumentation tool which collect
+ArChitecture is divided into two parts: the instrumentation tool which collect
 memory accesses, and the visualization which presents a meaningful
 interpretation of the trace.
 In this section, we discuss the implementation of both parts.
@@ -15,7 +14,7 @@ In this section, we discuss the implementation of both parts.
 
 \TABARNAC data collection aims at providing information on how data structure
 are accessed, therefore, it needs to collect fine grain information. To do so,
-we instrument memory access and collect the number of access per page, thread
+we instrument memory access and collect the number of access per page by thread
 and type (Read/Write). The information is stored on a per-thread basis, as
 shown in Listing~\ref{lst:mem}, making the code completely lock-free, as well
 as minimizing the amount of false sharing between threads.
@@ -41,7 +40,7 @@ are extracted using the debug information provided by the compiler.
 %code.
 Finally, each time a thread is created, we compute its
 stack bounds and create a virtual structure named \texttt{Stack\#N} where
-$N$ is the thread ID. Only structures that are bigger than one page (usually
+$N$ is the thread~ID. Only structures that are bigger than one page (usually
 $4$Kib in current x86\_64 architectures) are recorded as our
 analysis granularity is the memory page. The data structure informations (name,
 size and address) are only used to generate the visualization, after the end
@@ -91,16 +90,16 @@ with Hwloc~\cite{Broquedis10hwloc}.
 \begin{figure*}[ht!]
     \centering
     \subfigure[Structures size.]{
-        \includegraphics[height=.2\textheight]{example_sz}
+        \includegraphics[height=.22\textheight]{example_sz}
         \label{fig:example_sz}
     }
     \subfigure[Number of accesses per structures.]{
-        \includegraphics[height=.2\textheight]{example_rw}
+        \includegraphics[height=.22\textheight]{example_rw}
         \label{fig:example_rw}
     }
     \subfigure[First touch distribution inside a structure.
     ]{
-        \includegraphics[height=.2\textheight]{example_ft}
+        \includegraphics[height=.22\textheight]{example_ft}
         \label{fig:example_ft}
     }
     \caption{Example plots from \TABARNAC.}
@@ -128,12 +127,12 @@ duplicated, such that each NUMA node works on a local copy.
 
 \begin{figure}[!htb]
     \centering
-    \includegraphics[height=.22\textheight]{example_dist}
+    \includegraphics[height=.26\textheight]{example_dist}
     \caption{Per thread access distribution inside a structure.}
     \label{fig:example_dist}
 \end{figure}
 
-The second series of plots is the most important one. For each structure, it
+The second series of plots is the most important one. It
 shows for each page of each structure
 which thread was responsible for the first touch
 (Figure~\ref{fig:example_ft}). This information is important as the
