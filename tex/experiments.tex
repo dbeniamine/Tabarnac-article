@@ -43,7 +43,7 @@ We used two NUMA machines for our experiments \texttt{Turing} and
 instrumentation overhead on Intel and AMD machines, all the other experiments
 ran on \texttt{Turing}. The hardware details are
 summarized in Table~\ref{tab:hw}. \texttt{Turing} runs version $3.13$ of the
-Linux kernel, while \texttt{Idfreeze} version $3.2$.
+Linux kernel, while \texttt{Idfreeze} runs version $3.2$.
 
 %\texttt{Turing} is composed of $4$ Intel Xeon X7550
 %processors (Nehalem microarchitecture~\cite{Intel2010}). Each processor has its own memory controller and therefore forms a NUMA node. The hardware details are summarized in Table~\ref{tab:Turing}.
@@ -82,9 +82,9 @@ Linux kernel, while \texttt{Idfreeze} version $3.2$.
 %The \emph{matrix multiplication} is a well-known algorithm that we use to verify the accuracy of \TABARNAC, as well as to discuss the performance improvements that can be achieved.
 %The \emph{matrix multiplication} is implemented with Pthreads, while \emph{IS} and \emph{Ondes3D} use OpenMP for parallelization.
 
-All applications use OpenMP for parallelization, they  were compiled with
+All applications use OpenMP for parallelization, they were compiled with
 \texttt{gcc}, version 4.6.3, with the \texttt{-O2} optimization flag.  Both
-analysis and performance evaluation is performed with $64$ threads,
+analysis and performance evaluation are performed with $64$ threads,
 which is the maximum number of threads that our evaluation machine
 (\emph{Turing}) can execute in parallel.
 %The \emph{matrix multiplication} performance was evaluated with
@@ -92,7 +92,7 @@ which is the maximum number of threads that our evaluation machine
 %a memory usage of $128$Mib and $512Mib$ per matrix.
 %\subsection{Mapping Policies}
 
-In this performance evaluation, we compare the following three traditional
+In the performance evaluation, we compare the following three traditional
 mapping policies to the version modified using the knowledge provided by \TABARNAC.
 The \emph{original Linux kernel} is our baseline for the experiments. We use an unmodified Linux kernel, version 3.13, with the first-touch policy. The NUMA Balancing mechanism is disabled in this baseline.
 The \emph{interleave} policy is performed with the help of the \texttt{numactl} tool.
@@ -251,11 +251,11 @@ for the analysis.
     %    \includegraphics[width=.45\linewidth] {ondes3d_vz0_dist_modif}
     %    \label{fig:ondes3d-behaviour-vz0-modif}
     %}
-    \subfigure[Original First-touch.]{
+    \subfigure[Original first-touch.]{
         \includegraphics[width=.45\linewidth] {ondes3d_vz0_ft_orig}
         \label{fig:ondes3d-ft-vz0-orig}
     }
-    \subfigure[Improved First-touch.]{
+    \subfigure[Improved first-touch.]{
         \includegraphics[width=.45\linewidth] {ondes3d_vz0_ft_modif}
         \label{fig:ondes3d-ft-vz0-modif}
     }
@@ -269,17 +269,16 @@ The analysis of the accesses distribution in \emph{Ondes3D} (not displayed
 here) shows that each
 structure seems to be well distributed between the threads. %, as we can see for
 %structure \texttt{vz0} in Figure~\ref{fig:ondes3d-behaviour-vz0-orig}.
-Still for each structures, as we can see for \texttt{vz0} in
-Figure~\ref{fig:ondes3d-ft-vz0-orig}, the
-thread~$0$ is responsible for all first accesses. Due to
-this pattern, if we run \emph{Ondes3D} without any mapping, every page will be
+However, for all structures,
+thread~$0$ is responsible for all first accesses, as we can see for \texttt{vz0} in
+Figure~\ref{fig:ondes3d-ft-vz0-orig}. Due to
+this pattern, if we run \emph{Ondes3D} without any improved mapping policy, every page will be
 mapped to the NUMA node that executes the thread~$0$, resulting in mostly remote
 accesses for the other threads. An easy fix is to perform the initialization
 in parallel and to pin each thread on a different core, or to use the
 interleave policy.
-Such modification results in the first touch distribution shown in
-Figure~\ref{fig:ondes3d-ft-vz0-modif}. We can see that the first touch is now distributed
-over the structures.
+Such a modification results in the first touch distribution shown in
+Figure~\ref{fig:ondes3d-ft-vz0-modif}, which is now distributed among all the threads.
 
 \begin{figure}[htb]
     \centering
@@ -288,18 +287,18 @@ over the structures.
     \label{fig:ondes-res}
 \end{figure}
 
-We evaluate the modified version by comparing it with the original
+We compare the performance of the modified version to the original
 version, running on the normal OS, with NUMA Balancing activated and with an
 interleave policy. Figure~\ref{fig:ondes-res} present the results of this
-evaluation. We can see that all methods improve the execution time, but
+evaluation. We can see that all methods improve the execution time compared to the OS, but
 NUMA Balancing provides less than $30\%$ speedup, while the static mappings
-(Interleave or the modified code) allows us to get almost $60\%$ of speedup.
+(Interleave and the modified code) increase performance by $60\%$.
 %This is due to the training time described in Section~\ref{sec:soa-mapping}.
-ndeed,
+Indeed,
 with NUMA Balancing, all pages are initially mapped by the OS to the NUMA node
-of thread~$0$, they
-are only moved later on, after many remote accesses have already occurred
-therefore some optimization opportunities are lost. This is a case where static mapping can be substantially better than automated
+of thread~$0$, and
+are only moved later on, after many remote accesses have already occurred,
+losing some optimization opportunities. This is a case where static mapping can be substantially better than automated
 tools. The Interleave policy provides a similar speedup as
 \TABARNAC since it distributes the pages over the NUMA nodes at the beginning of
 the execution, but our tool shows clearly the cause of the performances issue.
@@ -313,7 +312,7 @@ the execution, but our tool shows clearly the cause of the performances issue.
 \label{sec:exp-is}
 
 %\tod{i suggest removing the next 2 phrases:}
-We executed \TABARNAC on several benchmarks %written in \texttt{C}
+We executed \TABARNAC on the benchmarks %written in \texttt{C}
 from the OpenMP
 implementation of the NAS Parallel Benchmark suite~(NPB)~\cite{Jin1999}.
 %\tod{there are just 2...}
@@ -321,14 +320,14 @@ implementation of the NAS Parallel Benchmark suite~(NPB)~\cite{Jin1999}.
 % getting the good structure names as the access patterns were ``good''
 Most
 of them have either a well balanced accesses pattern between the threads or a
-totally random accesses distribution. For all of them the first touch fits exactly
-the access distribution. Still the analysis of \emph{IS} caught our attention.
+totally random accesses distribution. For all of them, the first touch fits exactly
+the access distribution. However, the analysis of \emph{IS} caught our attention.
 \emph{IS} sorts a set of integer numbers using a parallel bucket sort
-algorithm, and according to the NAS
-website\footnote{\url{http://www.nas.nasa.gov/publications/npb.html}} has a
-random memory access while we observed a very specific pattern, In this
-section we explain this pattern and how we use it to improve on \emph{IS}
-performance.
+algorithm.
+According to the NAS
+website\footnote{\url{http://www.nas.nasa.gov/publications/npb.html}}, \emph{IS} has a
+random memory access pattern, while we observed a very specific pattern. In this
+section we explain this pattern and how we used it to improve the performance of \emph{IS}.
 
 \emph{IS} was executed with input class \emph{D} for the performance
 evaluation, resulting in a memory usage of $33.5$Gib, and class \emph{B} for
@@ -370,7 +369,7 @@ the analysis, with a memory usage of $0.25Gib$.
 \end{figure*}
 
 The top of Figure~\ref{fig:is-behaviour} shows the original access distributions for the
-three main structures of \emph{IS} class \emph{B} with $64$ threads. We can see that
+three main structures of \emph{IS}. We can see that
 each structure has a different access pattern: \texttt{key\_array}'s
 (Figure~\ref{fig:is-behaviour-orig-kba}) access distribution shows that each
 thread works on a different part of the structure, which permits automated
@@ -416,10 +415,10 @@ This modification can be done by simply changing one line of code, the
 
 With this code modification, we obtain the access distribution shown in
 the bottom of Figure~\ref{fig:is-behaviour}. We can see that now each thread
-access a different part of \texttt{key\_buff1}. Furthermore, if most of the
-accesses still occurs in the middle of the structure, the average number of
-access across the structure is the same for every threads which means that our
-distribution preserve the good load balancing. Our modification has also
+accesses a different part of \texttt{key\_buff1}. Furthermore, if most of the
+accesses still occur in the middle of the structure, the average number of
+access across the structure is the same for all threads, which means that our
+distribution preserves the good load balancing. Our modification has also
 changed \texttt{key\_buff2}'s accesses distribution. We can see that each
 thread uses mostly one part of the array and again the load balance is
 preserved.
@@ -434,8 +433,8 @@ We compare the execution time of \emph{IS} (class \emph{D}) for the three schedu
 methods, \emph{Dynamic}, \emph{Cyclic} with a step of $1$ and \TABARNAC:
 cyclic with the proposed distribution. For the two first methods, we compare the
 execution time on the base operating system, the interleave policy and with
-NUMA balancing enabled. As we map thread manually, interleave and NUMA
-Balancing are not relevant with our modifications and are therefore not included.
+NUMA balancing enabled. As we map threads manually, interleave and NUMA
+Balancing are not relevant with our modifications and are therefore not evaluated.
 
 \begin{figure}[htb]
     \centering
@@ -448,7 +447,7 @@ Figure~\ref{fig:is-res} shows the speedup of \emph{IS} compared to
 the default version (\emph{Dynamic}) for each scheduling method and for each
 optimization technique. The first thing to notice is that with the default
 \emph{Dynamic} scheduling, both Interleave and NUMA Balancing slow
-the application down, by up to $10\%$. This shows that simple, automatic optimization policies can actually reduce performance
+the application down, by up to $10\%$. This shows that simple optimization policies can actually reduce performance
 for NUMA-unaware code.
 The \emph{Cyclic} scheduling, proposed in the original code, already provides up to $13\%$ of
 speedup. We can see that both interleave and NUMA Balancing are not suitable
@@ -469,7 +468,7 @@ Our last experiment aims at evaluating the instrumentation cost. To do so, we
 executed all of the NAS Parallel Benchmarks in class \emph{B} with $64$
 threads on both machines and compared the original execution time to the execution time with instrumentation enabled.
 
-\begin{figure}[htb]
+\begin{figure}[b]
     \centering
     \includegraphics[scale=.68]{tool-ovh.pdf}
     \caption{\TABARNAC's instrumentation overhead.}

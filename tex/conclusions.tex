@@ -13,27 +13,28 @@ The advantage of instrumentation is that it is the most
 accurate and portable way to generate memory traces.
 Despite the overhead caused by the instrumentation, our tool is efficient enough to analyze even huge applications in a reasonable time.
 
-While other studies tells how many remote access are triggered by which NUMA
+While other tools show how many remote access are triggered by which NUMA
 node, line of code or data structure, we provide information on how data
-structure are accessed. Such information allows the user to understand
-\emph{why} performance issues occurs. We show these informations through
-several  meaningful yet readable plots. For newcomers, each plot is preceded by explanations
+structures are accessed. This information allows the user to understand
+\emph{why} performance issues occur. \TABARNAC presents this information through
+several meaningful yet readable plots. Each plot is preceded by explanations
 on how to read it, what kind of memory access issues it can help to identify
 and how to solve them.
 %Our visualization also contains general
 %explanations on NUMA machines and classical inefficient behavior.
 
-Using \TABARNAC, we analyzed two parallel applications: \emph{Ondes3D}, a real life application that
+We analyzed two parallel applications with \TABARNAC: \emph{Ondes3D}, a real life application that
 simulates seismic waves, and \emph{IS} from the NAS
 Parallel Benchmarks which is known for being memory intensive with a random
-memory pattern. For both applications, \TABARNAC helped us
+memory access pattern. For both applications, \TABARNAC helped us
 understand their performance issues.  Using this knowledge, we proposed
 simple code modifications to optimize the memory behavior resulting, for each
 application, in significant speedups compared to the original version (up to
-$60\%$ speedup), and to the results provided by automated tools.
+$60\%$ speedup)
+Improvements were also substantially higher than those provided by automated tools.
 
-Future work will focus on two directions. First, we will improve the
+Future work will move in two directions. First, we will improve the
 structure detection support to be able to analyze Fortran programs, as many
 scientific applications are written in Fortran. Second, we will improve the
 detection of inefficient memory access behavior, such as an all-to-all
-sharing, to make the analysis partly automatized.
+sharing, to make the analysis partly automatic.

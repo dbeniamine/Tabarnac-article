@@ -75,8 +75,8 @@ of the instrumentation.
 
 Once the data collection phase is done,
 \TABARNAC generates the visualization (as an HTML page), providing a summary
-of the trace through several plots\footnote{A full example is available at
-    \url{http://dbeniamine.github.io/Tabarnac/example}}.
+of the trace through several plots\footnote{A complete example is available at\\
+    \url{http://dbeniamine.github.io/Tabarnac/example}.}.
 The visualization aims at showing \emph{why} performances issues related
 to memory occurs, it therefore shows several plots helping to understand the
 importance of each data structure and how it is accessed.
@@ -108,10 +108,8 @@ with Hwloc~\cite{Broquedis10hwloc}.
 
 
 After the introduction, the visualization focuses on the usage of data structures. Some
-structures are not displayed for two reasons: either no accesses have been
-detected during the analysis, which happens for structures used by external
-libraries, or less than $0.01\%$ of the total accesses happens on them. This is
-done to make the output more readable.
+structures are not displayed if less than $0.01\%$ of the total accesses happen on them. This is
+done to make the output more readable by focusing on the most important structures.
 %However, it is possible to ask
 %\TABARNAC not to ignore structures in the second case for a more detailed view.
 
@@ -144,12 +142,12 @@ touch or do some manual data mapping to ensure better memory access locality
 during the execution.
 
 Finally, \TABARNAC shows the density of accesses performed by each thread and
-the global distribution. As we can see in Figure~\ref{fig:example_dist}, each
-horizontal line represents the number of accesses on one page, there is one
-line per thread and one for the average number of accesses. Moreover for each
-thread the average number of accesses to the structure is displayed. The
-darker is the line the more the thread accesses the page. It gives an easy way
-to understand the data sharing between threads, the balance between pages and
+the global distribution. In the example shown in Figure~\ref{fig:example_dist}, each
+horizontal line represents the number of accesses to one page, there is one
+line per thread and one for the average number of accesses. Moreover, for each
+thread the average number of accesses to the structure is displayed.
+Darker lines indicate more memory accesses to the page. This visualization gives an easy way
+to understand the data sharing between threads, as well as the balance between pages and
 threads. These plots can be used to identify inefficient memory usages and to
 determine the best NUMA mapping policy.
 

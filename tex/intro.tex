@@ -22,7 +22,7 @@ For instance, if all threads are accessing data from a single memory
 page, remote memory accesses will be triggered from all NUMA nodes but one,
 wherever the page is mapped.
 This kind of issue can only be solved by modifying the memory access behavior
-in the source code of the application, requiring a deep understanding of this behavior.
+in the source code of the application, requiring a deep understanding of its behavior.
 
 Several tools, such as Intel's VTune~\cite{Reinders05VTune} and Performance Counter Monitor~(PCM)~\cite{Intel2012b}, the HPCToolkit~\cite{Adhianto10HPCTOOLKIT}, and AMD's CodeAnalyst~\cite{Drongowski2008}, can be used to help the
 developer understand and improve the performance of parallel applications.
@@ -31,8 +31,8 @@ Indeed tracing the memory behavior is complex, as many instructions trigger at l
 Several studies have addressed this problem using sampling
 \cite{Lachaize12MemProf,McCurdy2010,Gimenez14Dissecting},
 and can find out \emph{what} happens (remote access, cache miss \ldots),
-\emph{where} (data structure, line of code), but not \emph{how} data structure are
-accessed and shared by the different threads (which causes the remote access).
+\emph{where} (data structure, line of code), but not \emph{how} data structures are
+accessed and shared by the different threads (which cause the remote access).
 
 In this paper, we present \TABARNAC\footnote{\TABARNAC is available at
     \url{https://github.com/dbeniamine/Tabarnac}}, a set of \emph{Tools for

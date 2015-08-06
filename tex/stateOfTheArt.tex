@@ -87,20 +87,20 @@ issue is happening, for instance by showing the distribution of memory accesses 
 \end{figure}
 
 MemAxes~\cite{Gimenez14Dissecting} is one of the most advanced NUMA-oriented
-visualization tool.
-Figure~\ref{fig:memaxes}, shows a screenshot of this tool on an example data
-trace provided with it. We can see that it show the source code of the
+visualization tools.
+Figure~\ref{fig:memaxes} shows a screenshot of this tool on an example
+trace. It shows the source code of the
 application (left upper side), the NUMA hierarchy of the machine (right upper side)
-and A \emph{parallel coordinate graph} (lower side) designed to  help correlating informations.
-Although this visualization is designed for understanding NUMA performance
-issues, it shows \emph{what} event occurs and \emph{where} but it still does not
-tell directly \emph{why} it occurs. The user still has to correlate several
-informations to guess the source of the performance issue.
+and a \emph{parallel coordinate graph} (lower side) designed to help correlating information.
+Although this visualization is designed to help understanding NUMA performance
+issues, it shows \emph{which} event occurs and \emph{where} it occurs, but does not
+tell directly \emph{why} it occurs. The user still has to correlate several pieces of
+information to guess the source of a performance issue.
 
 Finally, the proposal of Liu et al.~\cite{Liu14Tool} is quite similar to the previous studies, but
-they also provide an \emph{address centric} visualization, these graphs shows how
-much each thread access a data structure. Such visualization is a bit closer
-to give the source of the performance issue, but it does not show how the
+they also provide an \emph{address centric} visualization, which shows how
+much each thread accesses a data structure. Such a visualization is a bit closer
+to providing the source of the performance issue, but it does not show how the
 accesses are distributed inside a structure, and how the structure is shared between
 the threads.
 
@@ -134,18 +134,18 @@ the threads.
 %Most mechanisms that have no prior information about the memory access behavior operate within the operating system.
 On NUMA architectures, data mapping mechanisms have the goal of improving the locality and balance of memory access between NUMA nodes.
 Traditionally, operating systems have used the \emph{first-touch}~\cite{Marchetti1995}, \emph{next-touch}~\cite{Lof2005} and \emph{interleave}~\cite{Kleen2004} policies to map memory pages to NUMA nodes.
-The first-touch policy, which is the default policy in most current operating systems (such as Linux), allocates a page on the NUMA node that performs the first memory access to it.
-It requires that the programmer takes care of which thread accesses data
-first, or it can lead to reduced performance.
+The first-touch policy, which is the default policy in most operating systems (such as Linux), allocates a page on the NUMA node that performs the first memory access to it.
+It requires the developer to take care of which thread accesses data
+first, as an incorrect first access can hurt performance.
 In next-touch~\cite{Lof2005}, each page is periodically migrated to the NUMA
-node that performs the next access to a page. This technique is more flexible
+node that performs the next access to a page. This technique is more flexible than first-touch,
 but can lead to excessive page migrations.
 The interleave policy (available in Linux via the \texttt{numactl}
 tool~\cite{Kleen2004}) distributes memory pages cyclically among all NUMA nodes,
-usually avoiding load imbalance among memory controllers, but does not take any locality into account.
+to improve load balance among memory controllers, but it does not take any locality into account.
 
 Newer developments in operating systems focus on refining the data mapping during the execution of parallel applications, using online profiling.
-Recent versions of the Linux kernel (starting with version 3.8) contain the
+Recent versions of the Linux kernel contain the
 NUMA Balancing technique~\cite{Corbet}, which uses page faults to determine if
 a page should be migrated to a different NUMA node.%To increase the accuracy
 %of this mechanism, extra page faults are inserted at runtime, creating an additional overhead.
@@ -172,8 +172,8 @@ pages before executing the loop.
 
 Libraries such as libnuma~\cite{Kleen2004} and MAi~\cite{Ribeiro2009} provide
 the ability to allocate data structures on a particular NUMA node, or with an
-interleave policy. These techniques can achieve large improvements, it
-requires a deep understanding of the applications memory behavior to use them
+interleave policy. These techniques can achieve large improvements, but
+require a deep understanding of the applications' memory behavior to use them
 efficiently.
 Our study provides tools to easily understand the memory behavior
 and therefore enable the developer to improve performance significantly.
@@ -186,12 +186,12 @@ and therefore enable the developer to improve performance significantly.
 % We conclude that tools to improve the memory access behavior on NUMA architectures with prior
 % information have the highest potential for improvements.
 Several studies already provide tools to analyze memory accesses.
-These tools usually point out \emph{what} performance issues occur (such as a
+These tools usually point out \emph{which} performance issues occur (such as a
 high number of cache misses or accesses to remote NUMA nodes), sometimes
 \emph{where} they occur (such as information about the structure, function, or
-line of code), the most advanced tools helps to correlate these information to
-guess \emph{why} the issue is happening. Still, no tool gives directly the
-reason \emph{why} such issues occur and \emph{how} to fix them.
+line of code). Some tools helps to correlate these information to
+guess \emph{why} an issue is happening. However, no tool directly provides the
+reasons \emph{why} such issues occur and \emph{how} to fix them.
 Two types of information can help answering this question: which thread is responsible for the first touch (as the default page mapping of most operating systems depends on it), and how different threads access data structures.
 This study presents \TABARNAC, a set of tools to explain \emph{why} performance issues
 related to memory occur and \emph{how} they can be resolved.

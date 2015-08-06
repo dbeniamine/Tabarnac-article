@@ -378,17 +378,17 @@ the mapping of data and threads to NUMA nodes.  However, theses tools are not
 able to change the memory access pattern of the original application,
 therefore a code written without considering memory performance might
 not benefit from them. Moreover, automatic mapping tools take time to converge
-towards the best mapping loosing optimization opportunities. A
+towards the best mapping, losing optimization opportunities. A
 deeper understanding of the memory behavior can help optimizing it,
 removing the need for runtime analysis.
 
 In this paper, we present \TABARNAC, a tool for analyzing the memory behavior of parallel applications with a focus on NUMA architectures.
-Our main contributions are to provide a new visualization of the memory access behavior
-distribution by thread and by structure. Such visualization allows the
-developer to easily understand why performance issues occurs.
+\TABARNAC provides a new visualization of the memory access behavior, focusing on the
+distribution of accesses by thread and by structure. Such visualization allows the
+developer to easily understand why performance issues occur and how to fix them.
 Using \TABARNAC, we explain why some applications do not benefit from data
 and thread mapping. Moreover, we propose several code modifications to
-improve the memory access behavior of some applications.
+improve the memory access behavior of several parallel applications.
 % Finally, we compare the performance gain of our proposal to automated tools.
 %
 \end{abstract}
