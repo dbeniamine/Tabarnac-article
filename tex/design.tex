@@ -87,24 +87,19 @@ introduction, summarizing the main principles while developing for NUMA
 machines, and shows the hardware topology of the analyzed machine extracted
 with Hwloc~\cite{Broquedis10hwloc}.
 
-\begin{figure*}[ht!]
+\begin{figure}[!htb]
     \centering
     \subfigure[Structures size.]{
-        \includegraphics[height=.22\textheight]{example_sz}
+        \includegraphics[width=.46\linewidth]{example_sz}
         \label{fig:example_sz}
     }
-    \subfigure[Number of accesses per structures.]{
-        \includegraphics[height=.22\textheight]{example_rw}
+    \subfigure[Number of accesses.]{
+        \includegraphics[width=.46\linewidth]{example_rw}
         \label{fig:example_rw}
     }
-    \subfigure[First touch distribution inside a structure.
-    ]{
-        \includegraphics[height=.22\textheight]{example_ft}
-        \label{fig:example_ft}
-    }
-    \caption{Example plots from \TABARNAC.}
+    \caption{Data structure visualizations.}
     \label{fig:example_plot1}
-\end{figure*}
+\end{figure}
 
 
 After the introduction, the visualization focuses on the usage of data structures. Some
@@ -125,9 +120,17 @@ duplicated, such that each NUMA node works on a local copy.
 
 \begin{figure}[!htb]
     \centering
-    \includegraphics[height=.26\textheight]{example_dist}
-    \caption{Per thread access distribution inside a structure.}
-    \label{fig:example_dist}
+    \subfigure[First touch distribution.
+    ]{
+        \includegraphics[width=.46\linewidth]{example_ft}
+        \label{fig:example_ft}
+    }
+    \subfigure[Access  distribution.]
+    {
+        \includegraphics[width=.46\linewidth]{example_dist}
+        \label{fig:example_dist}
+    }
+    \caption{Per structure visualization.}
 \end{figure}
 
 The second series of plots is the most important one. It

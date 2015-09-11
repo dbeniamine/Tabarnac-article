@@ -12,28 +12,29 @@ and presents relevant information on the experimental environment.
 \begin{table}[htb]
     \centering
     \begin{tabular}{lp{1.1cm}rrp{1.35cm}p{1.1cm}}
-        \toprule
-        \multirow{3}{.8cm}{CPU}
-        &  & \multicolumn{2}{c}{Vendor} & \multicolumn{2}{c}{Model} \\
-        \cmidrule(lr){3-6}
-        & \texttt{Turing}  & \multicolumn{2}{c}{Intel} & \multicolumn{2}{c}{Xeon X7550} \\
+        \toprule[.05em]
+        %\multirow{3}{.8cm}{CPU}
+        %&  & \multicolumn{2}{c}{Vendor} & \multicolumn{2}{c}{Model} \\
+        %\cmidrule(lr){3-6}
+        \multirow{2}{.8cm}{CPU}& \texttt{Turing}  & \multicolumn{2}{c}{Intel} & \multicolumn{2}{c}{Xeon X7550} \\
         & \texttt{Idfreeze} & \multicolumn{2}{c}{AMD} & \multicolumn{2}{c}{Opteron 6174} \\
-        \midrule
-        \midrule
+        \midrule[.02em]
+        \midrule[.02em]
         \multirow{3}{.8cm}{System totals}
         & & Nodes & Threads & Freq & Memory \\
-        \cmidrule(lr){3-6}
+        \cmidrule[.01em](lr){3-6}
         & \texttt{Turing}   & $4$ & $64$ & $2.00$ Ghz & $128$ Gib \\
         & \texttt{Idfreeze} & $8$ & $48$ & $2.20$ Ghz & $256$ Gib\\
-        \midrule
-        \midrule
+        \midrule[.02em]
+        \midrule[.02em]
         \multirow{3}{.8cm}{Per node}
         & & Cores & Threads & L3 Cache & Memory \\
-        \cmidrule(lr){3-6}
+        \cmidrule[.01em](lr){3-6}
         & \texttt{Turing}   & $8$ & $16$ & $18$ Mib & $32$ Gib \\
         & \texttt{Idfreeze} & $6$ & $6$  & $12$ Mib & $32$ Gib \\
-        \bottomrule
+        \bottomrule[.05em]
     \end{tabular}
+    \vspace{4pt}
     \caption{Hardware configuration of our evaluation system.}
     \label{tab:hw}
 \end{table}
@@ -86,7 +87,7 @@ All applications use OpenMP for parallelization, they were compiled with
 \texttt{gcc}, version 4.6.3, with the \texttt{-O2} optimization flag.  Both
 analysis and performance evaluation are performed with $64$ threads,
 which is the maximum number of threads that our evaluation machine
-(\emph{Turing}) can execute in parallel.
+(\texttt{Turing}) can execute in parallel.
 %The \emph{matrix multiplication} performance was evaluated with
 %matrices of size $4096 \times 4096$ doubles and $8192 \times 8192$, resulting on
 %a memory usage of $128$Mib and $512Mib$ per matrix.
@@ -282,7 +283,7 @@ Figure~\ref{fig:ondes3d-ft-vz0-modif}, which is now distributed among all the th
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[scale=.6]{ondes3d_exectime}
+    \includegraphics[scale=.55]{ondes3d_exectime}
     \caption{Speedup for \emph{Ondes3D} compared to the baseline.}
     \label{fig:ondes-res}
 \end{figure}
@@ -329,35 +330,31 @@ website\footnote{\url{http://www.nas.nasa.gov/publications/npb.html}}, \emph{IS}
 random memory access pattern, while we observed a very specific pattern. In this
 section we explain this pattern and how we used it to improve the performance of \emph{IS}.
 
-\emph{IS} was executed with input class \emph{D} for the performance
-evaluation, resulting in a memory usage of $33.5$Gib, and class \emph{B} for
-the analysis, with a memory usage of $0.25Gib$.
-
-\begin{figure*}[htb]
+\begin{figure*}[!htb]
     \centering
 
     \subfigure[\texttt{key\_array} (original).]{
-        \includegraphics[width=.285\linewidth]  {is_b_kba_orig}
+        \includegraphics[width=.28\linewidth]  {is_b_kba_orig}
         \label{fig:is-behaviour-orig-kba}
     }
     \subfigure[\texttt{key\_buff2} (original).]{
-        \includegraphics[width=.285\linewidth]  {is_b_kb2_orig}
+        \includegraphics[width=.28\linewidth]  {is_b_kb2_orig}
         \label{fig:is-behaviour-orig-kb2}
     }
     \subfigure[\texttt{key\_buff1} (original).]{
-        \includegraphics[width=.285\linewidth]  {is_b_kb1_orig}
+        \includegraphics[width=.28\linewidth]  {is_b_kb1_orig}
         \label{fig:is-behaviour-orig-kb1}
     }
     \subfigure[\texttt{key\_array} (modified).]{
-        \includegraphics[width=.285\linewidth] {is_b_kba_modif}
+        \includegraphics[width=.28\linewidth] {is_b_kba_modif}
         \label{fig:is-behaviour-modif-kba}
     }
     \subfigure[\texttt{key\_buff2} (modified).]{
-        \includegraphics[width=.285\linewidth] {is_b_kb2_modif}
+        \includegraphics[width=.28\linewidth] {is_b_kb2_modif}
         \label{fig:is-behaviour-modif-kb2}
     }
     \subfigure[\texttt{key\_buff1} (modified).]{
-        \includegraphics[width=.285\linewidth] {is_b_kb1_modif}
+        \includegraphics[width=.28\linewidth] {is_b_kb1_modif}
         \label{fig:is-behaviour-modif-kb1}
     }
 
@@ -367,6 +364,12 @@ the analysis, with a memory usage of $0.25Gib$.
     \label{fig:is-behaviour}
 
 \end{figure*}
+
+
+
+\emph{IS} was executed with input class \emph{D} for the performance
+evaluation, resulting in a memory usage of $33.5$Gib, and class \emph{B} for
+the analysis, with a memory usage of $0.25Gib$.
 
 The top of Figure~\ref{fig:is-behaviour} shows the original access distributions for the
 three main structures of \emph{IS}. We can see that
@@ -438,7 +441,7 @@ Balancing are not relevant with our modifications and are therefore not evaluate
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[scale=.68]{is_exectime}
+    \includegraphics[scale=.65]{is_exectime}
     \caption{Speedup for \emph{IS} (class D) compared to the baseline.}
 \label{fig:is-res}
 \end{figure}
@@ -447,7 +450,8 @@ Figure~\ref{fig:is-res} shows the speedup of \emph{IS} compared to
 the default version (\emph{Dynamic}) for each scheduling method and for each
 optimization technique. The first thing to notice is that with the default
 \emph{Dynamic} scheduling, both Interleave and NUMA Balancing slow
-the application down, by up to $10\%$. This shows that simple optimization policies can actually reduce performance
+the application down, by up to $10\%$.
+This shows that simple optimization policies can actually reduce performance
 for NUMA-unaware code.
 The \emph{Cyclic} scheduling, proposed in the original code, already provides up to $13\%$ of
 speedup. We can see that both interleave and NUMA Balancing are not suitable
@@ -468,9 +472,9 @@ Our last experiment aims at evaluating the instrumentation cost. To do so, we
 executed all of the NAS Parallel Benchmarks in class \emph{B} with $64$
 threads on both machines and compared the original execution time to the execution time with instrumentation enabled.
 
-\begin{figure}[b]
+\begin{figure}[!htb]
     \centering
-    \includegraphics[scale=.68]{tool-ovh.pdf}
+    \includegraphics[scale=.65]{tool-ovh.pdf}
     \caption{\TABARNAC's instrumentation overhead.}
     \label{fig:ovh}
 \end{figure}
