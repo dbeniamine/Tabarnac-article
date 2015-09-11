@@ -288,20 +288,21 @@ Figure~\ref{fig:ondes3d-ft-vz0-modif}, which is now distributed among all the th
     \label{fig:ondes-res}
 \end{figure}
 
-We compare the performance of the modified version to the original
-version, running on the normal OS, with NUMA Balancing activated and with an
-interleave policy. Figure~\ref{fig:ondes-res} present the results of this
+We compare the performance of the modified version (\emph{First Touch}) to the
+original (\emph{Base})
+version, running on the normal OS, with \emph{NUMA Balancing} activated and with an
+\emph{Interleave} policy. Figure~\ref{fig:ondes-res} present the results of this
 evaluation. We can see that all methods improve the execution time compared to the OS, but
 NUMA Balancing provides less than $30\%$ speedup, while the static mappings
 (Interleave and the modified code) increase performance by $60\%$.
 %This is due to the training time described in Section~\ref{sec:soa-mapping}.
 Indeed,
-with NUMA Balancing, all pages are initially mapped by the OS to the NUMA node
+with \emph{NUMA Balancing}, all pages are initially mapped by the OS to the NUMA node
 of thread~$0$, and
 are only moved later on, after many remote accesses have already occurred,
 losing some optimization opportunities. This is a case where static mapping can be substantially better than automated
-tools. The Interleave policy provides a similar speedup as
-\TABARNAC since it distributes the pages over the NUMA nodes at the beginning of
+tools. The \emph{Interleave} policy provides a similar speedup as
+\emph{First Touch} since it distributes the pages over the NUMA nodes at the beginning of
 the execution, but our tool shows clearly the cause of the performances issue.
 % Nevertheless, the interleave version only maps the data no the
 % threads, therefore the performances might drop if the OS does not map them
@@ -433,7 +434,7 @@ close to the data they access. %To perform the thread mapping, we use the \textt
 the data for IS, therefore we do not need to explicitly map the data to the NUMA nodes.
 
 We compare the execution time of \emph{IS} (class \emph{D}) for the three scheduling
-methods, \emph{Dynamic}, \emph{Cyclic} with a step of $1$ and \TABARNAC:
+methods, \emph{Dynamic}, \emph{Cyclic} with a step of $1$ and \emph{Cyclic-Split}:
 cyclic with the proposed distribution. For the two first methods, we compare the
 execution time on the base operating system, the interleave policy and with
 NUMA balancing enabled. As we map threads manually, interleave and NUMA
@@ -456,7 +457,7 @@ for NUMA-unaware code.
 The \emph{Cyclic} scheduling, proposed in the original code, already provides up to $13\%$ of
 speedup. We can see that both interleave and NUMA Balancing are not suitable
 for this scheduling, since they reduce the performance gains.
-The \TABARNAC version provides more than $20\%$ of speedup with a very small code
+The \emph{Cyclic-Split} version provides more than $20\%$ of speedup with a very small code
 modification.
 This example shows how analyzing an application's memory behavior can lead to
 significant execution time improvement on an already optimized application where automatic techniques can actually slow
