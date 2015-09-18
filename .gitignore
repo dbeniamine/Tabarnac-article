@@ -10,3 +10,5 @@ tabarnac.pdf
 *.synctex.gz
 *.swp
 */*.swp
+*eps-converted-to.pdf
+*.toc
